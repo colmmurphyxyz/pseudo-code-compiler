@@ -1,10 +1,13 @@
 import sys
 
-from lark import Lark, Tree, Token, Transformer
+from lark import Lark, Tree, Token, Transformer, logger
+from lark.indenter import PythonIndenter
 import pathlib
+import logging
 
 from interpreter import Interpreter
 
+logger.setLevel(logging.DEBUG)
 
 class TreeToJson(Transformer):
     def string(self, s) -> str:
@@ -26,18 +29,19 @@ class TreeToJson(Transformer):
 if __name__ == "__main__":
     parser: Lark
     tree: Tree
-    grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar/expr.lark"
+    grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar/pcc.lark"
     print("opening", grammar_file_path)
     with open(grammar_file_path, "r") as in_file:
         grammar: str = in_file.read()
-        parser = Lark(grammar, start="expr")
-    # with open(sys.argv[1], "r") as in_file:
-    #     tree = parser.parse(in_file.read())
-    source: str = " ".join(sys.argv[1:])
+        parser = Lark(grammar, start="file_input", postlex=PythonIndenter())
+    with open(sys.argv[1], "r") as in_file:
+        source = in_file.read()
+    # source: str = " ".join(sys.argv[1:])
     print("SOURCE:", source)
     tree = parser.parse(source)
     print(tree.pretty())
-    interpreter = Interpreter()
+    print("Done")
+    # interpreter = Interpreter()
 
-    foo = interpreter.transform(tree)
-    print(foo)
+    # foo = interpreter.transform(tree)
+    # print(foo)

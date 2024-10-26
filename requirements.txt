@@ -1,2 +1,4 @@
 lark>=1.2.2
+lark[interegular]
+pydot
 mypy

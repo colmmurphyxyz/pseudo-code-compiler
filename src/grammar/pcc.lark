@@ -1,0 +1,85 @@
+single_input: _NEWLINE | simple_stmt | compound_stmt _NEWLINE
+file_input: (_NEWLINE | stmt)*
+
+funcdef: name "(" [parameters] ")" _NEWLINE block_stmt
+
+parameters: name ("," name)*
+
+?stmt: simple_stmt | compound_stmt
+?simple_stmt: small_stmt (";" small_stmt)* [";"] _NEWLINE
+?small_stmt: (expr_stmt | assign_stmt | flow_stmt)
+expr_stmt: test
+assign_stmt: assign
+
+?flow_stmt: return_stmt | print_stmt | error_stmt
+return_stmt: "return" test
+print_stmt: "print" test
+error_stmt: "error" test
+// TODO: implement more statements into compound_stmt (e.g. repeat)
+?compound_stmt: if_stmt
+    | while_stmt
+    | for_stmt
+    | funcdef
+if_stmt: "if" test _NEWLINE block_stmt elifs "else" _NEWLINE block_stmt
+elifs: elif_*
+elif_: "else" "if" test _NEWLINE block_stmt
+while_stmt: "while" test _NEWLINE block_stmt
+for_stmt: "for" name "=" test "to" test _NEWLINE block_stmt
+
+block_stmt: simple_stmt | _INDENT stmt+ _DEDENT
+
+assign: test "=" test
+
+?test: comparison
+    | assign_expr
+
+assign_expr: name "=" test
+
+?comparison: expr (comp_op expr)*
+
+?expr: or_expr
+
+?or_expr: xor_expr ("or" xor_expr)*
+?xor_expr: and_expr ("xor" and_expr)*
+?and_expr: shift_expr ("and" shift_expr)*
+?shift_expr: arith_expr (_shift_op arith_expr)*
+?arith_expr: term (_add_op term)*
+?term: factor (_mul_op factor)*
+?factor: _unary_op factor | power
+
+!_unary_op: "+" | "-" | "~"
+!_add_op: "+" | "-"
+!_shift_op: "<<" | ">>"
+!_mul_op: "*" | "/" | "mod" | "//"
+!comp_op: "<" | ">" | "==" | ">=" | "<=" | "!=" | "in" | "not" "in" | "is" | "is" "not"
+
+?power: atom_expr ("**" factor)?
+
+?atom_expr: atom_expr "[" test "]" -> getitem
+            | atom
+
+?atom: name     -> var
+    | number
+    | "nil"     -> const_nil
+    | "true"    -> const_true
+    | "false"   -> const_false
+
+number: DEC_NUMBER
+
+// other terminals
+
+_NEWLINE: ( /\r?\n[\t ]*/ | COMMENT )+
+
+%ignore /[\t \f]+/ // whitespace
+%ignore /\\[\t \f]*\r?\n/ // LINE_CONTINUATION
+%declare _INDENT _DEDENT
+
+// more terminals
+
+!name: NAME
+NAME: /[a-zA-Z][a-zA-Z0-9'-]*/
+COMMENT: /\/\/[^\n]*/
+
+DEC_NUMBER: /[1-9][0-9]*/
+    | /0+/
+

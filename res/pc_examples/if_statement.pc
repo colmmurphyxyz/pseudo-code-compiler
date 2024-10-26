@@ -1,0 +1,7 @@
+some-number = 9 + 10
+if some-number > 19
+    print 1
+else if some-number < 19
+    print -1
+else
+    print 0
