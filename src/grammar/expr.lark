@@ -1,0 +1,42 @@
+%import common.SIGNED_NUMBER    -> NUMBER
+
+%import common.WS
+%ignore WS
+
+// Recursive Descent gen. form
+// rule: alternative
+//     | rule form
+// (where alternative has lower precedence)
+
+?expr: assignment
+
+?assignment: equality
+    | IDENTIFIER "=" primary
+
+?equality: comparison
+    | comparison ( "==" | "!=" ) comparison
+
+?comparison: term
+    | term ">" term     -> gt
+    | term ">=" term    -> gte
+    | term "<" term     -> lt
+    | term "<=" term    -> lte
+
+?term: factor
+    | factor "+" factor     -> addition
+    | factor "-" factor     -> subtraction
+
+?factor: primary
+    | primary "*" primary   -> multiplication
+    | primary "/" primary   -> division
+
+?primary: IDENTIFIER
+    | literal
+    | "(" expr ")"
+
+IDENTIFIER: /[a-zA-Z]+[a-zA-Z0-9-']*/
+
+literal: NUMBER     -> number
+    | "true"        -> true
+    | "false"       -> false
+    | "nil"         -> nil
