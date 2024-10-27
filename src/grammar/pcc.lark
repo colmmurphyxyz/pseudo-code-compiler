@@ -19,12 +19,19 @@ error_stmt: "error" test
 ?compound_stmt: if_stmt
     | while_stmt
     | for_stmt
+    | repeat_stmt
     | funcdef
 if_stmt: "if" test _NEWLINE block_stmt elifs "else" _NEWLINE block_stmt
 elifs: elif_*
 elif_: "else" "if" test _NEWLINE block_stmt
 while_stmt: "while" test _NEWLINE block_stmt
-for_stmt: "for" name "=" test "to" test _NEWLINE block_stmt
+for_stmt: for_loop
+        | for_iter
+for_loop: "for" name "=" test range_op test _NEWLINE block_stmt
+for_iter: "for" /each [a-zA-Z]+] / name "in" name _NEWLINE block_stmt
+!range_op: "to"
+    | "downto"
+repeat_stmt: "repeat" _NEWLINE block_stmt "until" test _NEWLINE
 
 block_stmt: simple_stmt | _INDENT stmt+ _DEDENT
 
@@ -60,9 +67,9 @@ assign_expr: name "=" test
 
 ?atom: name     -> var
     | number
-    | "nil"     -> const_nil
-    | "true"    -> const_true
-    | "false"   -> const_false
+    | "NIL"     -> const_nil
+    | "TRUE"    -> const_true
+    | "FALSE"   -> const_false
 
 number: DEC_NUMBER
 
