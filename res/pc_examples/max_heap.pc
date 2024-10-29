@@ -1,0 +1,11 @@
+MAX_HEAP-MAXIMUM(A)
+    if A.heap-size < 1
+        error "heap underflow"
+    return A[1]
+
+MAX-HEAP-EXTRACT-MAX(A)
+    max = MAX-HEAP-MAXIMUM(a)
+    A[1] = A[A.heap-size]
+    A.heap-size = A.heap-size - 1
+    MAX-HEAPIFY(A, 1)
+    return max

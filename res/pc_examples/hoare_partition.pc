@@ -10,7 +10,6 @@ HOARE-PARTITION(A, p, r)
             i = i + 1
         until A[i] >= x
         if i < j
-            // exchange opertation not implemented
             exchange A[i] with A[j]
         // parsing may fail when else block is on same line as else keyword
         else return j

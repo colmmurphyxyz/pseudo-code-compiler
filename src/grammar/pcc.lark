@@ -11,17 +11,18 @@ parameters: name ("," name)*
 expr_stmt: test
 assign_stmt: assign
 
-?flow_stmt: return_stmt | print_stmt | error_stmt
+?flow_stmt: return_stmt | print_stmt | error_stmt | exchange_stmt
 return_stmt: "return" test
 print_stmt: "print" test
 error_stmt: "error" test
+exchange_stmt: "exchange" atom_expr "with" atom_expr
 // TODO: implement more statements into compound_stmt (e.g. repeat)
 ?compound_stmt: if_stmt
     | while_stmt
     | for_stmt
     | repeat_stmt
     | funcdef
-if_stmt: "if" test _NEWLINE block_stmt elifs "else" _NEWLINE block_stmt
+if_stmt: "if" test _NEWLINE block_stmt elifs "else" (_NEWLINE block_stmt | simple_stmt)
 elifs: elif_*
 elif_: "else" "if" test _NEWLINE block_stmt
 while_stmt: "while" test _NEWLINE block_stmt
@@ -62,7 +63,9 @@ assign_expr: name "=" test
 
 ?power: atom_expr ("**" factor)?
 
-?atom_expr: atom_expr "[" test "]" -> getitem
+?atom_expr: atom_expr "(" [arguments] ")"   -> funccall
+            | atom_expr "[" test "]"        -> getitem
+            | atom_expr "." name            -> getattr
             | atom
 
 ?atom: name     -> var
@@ -70,6 +73,9 @@ assign_expr: name "=" test
     | "NIL"     -> const_nil
     | "TRUE"    -> const_true
     | "FALSE"   -> const_false
+
+
+arguments: test ("," test)*
 
 number: DEC_NUMBER
 
