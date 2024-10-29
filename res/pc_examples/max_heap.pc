@@ -4,7 +4,7 @@ MAX-HEAP-MAXIMUM(A)
     return A[1]
 
 MAX-HEAP-EXTRACT-MAX(A)
-    max = MAX-HEAP-MAXIMUM(a)
+    max = MAX-HEAP-MAXIMUM(A)
     A[1] = A[A.heap-size]
     A.heap-size = A.heap-size - 1
     MAX-HEAPIFY(A, 1)

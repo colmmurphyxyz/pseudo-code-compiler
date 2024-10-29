@@ -70,6 +70,7 @@ assign_expr: name "=" test
 
 ?atom: name     -> var
     | number
+    | string
     | "NIL"     -> const_nil
     | "TRUE"    -> const_true
     | "FALSE"   -> const_false
@@ -78,6 +79,7 @@ assign_expr: name "=" test
 arguments: test ("," test)*
 
 number: DEC_NUMBER
+?string: STRING
 
 // other terminals
 
@@ -92,6 +94,8 @@ _NEWLINE: ( /\r?\n[\t ]*/ | COMMENT )+
 !name: NAME
 NAME: /[a-zA-Z][a-zA-Z0-9'-]*/
 COMMENT: /\/\/[^\n]*/
+
+%import common.ESCAPED_STRING -> STRING
 
 DEC_NUMBER: /[1-9][0-9]*/
     | /0+/
