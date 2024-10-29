@@ -6,3 +6,4 @@ src/__pycache__
 # pydot outputs
 *.png
 
+*.pyc
