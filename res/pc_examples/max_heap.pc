@@ -1,4 +1,4 @@
-MAX_HEAP-MAXIMUM(A)
+MAX-HEAP-MAXIMUM(A)
     if A.heap-size < 1
         error "heap underflow"
     return A[1]
