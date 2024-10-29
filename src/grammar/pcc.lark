@@ -22,7 +22,7 @@ exchange_stmt: "exchange" atom_expr "with" atom_expr
     | for_stmt
     | repeat_stmt
     | funcdef
-if_stmt: "if" test _NEWLINE block_stmt elifs "else" (_NEWLINE block_stmt | simple_stmt)
+if_stmt: "if" test _NEWLINE block_stmt elifs ( "else" (_NEWLINE block_stmt | simple_stmt) )?
 elifs: elif_*
 elif_: "else" "if" test _NEWLINE block_stmt
 while_stmt: "while" test _NEWLINE block_stmt
