@@ -5,7 +5,7 @@ from lark.indenter import PythonIndenter
 import pathlib
 import logging
 
-from interpreter import Interpreter
+from transpiler import Transpiler
 
 logger.setLevel(logging.DEBUG)
 
@@ -40,8 +40,9 @@ if __name__ == "__main__":
     print("SOURCE:", source)
     tree = parser.parse(source)
     print(tree.pretty())
+    print(tree)
     print("Done")
-    # interpreter = Interpreter()
-
-    # foo = interpreter.transform(tree)
-    # print(foo)
+    transpiler = Transpiler()
+    transpiled = transpiler.transform(tree)
+    print("---TRANSPILED---")
+    print(transpiled)
