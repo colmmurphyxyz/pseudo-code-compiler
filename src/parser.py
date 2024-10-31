@@ -40,8 +40,7 @@ if __name__ == "__main__":
     print("SOURCE:", source)
     tree = parser.parse(source)
     print(tree.pretty())
-    print(tree)
-    print("Done")
+
     transpiler = Transpiler()
     transpiled = transpiler.transform(tree)
     print("---TRANSPILED---")

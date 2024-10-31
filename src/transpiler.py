@@ -6,7 +6,7 @@ class Transpiler(Transformer):
     indent_weight: int = 4
 
     def __default__(self, data, children, meta):
-        print(f"Using default callback for {data}\n {children}\n{meta}")
+        print(f"Using default callback for {data}")
         return data
 
     def indent_all_lines(self, lines: str) -> str:
