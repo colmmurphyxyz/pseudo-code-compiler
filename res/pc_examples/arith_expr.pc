@@ -1,0 +1,9 @@
+while TRUE
+    print "foo"
+    print "bar"
+    while FALSE
+        error "testing nested indentation"
+9 + 10
+// this is a comment
+error "I have not implemented error statements in the transpiler"
+exchange x with y
