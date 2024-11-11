@@ -1,0 +1,4 @@
+RANDOMLY-PERMUTE(A, n)
+    for i = 1 to n
+        // Random(x, y) returns a random integer in [x, y]
+        swap A[i] with A[Random(i, n)]
