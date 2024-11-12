@@ -92,7 +92,7 @@ _NEWLINE: ( /\r?\n[\t ]*/ | COMMENT )+
 // more terminals
 
 !name: NAME
-NAME: /[a-zA-Z][a-zA-Z0-9'-]*/
+NAME: /[a-zA-Z$][a-zA-Z0-9'-_^${}]*/
 COMMENT: /\/\/[^\n]*/
 
 %import common.ESCAPED_STRING -> STRING
