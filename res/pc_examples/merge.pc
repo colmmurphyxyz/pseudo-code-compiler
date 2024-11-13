@@ -1,0 +1,28 @@
+MERGE(A, p, q, r)
+    // this is a comment
+    n$_L$ = q - p + 1
+    n$_R$ = r - q
+    L = NEW-ARRAY(0, n$_L$ - 1)
+    R = NEW-ARRAY(0, n$_R$ - 1)
+    for i = 0 to n$_L$ - 1
+        L[i] = A[p + i]
+    for j = 0 to n$_R$ - 1
+        R[j] = A[q + j + 1]
+    i = 0
+    j = 0
+    k = p
+    while i <= n$_L$ and j <= n$_R$
+        if L[i] <= R[j]
+            A[k] = L[i]
+            i = i + 1
+        else A[k] = R[j]
+            j = j + 1
+        k = k + 1
+    while i <  n$_L$
+        A[k] = L[i]
+        i = i + 1
+        k = k + 1
+    while j < n$_R$
+        A[k] = R[j]
+        j = j + 1
+        k = k + 1
