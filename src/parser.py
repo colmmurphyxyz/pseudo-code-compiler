@@ -1,30 +1,15 @@
 import sys
-
-from lark import Lark, Tree, Token, Transformer, logger
-from lark.indenter import PythonIndenter
 import pathlib
 import logging
 
-from transpiler import Transpiler
+from lark import Lark, Tree, logger
+from lark.indenter import PythonIndenter
+
+from print_detokenization import PrintDetokenization
+from unicode_formatter import UnicodeFormatter
+from postlex_pipeline import PostLexPipeline
 
 logger.setLevel(logging.DEBUG)
-
-class TreeToJson(Transformer):
-    def string(self, s) -> str:
-        (s,) = s
-        return s[1:-1]
-
-    def number(self, n) -> float:
-        (n,) = n
-        return float(n)
-
-    list = list
-    pair = tuple
-    dict = dict
-
-    null = lambda self, _: None
-    true = lambda self, _: True
-    false = lambda self, _: False
 
 if __name__ == "__main__":
     parser: Lark
@@ -33,11 +18,15 @@ if __name__ == "__main__":
     print("opening", grammar_file_path)
     with open(grammar_file_path, "r") as in_file:
         grammar: str = in_file.read()
-        parser = Lark(grammar, start="file_input", postlex=PythonIndenter())
+        parser = Lark(grammar, start="file_input", postlex=PostLexPipeline([PythonIndenter(), UnicodeFormatter(), PrintDetokenization()]))
     with open(sys.argv[1], "r") as in_file:
         source = in_file.read()
         # append trailing newline if not already present
         if source[-1] != "\n": source += "\n"
     print("SOURCE:", source)
     tree = parser.parse(source)
-    print(tree.pretty())
+    # print(tree.pretty())
+
+    print("~~~ Interpreter ~~~")
+    # interpreter = PcInterpreter()
+    # interpreter.visit(tree)
