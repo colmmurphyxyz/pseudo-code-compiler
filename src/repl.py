@@ -1,4 +1,5 @@
 import pathlib
+import sys
 
 from lark import Lark
 from lark.indenter import PythonIndenter
@@ -16,10 +17,21 @@ def main():
     interpreter = PcInterpreter()
     while True:
         statement = input(">> ")
-        tree = parser.parse(statement + "\n")
+        try :
+            tree = parser.parse(statement + "\n")
+        except Exception as e:
+            print("Parse Error", e)
+            continue
+
+        print(tree)
         print(tree.pretty())
         # result = interpreter.visit(tree)
-        result = interpreter.interpret(tree)
+        try:
+            result = interpreter.interpret(tree)
+        except Exception as e:
+            print("Runtime Error", e)
+            continue
+
         print(result)
 
 
