@@ -20,6 +20,9 @@ class PcInterpreter(Interpreter):
 
     def number(self, tree: Tree):
         print("Number", tree.children[0])
+        child: Token = tree.children[0]
+        if child.type == "DEC_INTEGER":
+            return int(child)
         return float(tree.children[0])
 
     # MARK: Arithmetic Expressions
@@ -35,10 +38,15 @@ class PcInterpreter(Interpreter):
         operands = list(map(lambda c: self.visit(c), tree.children))
         return reduce(lambda x, y: x and y, operands)
 
-    def shift_expr(self, tree: Tree):
-        def evaluate_shift_expression(c: Tree | Token) -> int | str:
+    def _divide(self, lhs, rhs):
+        if type(lhs) == int and type(rhs) == int:
+            return lhs // rhs
+        return lhs
+
+    def _evaluate_arithmetic_expression(self, tree: Tree):
+        def evaluate_shift_expression(c: Tree | Token) -> int | float | str:
             if isinstance(c, Tree):
-                return int(self.visit(c))
+                return self.visit(c)
             elif isinstance(c, Token):
                 return c.value
             else:
@@ -47,23 +55,44 @@ class PcInterpreter(Interpreter):
             lambda c: evaluate_shift_expression(c),
             tree.children)
         )
+
         stack = Stack()
         for child in reversed(children):
             if type(child) == float: child = int(child)
             if type(child) != int and type(child) != str:
                 raise TypeError(f"Incompatible type {type(child)} of value {child}")
             stack.push(child)
+
         # evaluate
         while stack.size() > 1:
             lhs, op, rhs = stack.pop_next(3)
             result: int
             match op:
+                case "+": result = lhs + rhs
+                case "-": result = lhs - rhs
                 case "<<": result = lhs << rhs
                 case ">>": result = lhs >> rhs
+                case "*": result = lhs * rhs
+                case "/": result = lhs / rhs
+                case "mod": result = lhs % rhs
+                case "\\\\": result = lhs // rhs
+                case "**": result = lhs ** rhs
                 case _: result = lhs << rhs
             stack.push(result)
 
         return stack.pop()
+
+    def shift_expr(self, tree: Tree):
+        return self._evaluate_arithmetic_expression(tree)
+
+    def arith_expr(self, tree: Tree):
+        return self._evaluate_arithmetic_expression(tree)
+
+    def term(self, tree: Tree):
+        return self._evaluate_arithmetic_expression(tree)
+
+    def power(self, tree: Tree):
+        return self._evaluate_arithmetic_expression(tree)
 
 
     const_true = lambda self, _: True
