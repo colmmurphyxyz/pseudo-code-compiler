@@ -58,7 +58,7 @@ assign_expr: name "=" test
 !_unary_op: "+" | "-" | "~"
 !_add_op: "+" | "-"
 !_shift_op: "<<" | ">>"
-!_mul_op: "*" | "/" | "mod" | "//"
+!_mul_op: "*" | "/" | "mod" | "\\\\"
 !comp_op: "<" | ">" | "==" | ">=" | "<=" | "!=" | "in" | "not" "in" | "is" | "is" "not"
 
 ?power: atom_expr ("**" factor)?
