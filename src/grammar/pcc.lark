@@ -78,7 +78,7 @@ assign_expr: name "=" test
 
 arguments: test ("," test)*
 
-number: DEC_NUMBER
+number: DEC_INTEGER | DEC_REAL
 ?string: STRING
 
 // other terminals
@@ -97,6 +97,8 @@ COMMENT: /\/\/[^\n]*/
 
 %import common.ESCAPED_STRING -> STRING
 
-DEC_NUMBER: /[1-9][0-9]*/
+DEC_INTEGER: /-?[1-9][0-9]*/
     | /0+/
+DEC_REAL: /[1-9][0-9]*\.[0-9]+/
+    | /0+\.0+/
 
