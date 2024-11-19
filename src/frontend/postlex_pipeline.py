@@ -1,4 +1,3 @@
-from functools import reduce
 from typing import Iterator
 
 from lark import Token

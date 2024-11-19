@@ -1,12 +1,11 @@
 import pathlib
-import sys
 
 from lark import Lark
 from lark.indenter import PythonIndenter
 
-from interpreter import PcInterpreter
-from unicode_formatter import UnicodeFormatter
-from postlex_pipeline import PostLexPipeline
+from interpreter.interpreter import PcInterpreter
+from frontend.unicode_formatter import UnicodeFormatter
+from frontend.postlex_pipeline import PostLexPipeline
 
 
 def main():
