@@ -10,9 +10,13 @@ from frontend.postlex_pipeline import PostLexPipeline
 
 def main():
     grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar/pcc.lark"
-    with open(grammar_file_path, "r") as in_file:
+    with open(grammar_file_path, "r", encoding="utf-8") as in_file:
         grammar: str = in_file.read()
-        parser = Lark(grammar, start="single_input", postlex=PostLexPipeline([PythonIndenter(), UnicodeFormatter()]))
+        parser = Lark(
+            grammar,
+            start="single_input",
+            postlex=PostLexPipeline([PythonIndenter(), UnicodeFormatter()])
+        )
     interpreter = PcInterpreter()
     while True:
         statement = input(">> ")

@@ -39,7 +39,7 @@ class PcInterpreter(Interpreter):
         return reduce(lambda x, y: x and y, operands)
 
     def _divide(self, lhs, rhs):
-        if type(lhs) == int and type(rhs) == int:
+        if isinstance(lhs, int) and isinstance(rhs, int) == int:
             return lhs // rhs
         return lhs
 
@@ -47,10 +47,9 @@ class PcInterpreter(Interpreter):
         def evaluate_shift_expression(c: Tree | Token) -> int | float | str:
             if isinstance(c, Tree):
                 return self.visit(c)
-            elif isinstance(c, Token):
+            if isinstance(c, Token):
                 return c.value
-            else:
-                raise ValueError(f"Incompatible type {c.type} of expression {c}")
+            raise ValueError(f"Incompatible type {c.type} of expression {c}")
         children = list(map(
             lambda c: evaluate_shift_expression(c),
             tree.children)
@@ -58,9 +57,10 @@ class PcInterpreter(Interpreter):
 
         stack = Stack()
         for child in reversed(children):
-            if type(child) == float: child = int(child)
-            if type(child) != int and type(child) != str:
-                raise TypeError(f"Incompatible type {type(child)} of value {child}")
+            if isinstance(child, float):
+                child = int(child)
+            if not (isinstance(child, int) or isinstance(child, str)):
+                raise TypeError(f"Incompatible type {type(child)} of value {child}") # pylint: disable=unidiomatic-typecheck
             stack.push(child)
 
         # evaluate

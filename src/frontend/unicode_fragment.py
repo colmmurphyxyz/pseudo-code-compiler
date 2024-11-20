@@ -32,5 +32,6 @@ def split_unicode_fragments(s: str) -> list[str | UnicodeFragment]:
             is_ascii = not is_ascii
         else:
             curr += character
-    if curr != "": split.append(curr)
+    if curr != "":
+        split.append(curr)
     return split

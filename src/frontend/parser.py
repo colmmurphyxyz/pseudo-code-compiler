@@ -16,10 +16,12 @@ if __name__ == "__main__":
     tree: Tree
     grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar/pcc.lark"
     print("opening", grammar_file_path)
-    with open(grammar_file_path, "r") as in_file:
+    with open(grammar_file_path, "r", encoding="utf-8") as in_file:
         grammar: str = in_file.read()
-        parser = Lark(grammar, start="file_input", postlex=PostLexPipeline([PythonIndenter(), UnicodeFormatter(), PrintDetokenization()]))
-    with open(sys.argv[1], "r") as in_file:
+        parser = Lark(grammar, start="file_input", postlex=PostLexPipeline([
+            PythonIndenter(), UnicodeFormatter(), PrintDetokenization()
+        ]))
+    with open(sys.argv[1], "r", encoding="utf-8") as in_file:
         source = in_file.read()
         # append trailing newline if not already present
         if source[-1] != "\n":
