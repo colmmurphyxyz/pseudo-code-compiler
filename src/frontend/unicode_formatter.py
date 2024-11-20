@@ -3,7 +3,7 @@ from typing import Iterator
 from lark import Token
 from lark.lark import PostLex
 
-from unicode_fragment import UnicodeFragment, split_unicode_fragments
+from .unicode_fragment import UnicodeFragment, split_unicode_fragments
 
 
 class UnicodeFormatter(PostLex):

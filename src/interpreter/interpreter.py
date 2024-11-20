@@ -3,7 +3,7 @@ from functools import reduce
 from lark import Tree, Token
 from lark.visitors import Interpreter
 
-from stack import Stack
+from .stack import Stack
 
 
 class PcInterpreter(Interpreter):
