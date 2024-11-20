@@ -3,3 +3,4 @@ lark[interegular]
 unicodeitplus>=0.3.1
 pydot
 mypy
+pylint
