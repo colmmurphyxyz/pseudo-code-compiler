@@ -4,9 +4,16 @@ from lark import Tree, Token
 from lark.visitors import Interpreter
 
 from .stack import Stack
+from .environment import Environment
 
 
 class PcInterpreter(Interpreter):
+    _environment: Environment
+
+    def __init__(self):
+        super().__init__()
+        self._environment = Environment()
+
     def single_input(self, tree: Tree):
         return self.visit(tree.children[0])
 
@@ -17,6 +24,16 @@ class PcInterpreter(Interpreter):
     def print_stmt(self, tree: Tree):
         body = self.visit(tree.children[0])
         print(body)
+
+    def block_stmt(self, tree: Tree):
+        previous = self._environment
+        try:
+            self._environment = Environment(enclosing_environment=previous)
+            self.visit_children(tree)
+        finally:
+            self._environment = previous
+
+
 
     def number(self, tree: Tree):
         print("Number", tree.children[0])
@@ -115,7 +132,15 @@ class PcInterpreter(Interpreter):
         print("assign")
 
     def assign_expr(self, tree: Tree):
-        print("assign_expr")
+        lhs: Tree = tree.children[0]
+        rhs: Tree = tree.children[-1]
+        var_name = lhs.children[0].value
+        var_value = self.visit(rhs)
+        self._environment.define(var_name, var_value)
+
+    def var(self, tree: Tree):
+        var_name: str = tree.children[0].children[0].value
+        return self._environment.get(var_name)
 
 
     const_true = lambda self, _: True
