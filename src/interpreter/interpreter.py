@@ -93,6 +93,9 @@ class PcInterpreter(Interpreter):
     def power(self, tree: Tree):
         return self._evaluate_arithmetic_expression(tree)
 
+    def grouping(self, tree: Tree):
+        return self.visit(tree.children[0])
+
 
     const_true = lambda self, _: True
     const_false = lambda self, _: False

@@ -68,12 +68,13 @@ assign_expr: name "=" test
             | atom_expr "." name            -> getattr
             | atom
 
-?atom: name     -> var
+?atom: name         -> var
     | number
     | string
-    | "NIL"     -> const_nil
-    | "TRUE"    -> const_true
-    | "FALSE"   -> const_false
+    | "(" test ")"  -> grouping
+    | "NIL"         -> const_nil
+    | "TRUE"        -> const_true
+    | "FALSE"       -> const_false
 
 
 arguments: test ("," test)*
