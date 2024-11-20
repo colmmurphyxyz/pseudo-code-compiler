@@ -106,6 +106,17 @@ class PcInterpreter(Interpreter):
     def grouping(self, tree: Tree):
         return self.visit(tree.children[0])
 
+    def assign_stmt(self, tree: Tree):
+        print("assign_stmt")
+        self.visit_children(tree)
+        return
+
+    def assign(self, tree: Tree):
+        print("assign")
+
+    def assign_expr(self, tree: Tree):
+        print("assign_expr")
+
 
     const_true = lambda self, _: True
     const_false = lambda self, _: False
