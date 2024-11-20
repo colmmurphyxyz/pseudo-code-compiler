@@ -1,0 +1,1 @@
+pylint $(git ls-files src/**/*.py src/*.py)
