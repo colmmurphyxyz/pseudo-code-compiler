@@ -99,7 +99,7 @@ COMMENT: /\/\/[^\n]*/
 
 %import common.ESCAPED_STRING -> STRING
 
-DEC_INTEGER: /-?[1-9][0-9]*/
+DEC_INTEGER: /[1-9][0-9]*/
     | /0+/
 DEC_REAL: /[1-9][0-9]*\.[0-9]+/
     | /0+\.0+/

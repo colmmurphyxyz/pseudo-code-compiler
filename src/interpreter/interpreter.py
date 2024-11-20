@@ -90,6 +90,16 @@ class PcInterpreter(Interpreter):
     def term(self, tree: Tree):
         return self._evaluate_arithmetic_expression(tree)
 
+    def factor(self, tree: Tree):
+        unary_op: str = tree.children[0].value
+        operand = tree.children[1]
+        match unary_op:
+            case "+": return self.visit(operand)
+            case "-": return -1 * self.visit(operand)
+            case _: raise NotImplementedError()
+
+
+
     def power(self, tree: Tree):
         return self._evaluate_arithmetic_expression(tree)
 
