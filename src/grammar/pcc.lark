@@ -60,8 +60,9 @@ assign_expr: name "=" test
 !_shift_op: "<<" | ">>"
 !_mul_op: "*" | "/" | "mod" | "\\\\"
 !comp_op: "<" | ">" | "==" | ">=" | "<=" | "!=" | "in" | "not" "in" | "is" | "is" "not"
+!_power_op: "**"
 
-?power: atom_expr ("**" factor)?
+?power: atom_expr (_power_op factor)*
 
 ?atom_expr: atom_expr "(" [arguments] ")"   -> funccall
             | atom_expr "[" test "]"        -> getitem
