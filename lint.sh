@@ -1,0 +1,1 @@
+pylint --rcfile .pylintrc $(git ls-files src/**/*.py src/*.py)
