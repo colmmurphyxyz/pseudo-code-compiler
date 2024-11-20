@@ -59,7 +59,7 @@ class PcInterpreter(Interpreter):
         for child in reversed(children):
             if isinstance(child, float):
                 child = int(child)
-            if not (isinstance(child, int) or isinstance(child, str)):
+            if not (isinstance(child, (int, str))):
                 raise TypeError(f"Incompatible type {type(child)} of value {child}") # pylint: disable=unidiomatic-typecheck
             stack.push(child)
 
