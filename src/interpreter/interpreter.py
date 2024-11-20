@@ -79,7 +79,6 @@ class PcInterpreter(Interpreter):
                 case "**": result = lhs ** rhs
                 case _: result = lhs << rhs
             stack.push(result)
-
         return stack.pop()
 
     def shift_expr(self, tree: Tree):
@@ -98,4 +97,3 @@ class PcInterpreter(Interpreter):
     const_true = lambda self, _: True
     const_false = lambda self, _: False
     const_nil = lambda self, _: None
-

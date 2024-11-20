@@ -22,7 +22,8 @@ if __name__ == "__main__":
     with open(sys.argv[1], "r") as in_file:
         source = in_file.read()
         # append trailing newline if not already present
-        if source[-1] != "\n": source += "\n"
+        if source[-1] != "\n":
+            source += "\n"
     print("SOURCE:", source)
     tree = parser.parse(source)
     # print(tree.pretty())
