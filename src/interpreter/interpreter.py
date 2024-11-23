@@ -25,6 +25,10 @@ class PcInterpreter(Interpreter):
         body = self.visit(tree.children[0])
         print(body)
 
+    def simple_stmt(self, tree: Tree):
+        # simple_stmt may have multiple child statements, separated by a semicolon
+        self.visit_children(tree)
+
     def block_stmt(self, tree: Tree):
         previous = self._environment
         try:
@@ -33,14 +37,41 @@ class PcInterpreter(Interpreter):
         finally:
             self._environment = previous
 
+    # MARK: Flow Statements
 
+    def if_stmt(self, tree):
+        print(f"If has {len(tree.children)} kiddies")
+        [ print(c) for c in tree.children ]
+        condition = self.visit(tree.children[0])
+        if condition:
+            return self.visit(tree.children[1])
+        for child in tree.children[1:]:
+            if child.data == "elif_":
+                condition = self.visit(child.children[0])
+                if condition:
+                    return self.visit(child.children[1])
+        if len(tree.children) > 2:
+            return self.visit(tree.children[2])
+
+
+
+    # def elifs(self, tree: Tree) -> bool:
+    #     for child in tree.children:
+    #         condition = self.visit(child.children[0])
+    #         if condition:
+    #             self.visit(child.children[1])
+    #             return True
+    #     return False
 
     def number(self, tree: Tree):
-        print("Number", tree.children[0])
         child: Token = tree.children[0]
         if child.type == "DEC_INTEGER":
             return int(child)
         return float(tree.children[0])
+
+    # MARK: Comparisons
+    def comparison(self, tree: Tree):
+        return self._evaluate_arithmetic_expression(tree)
 
     # MARK: Arithmetic Expressions
     def or_expr(self, tree: Tree):
@@ -61,14 +92,14 @@ class PcInterpreter(Interpreter):
         return lhs
 
     def _evaluate_arithmetic_expression(self, tree: Tree):
-        def evaluate_shift_expression(c: Tree | Token) -> int | float | str:
+        def parse_binary_expression(c: Tree | Token) -> int | float | str | bool:
             if isinstance(c, Tree):
                 return self.visit(c)
             if isinstance(c, Token):
                 return c.value
             raise ValueError(f"Incompatible type {c.type} of expression {c}")
         children = list(map(
-            lambda c: evaluate_shift_expression(c),
+            lambda c: parse_binary_expression(c),
             tree.children)
         )
 
@@ -76,7 +107,7 @@ class PcInterpreter(Interpreter):
         for child in reversed(children):
             if isinstance(child, float):
                 child = int(child)
-            if not (isinstance(child, (int, str))):
+            if not (isinstance(child, (int, str, bool))):
                 raise TypeError(f"Incompatible type {type(child)} of value {child}") # pylint: disable=unidiomatic-typecheck
             stack.push(child)
 
@@ -94,6 +125,16 @@ class PcInterpreter(Interpreter):
                 case "mod": result = lhs % rhs
                 case "\\\\": result = lhs // rhs
                 case "**": result = lhs ** rhs
+                case "<": result = lhs < rhs
+                case "<=": result = lhs <= rhs
+                case "==": result = lhs == rhs
+                case "!=": result = lhs != rhs
+                case ">=": result = lhs >= rhs
+                case ">": result = lhs > rhs
+                case "in": result = lhs in rhs
+                case "not in": result = lhs not in rhs
+                case "is": result = lhs == rhs
+                case "is not": result = lhs != rhs
                 case _: result = lhs << rhs
             stack.push(result)
         return stack.pop()

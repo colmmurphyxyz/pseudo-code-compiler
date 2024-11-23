@@ -22,7 +22,7 @@ exchange_stmt: ("exchange" | "swap") atom_expr "with" atom_expr
     | for_stmt
     | repeat_stmt
     | funcdef
-if_stmt: "if" test _NEWLINE block_stmt elifs ( "else" (_NEWLINE block_stmt | (simple_stmt block_stmt)) )?
+if_stmt: "if" test _NEWLINE block_stmt elifs [ "else" (_NEWLINE block_stmt | (simple_stmt (_NEWLINE block_stmt)?)) ]
 elifs: elif_*
 elif_: "else" "if" test _NEWLINE block_stmt
 while_stmt: "while" test _NEWLINE block_stmt
@@ -43,7 +43,7 @@ assign: test "=" test
 
 assign_expr: name "=" test
 
-?comparison: expr (comp_op expr)*
+?comparison: expr (_comp_op expr)*
 
 ?expr: or_expr
 
@@ -59,7 +59,7 @@ assign_expr: name "=" test
 !_add_op: "+" | "-"
 !_shift_op: "<<" | ">>"
 !_mul_op: "*" | "/" | "mod" | "\\\\"
-!comp_op: "<" | ">" | "==" | ">=" | "<=" | "!=" | "in" | "not" "in" | "is" | "is" "not"
+!_comp_op: "<" | ">" | "==" | ">=" | "<=" | "!=" | "in" | "not" "in" | "is" | "is" "not"
 !_power_op: "**"
 
 ?power: atom_expr (_power_op factor)*
@@ -94,7 +94,7 @@ _NEWLINE: ( /\r?\n[\t ]*/ | COMMENT )+
 // more terminals
 
 !name: NAME
-NAME: /[a-zA-Z$][a-zA-Z0-9'\-_^${}]*/
+NAME: /[a-zA-Z$][a-zA-Z0-9'\-_^${}\\]*/
 COMMENT: /\/\/[^\n]*/
 
 %import common.ESCAPED_STRING -> STRING

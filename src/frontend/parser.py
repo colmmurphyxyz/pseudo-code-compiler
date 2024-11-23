@@ -6,6 +6,7 @@ from lark import Lark, Tree, logger
 from lark.indenter import PythonIndenter
 
 from print_detokenization import PrintDetokenization
+from ..interpreter.interpreter import PcInterpreter
 from unicode_formatter import UnicodeFormatter
 from postlex_pipeline import PostLexPipeline
 
@@ -31,5 +32,5 @@ if __name__ == "__main__":
     # print(tree.pretty())
 
     print("~~~ Interpreter ~~~")
-    # interpreter = PcInterpreter()
-    # interpreter.visit(tree)
+    interpreter = PcInterpreter()
+    interpreter.visit(tree)
