@@ -16,8 +16,10 @@ class Transpiler(Transformer):
     def file_input(self, args) -> str:
         return "\n".join(args) + "\n"
 
+    def single_input(self, args) -> str:
+        return args + "\n"
+
     def print_stmt(self, args) -> str:
-        print(f"Printing {args}")
         return f"print({"".join(args)})"
 
     def while_stmt(self, args) -> str:
@@ -31,6 +33,70 @@ class Transpiler(Transformer):
     def exchange_stmt(self, args) -> str:
         lhs, rhs = args[0], args[1]
         return f"{lhs}, {rhs} = {rhs}, {lhs}"
+
+    # FIXME: 'else' branches are not transpiled correctly
+    def if_stmt(self, args) -> str:
+        print("IF STMT", "\n".join([ str(a) for a in args ]) )
+        if_condition = args[0]
+        if_body = args[1]
+        return f"if {self.transform(if_condition)}:" + "\n" + if_body + "\n" + "\n".join(args[2:])
+
+    def elifs(self, args):
+        return "\n".join(args)
+
+    def elif_(self, args):
+        elif_condition = args[0]
+        elif_body = args[1]
+        return f"elif {self.transform(elif_condition)}:" + "\n" + elif_body
+
+    def for_stmt(self, args):
+        return args[0]
+
+    def for_loop(self, args):
+        name = args[0]
+        start = args[1]
+        range_op = args[2]
+        end = args[3]
+        loop_body = args[4]
+        range_expr: str
+        match range_op:
+            case "to": range_expr = f"range({start}, {end} + 1)"
+            case "until": range_expr = f"range({start}, {end})"
+            case "downto": range_expr = f"range({start}, {end} - 1, -1)"
+            case _: range_expr = f"range({start}, {end})"
+        return f"for {name} in {range_expr}:" + "\n" + loop_body
+
+    def for_iter(self, args):
+        # for_iter: "for" "each" name name "in" name _NEWLINE block_stmt
+        name = args[2]
+        iterable = args[2]
+        iter_body = args[3]
+        return f"for {name} in {iterable}:" + "\n" + iter_body
+
+    def repeat_stmt(self, args):
+        # repeat_stmt: "repeat" _NEWLINE block_stmt "until" test _NEWLINE
+        body = args[0]
+        condition = args[1]
+        return f"while not {condition}:" + "\n" + body
+
+    def assign(self, args):
+        lhs, rhs = args
+        return f"{lhs} = {rhs}"
+
+    def assign_expr(self, args):
+        lhs, rhs = args
+        return f"{lhs} = {rhs}"
+
+    def comparison(self, args):
+        # ?comparison: expr (_comp_op expr)*
+        output: list[str] = []
+        for idx, arg in enumerate(args):
+            if idx % 2 == 0:
+                output.append(arg)
+            else:
+                output.append(arg.value)
+        return " ".join(output)
+
 
     def expr_stmt(self, args) -> str:
         return str(args[0])

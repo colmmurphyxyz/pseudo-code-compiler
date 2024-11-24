@@ -22,6 +22,8 @@ exchange_stmt: ("exchange" | "swap") atom_expr "with" atom_expr
     | for_stmt
     | repeat_stmt
     | funcdef
+// FIXME: It is not clear/easy to determine if an if_stmt contains an else branch
+// the 'else' grammar should be extracted to its own rule
 if_stmt: "if" test _NEWLINE block_stmt elifs [ "else" (_NEWLINE block_stmt | (simple_stmt (_NEWLINE block_stmt)?)) ]
 elifs: elif_*
 elif_: "else" "if" test _NEWLINE block_stmt
@@ -29,7 +31,7 @@ while_stmt: "while" test _NEWLINE block_stmt
 for_stmt: for_loop
         | for_iter
 for_loop: "for" name "=" test range_op test _NEWLINE block_stmt
-for_iter: "for" /each [a-zA-Z]+] / name "in" name _NEWLINE block_stmt
+for_iter: "for" "each" name name "in" name _NEWLINE block_stmt // first 'name' token should be discarded
 !range_op: "to"
     | "downto"
 repeat_stmt: "repeat" _NEWLINE block_stmt "until" test _NEWLINE

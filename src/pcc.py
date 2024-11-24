@@ -8,6 +8,7 @@ from frontend.unicode_formatter import UnicodeFormatter
 from frontend.print_detokenization import PrintDetokenization
 from frontend.postlex_pipeline import PostLexPipeline
 from interpreter.interpreter import PcInterpreter
+from transpiler import Transpiler
 
 if __name__ == "__main__":
     parser: Lark
@@ -28,6 +29,11 @@ if __name__ == "__main__":
     tree = parser.parse(source)
     print(tree.pretty())
 
-    print("~~~ Interpreter ~~~")
-    interpreter = PcInterpreter()
-    interpreter.visit(tree)
+    print("~~~ Transpiler ~~~")
+    transpiler = Transpiler()
+    output: str = transpiler.transform(tree)
+    print(output)
+
+    # print("~~~ Interpreter ~~~")
+    # interpreter = PcInterpreter()
+    # interpreter.visit(tree)
