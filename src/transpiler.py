@@ -10,7 +10,7 @@ class Transpiler(Transformer):
         print(f"Using default callback for {data}")
         return data
 
-    def indent_all_lines(self, lines: str) -> str:
+    def _indent_all_lines(self, lines: str) -> str:
         return "\n".join(map(lambda l: " " * self.indent_weight + l, lines.split("\n")))
 
     def file_input(self, args) -> str:
@@ -28,7 +28,7 @@ class Transpiler(Transformer):
         return f"while {self.transform(while_condition)}:" + "\n" + while_body
 
     def block_stmt(self, args) -> str:
-        return self.indent_all_lines("\n".join(args))
+        return self._indent_all_lines("\n".join(args))
 
     def exchange_stmt(self, args) -> str:
         lhs, rhs = args[0], args[1]
