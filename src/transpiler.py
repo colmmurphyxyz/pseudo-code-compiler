@@ -19,6 +19,28 @@ class Transpiler(Transformer):
     def single_input(self, args) -> str:
         return args + "\n"
 
+    def funcdef(self, args) -> str:
+        func_name: str = args[0]
+        parameters = args[1]
+        body: str = args[2]
+        return f"def {func_name}({parameters}):" + "\n" + body + "\n"
+
+    def parameters(self, args) -> str:
+        return ", ".join(args)
+
+    def expr_stmt(self, args) -> str:
+        return str(args[0])
+
+    def error_stmt(self, args) -> str:
+        """
+        Stub Implementation
+        :return: sys.exit(1)
+        """
+        return "import sys; sys.exit(1)"
+
+    def assign_stmt(self, args) -> str:
+        return str(args[0])
+
     def print_stmt(self, args) -> str:
         return f"print({"".join(args)})"
 
@@ -78,6 +100,9 @@ class Transpiler(Transformer):
         body = args[0]
         condition = args[1]
         return f"while not {condition}:" + "\n" + body
+
+    def range_op(self, args) -> str:
+        return str(args[0])
 
     def assign(self, args):
         lhs, rhs = args
@@ -142,17 +167,25 @@ class Transpiler(Transformer):
     def _power_op(self, args) -> str:
         return str(args[0])
 
-
-
-    def expr_stmt(self, args) -> str:
+    def atom_expr(self, args) -> str:
         return str(args[0])
 
-    def error_stmt(self, args) -> str:
-        """
-        Stub Implementation
-        :return: sys.exit(1)
-        """
-        return "import sys; sys.exit(1)"
+    def funccall(self, args) -> str:
+        func_name = args[0]
+        func_arguments = args[1]
+        return f"{func_name}({func_arguments})"
+
+    def getitem(self, args) -> str:
+        return f"{args[0]}[{args[1]}]"
+
+    def getattr(self, args) -> str:
+        return f"{args[0]}.{args[1]}"
+
+    def grouping(self, args) -> str:
+        return f"({"".join(args)})"
+
+    def arguments(self, args) -> str:
+        return ", ".join(args)
 
     def var(self, args) -> str:
         return str(args[0])
