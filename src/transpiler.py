@@ -97,6 +97,52 @@ class Transpiler(Transformer):
                 output.append(arg.value)
         return " ".join(output)
 
+    def expr(self, args) -> str:
+        return args[0]
+
+    def or_expr(self, args) -> str:
+        return " ".join(args)
+
+    def xor_expr(self, args) -> str:
+        return " ".join(args)
+
+    def and_expr(self, args) -> str:
+        return " ".join(args)
+
+    def shift_expr(self, args) -> str:
+        return " ".join(args)
+
+    def arith_expr(self, args) -> str:
+        return " ".join(args)
+
+    def term(self, args) -> str:
+        return " ".join(args)
+
+    def factor(self, args) -> str:
+        return " ".join(args)
+
+    def power(self, args) -> str:
+        return " ".join(args)
+
+    def _unary_op(self, args) -> str:
+        return str(args[0])
+
+    def _add_op(self, args) -> str:
+        return str(args[0])
+
+    def _shift_op(self, args) -> str:
+        return str(args[0])
+
+    def _mul_op(self, args) -> str:
+        return str(args[0])
+
+    def _comp_op(self, args) -> str:
+        return str(args[0])
+
+    def _power_op(self, args) -> str:
+        return str(args[0])
+
+
 
     def expr_stmt(self, args) -> str:
         return str(args[0])
@@ -106,16 +152,14 @@ class Transpiler(Transformer):
         Stub Implementation
         :return: sys.exit(1)
         """
-        return "sys.exit(1)"
-
-    def arith_expr(self, args) -> str:
-        return " ".join(args)
+        return "import sys; sys.exit(1)"
 
     def var(self, args) -> str:
         return str(args[0])
 
     def name(self, args: list[Token]) -> str:
         return str(args[0].value)
+
     def _NEWLINE(self, args) -> str:
         return "\n"
 
