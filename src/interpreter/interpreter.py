@@ -7,7 +7,7 @@ from .stack import Stack
 from .environment import Environment
 
 
-class PcInterpreter(Interpreter):
+class PcInterpreter(Interpreter):   # pylint: disable=too-many-public-methods
     _environment: Environment
 
     def __init__(self):
@@ -40,8 +40,6 @@ class PcInterpreter(Interpreter):
     # MARK: Flow Statements
 
     def if_stmt(self, tree):
-        print(f"If has {len(tree.children)} kiddies")
-        [ print(c) for c in tree.children ]
         condition = self.visit(tree.children[0])
         if condition:
             return self.visit(tree.children[1])
@@ -107,7 +105,7 @@ class PcInterpreter(Interpreter):
         for child in reversed(children):
             if isinstance(child, float):
                 child = int(child)
-            if not (isinstance(child, (int, str, bool))):
+            if not isinstance(child, (int, str, bool)):
                 raise TypeError(f"Incompatible type {type(child)} of value {child}") # pylint: disable=unidiomatic-typecheck
             stack.push(child)
 
@@ -167,7 +165,6 @@ class PcInterpreter(Interpreter):
     def assign_stmt(self, tree: Tree):
         print("assign_stmt")
         self.visit_children(tree)
-        return
 
     def assign(self, tree: Tree):
         print("assign")

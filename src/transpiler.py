@@ -2,7 +2,7 @@
 from lark import Transformer, Tree, Token
 
 
-class Transpiler(Transformer):
+class Transpiler(Transformer):  # pylint: disable=too-many-public-methods
 
     indent_weight: int = 4
 

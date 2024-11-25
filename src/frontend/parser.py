@@ -6,9 +6,10 @@ from lark import Lark, Tree, logger
 from lark.indenter import PythonIndenter
 
 from print_detokenization import PrintDetokenization
-from ..interpreter.interpreter import PcInterpreter
 from unicode_formatter import UnicodeFormatter
 from postlex_pipeline import PostLexPipeline
+
+from ..interpreter.interpreter import PcInterpreter
 
 logger.setLevel(logging.DEBUG)
 
