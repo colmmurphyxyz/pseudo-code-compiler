@@ -126,13 +126,13 @@ class Transpiler(Transformer):
         return args[0]
 
     def or_expr(self, args) -> str:
-        return " ".join(args)
+        return " or ".join(args)
 
     def xor_expr(self, args) -> str:
-        return " ".join(args)
+        return " xor ".join(args)
 
     def and_expr(self, args) -> str:
-        return " ".join(args)
+        return " and ".join(args)
 
     def shift_expr(self, args) -> str:
         return " ".join(args)
