@@ -141,6 +141,11 @@ class Transpiler(Transformer):
         return " ".join(args)
 
     def term(self, args) -> str:
+        for idx, arg in enumerate(args):
+            if isinstance(arg, str):
+                match arg:
+                    case "mod": args[idx] = "%"
+                    case r"\\": args[idx] = "//"
         return " ".join(args)
 
     def factor(self, args) -> str:
