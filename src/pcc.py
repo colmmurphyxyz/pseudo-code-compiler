@@ -7,7 +7,7 @@ from lark.indenter import PythonIndenter
 from frontend.unicode_formatter import UnicodeFormatter
 from frontend.print_detokenization import PrintDetokenization
 from frontend.postlex_pipeline import PostLexPipeline
-from src.backend.transpiler import Transpiler
+from backend.transpiler import Transpiler
 
 if __name__ == "__main__":
     parser: Lark
