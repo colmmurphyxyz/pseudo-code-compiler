@@ -1,0 +1,23 @@
+// section 6.5
+MAX-HEAP-INCREASE-KEY(A, x, k)
+    if k < x.key
+        error "new key is smaller than current key"
+    x.key = k
+    // find the index i in array where object x occurs
+    i = FIND-INDEX!()
+    while i > 1 and A[PARENT(i)].key < A[i].key
+        exchange A[i] with A[Parent(i)]
+        i = PARENT(i)
+
+FIND-INDEX()
+    // left as an exercise to the reader :)
+    error "Not implemented"
+
+MAX-HEAP-INSERT(A, x, n)
+    if A.heap-size == n
+        error "heap overflow"
+    A.heap-size = A.heap-size + 1
+    k = x.key
+    x.key = -infinity
+    A[A.heap-size] = x
+    MAX-HEAP-INCREASE-KEY(A, x, k)

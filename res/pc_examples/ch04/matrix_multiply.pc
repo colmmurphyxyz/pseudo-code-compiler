@@ -1,0 +1,6 @@
+// section 4.1
+MATRIX-MULTIPLY(A, B, C, n)
+    for i = 1 to n
+        for j = 1 to n
+            for k = 1 to n
+                C[i][j] = C[i][j] + A[j][k] * B[k][j]

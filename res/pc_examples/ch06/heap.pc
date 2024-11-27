@@ -1,0 +1,10 @@
+// section 6.1
+PARENT(i)
+    // could alternatively use i \\ 2
+    return floor(i / 2)
+
+LEFT(i)
+    return 2 * i
+
+RIGHT(i)
+    return 2 * i + 1

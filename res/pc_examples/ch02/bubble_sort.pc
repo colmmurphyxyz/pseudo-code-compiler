@@ -1,0 +1,6 @@
+// chapter 2 problems
+BUBBLESORT(A, n)
+    for i = 1 to n - 1
+        for j = n downto i + 1
+            if A[j] < A[j - 1]
+                exchange A[j] with A[j - 1]

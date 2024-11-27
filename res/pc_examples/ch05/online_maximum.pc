@@ -1,0 +1,10 @@
+// section 5.4.4
+ONLINE-MAXIMUM(k, n)
+    best-score = -infinity
+    for i = 1 to k
+        if score(i) > best-score
+            best-score = score(i)
+    for i = k + 1 to n
+        if score(i) > best-score
+            return i
+    return n

@@ -1,0 +1,9 @@
+// section 2.3
+MERGE-SORT(A, p, r)
+    if p >= r
+        return
+    // floor operation ⌊x⌋ is not implemented
+    q = floor((p + r) / 2)
+    MERGE-SORT(A, p, q)
+    MERGE-SORT(A, q + 1, r)
+    MERGE(A, p, q, r)

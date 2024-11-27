@@ -1,0 +1,4 @@
+// section 5.3
+PERMUTE-WITH-ALL(A, n)
+    for i = 1 to n
+        swap A[i] with A[RANDOM(1, n)]

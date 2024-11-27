@@ -1,3 +1,4 @@
+// section 6.5
 MAX-HEAP-MAXIMUM(A)
     if A.heap-size < 1
         error "heap underflow"

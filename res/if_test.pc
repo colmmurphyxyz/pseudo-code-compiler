@@ -1,0 +1,10 @@
+a = TRUE
+b = FALSE
+if b
+    print 1
+else if a
+    print 2
+else if a
+    print 3
+else
+    print 4

@@ -1,0 +1,5 @@
+// section 6.3
+BUILD-MAX-HEAP(A, n)
+    A.heap-size = n
+    for i = floor(n / 2) downto 1
+        MAX-HEAPIFY(A, i)

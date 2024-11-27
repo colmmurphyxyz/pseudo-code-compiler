@@ -1,0 +1,11 @@
+// section 5.3-5
+RANDOM-SAMPLE(m, n)
+    // notation used in textbook: S = ∅
+    S = {}
+    for k = n - m + 1 to n
+        i = RANDOM(1, k)
+        // textbook uses set membership operator instead of `in` keyword
+        if i in S
+            A = S union {k}
+        else S = S union {i}
+    return S

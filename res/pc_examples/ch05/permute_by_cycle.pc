@@ -1,0 +1,10 @@
+// section 5.3-4
+PERMUTE-BY-CYCLE(A, n)
+    let B[1:n] be a new array
+    offset = RANDOM(1, n)
+    for i = 1 to n
+        dest = i + offset
+        if dest > n
+            dest = dest - n
+        B[dest] = A[i]
+    return B

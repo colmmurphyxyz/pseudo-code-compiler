@@ -1,0 +1,7 @@
+// section 6.4
+HEAPSORT(A, n)
+    BUILD-MAX-HEAP(A, n)
+    for i = n downto 2
+        exchange A[1] with A[i]
+        A.heap-size = A.heap-size - 1
+        MAX-HEAPIFY(A, 1)

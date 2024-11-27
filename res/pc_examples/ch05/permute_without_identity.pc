@@ -1,3 +1,4 @@
+// section 5.3
 PERMUTE-WITHOUT-IDENTITY(A, n)
     for i = 1 to n - 1
         swap A[i] with A[Random(i + 1, n)]
