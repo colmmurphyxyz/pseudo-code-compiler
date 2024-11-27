@@ -32,9 +32,12 @@ exchange_stmt: ("exchange" | "swap") atom_expr "with" atom_expr
     | funcdef
 // FIXME: It is not clear/easy to determine if an if_stmt contains an else branch
 // the 'else' grammar should be extracted to its own rule
-if_stmt: "if" test _NEWLINE block_stmt elifs [ "else" (_NEWLINE block_stmt | (simple_stmt (_NEWLINE block_stmt)?)) ]
+if_stmt: "if" test _NEWLINE block_stmt elifs else_?
 elifs: elif_*
 elif_: "else" "if" test _NEWLINE block_stmt
+else_: else_block | else_inline
+else_block: "else" _NEWLINE block_stmt
+else_inline: "else" simple_stmt block_stmt?
 while_stmt: "while" test _NEWLINE block_stmt
 for_stmt: for_loop
         | for_iter

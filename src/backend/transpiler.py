@@ -69,7 +69,9 @@ from src.backend.pc_stdlib import *
         print("IF STMT", "\n".join([ str(a) for a in args ]) )
         if_condition = args[0]
         if_body = args[1]
-        return f"if {self.transform(if_condition)}:" + "\n" + if_body + "\n" + "\n".join(args[2:])
+        # return f"if {self.transform(if_condition)}:" + "\n" + if_body + "\n" + "\n".join(args[2:])
+        return f"if {if_condition}:" + "\n" + if_body + "\n".join(args[2:])
+
 
     def elifs(self, args):
         return "\n".join(args)
@@ -78,6 +80,19 @@ from src.backend.pc_stdlib import *
         elif_condition = args[0]
         elif_body = args[1]
         return f"elif {self.transform(elif_condition)}:" + "\n" + elif_body
+
+    def else_(self, args) -> str:
+        return str(args[0])
+
+    def else_block(self, args) -> str:
+        return "else:\n" + str(args[0])
+
+    def else_inline(self, args) -> str:
+        result: str = "else:\n" + self._indent_all_lines(str(args[0]))
+        if len(args) > 1:
+            block = str(args[1])
+            result += "\n" + block
+        return result
 
     def for_stmt(self, args):
         return args[0]
@@ -136,6 +151,9 @@ from src.backend.pc_stdlib import *
 
     def multiple_array_decl(self, args) -> str:
         return "; ".join(args) + ";"
+
+    def test(self, args) -> str:
+        return str(args[0])
 
     def comparison(self, args):
         # ?comparison: expr (_comp_op expr)*

@@ -4,23 +4,21 @@ MERGE(A, p, q, r)
     n$_L$ = q - p + 1
     n$_R$ = r - q
     let L[0:n$_L$ - 1] and R[0:n$_R$ - 1] be new arrays
-    L = NEW-ARRAY(0, n$_L$ - 1)
-    R = NEW-ARRAY(0, n$_R$ - 1)
     for i = 0 to n$_L$ - 1
         L[i] = A[p + i]
-    for j = 0 to n$_R$ - 1m
+    for j = 0 to n$_R$ - 1
         R[j] = A[q + j + 1]
     i = 0
     j = 0
     k = p
-    while i <= n$_L$ and j <= n$_R$
+    while i < n$_L$ and j < n$_R$
         if L[i] <= R[j]
             A[k] = L[i]
             i = i + 1
         else A[k] = R[j]
             j = j + 1
         k = k + 1
-    while i <  n$_L$
+    while i < n$_L$
         A[k] = L[i]
         i = i + 1
         k = k + 1
@@ -28,3 +26,12 @@ MERGE(A, p, q, r)
         A[k] = R[j]
         j = j + 1
         k = k + 1
+
+let A[1:10] be a new array
+for i = 1 to 5
+    A[i] = i + 10
+    A[i + 5] = i + 10
+
+print A
+MERGE(A, 1, 5, 10)
+print A
