@@ -4,20 +4,28 @@ from lark import Transformer, Tree, Token
 
 class Transpiler(Transformer):  # pylint: disable=too-many-public-methods
 
-    indent_weight: int = 4
+    __indent_weight: int = 4
+
+    __preamble: str = """
+import pathlib
+import sys
+# add the source directory to sys.path. This is not a permanent solution
+sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
+from src.backend.pc_stdlib import *
+        """ + "\n"
 
     def __default__(self, data, children, meta):
         print(f"Using default callback for {data}")
         return data
 
     def _indent_all_lines(self, lines: str) -> str:
-        return "\n".join(map(lambda l: " " * self.indent_weight + l, lines.split("\n")))
+        return "\n".join(map(lambda l: " " * self.__indent_weight + l, lines.split("\n")))
 
     def file_input(self, args) -> str:
-        return "\n".join(args) + "\n"
+        return self.__preamble + "\n".join(args) + "\n"
 
     def single_input(self, args) -> str:
-        return args + "\n"
+        return "\n".join(args) + "\n"
 
     def funcdef(self, args) -> str:
         func_name: str = args[0]
@@ -111,6 +119,23 @@ class Transpiler(Transformer):  # pylint: disable=too-many-public-methods
     def assign_expr(self, args):
         lhs, rhs = args
         return f"{lhs} = {rhs}"
+
+    def array_decl_stmt(self, args) -> str:
+        return str(args[0])
+
+    def array_init(self, args) -> str:
+        name, start, end = args
+        print(f"{type(name)=} {type(start)=} {type(end)=}")
+        print("Array init")
+        print(" # ".join(args))
+        return f"{name} = PcArray({start}, {end})"
+
+    def single_array_decl(self, args) -> str:
+        array_init: str = args[0]
+        return array_init + ";"
+
+    def multiple_array_decl(self, args) -> str:
+        return "; ".join(args) + ";"
 
     def comparison(self, args):
         # ?comparison: expr (_comp_op expr)*
