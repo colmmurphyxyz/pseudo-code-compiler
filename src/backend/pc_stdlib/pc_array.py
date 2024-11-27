@@ -10,9 +10,13 @@ class PcArray:
         self.__elems = [0] * (end - start + 1)
 
     def __getitem__(self, idx: int):
+        if idx < self.__start or idx > self.__end:
+            raise IndexError(f"Index {idx} out of range for array of indexable range [{self.__start}, {self.__end}]")
         return self.__elems[idx - self.__start]
 
     def __setitem__(self, idx: int, val: int):
+        if idx < self.__start or idx > self.__end:
+            raise IndexError(f"Index {idx} out of range for array of indexable range [{self.__start}, {self.__end}]")
         self.__elems[idx - self.__start] = val
 
     def __str__(self) -> str:
