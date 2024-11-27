@@ -3,10 +3,11 @@ import pathlib
 from lark import Lark
 from lark.indenter import PythonIndenter
 
-from interpreter.interpreter import PcInterpreter
 from frontend.unicode_formatter import UnicodeFormatter
 from frontend.postlex_pipeline import PostLexPipeline
+from backend.transpiler import Transpiler
 
+from backend.pc_stdlib import *
 
 def main():
     grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar/pcc.lark"
@@ -17,7 +18,8 @@ def main():
             start="single_input",
             postlex=PostLexPipeline([PythonIndenter(), UnicodeFormatter()])
         )
-    interpreter = PcInterpreter()
+    # interpreter = PcInterpreter()
+    transpiler = Transpiler()
     while True:
         statement = input(">> ")
         try :
@@ -28,14 +30,11 @@ def main():
 
         print(tree)
         print(tree.pretty())
-        # result = interpreter.visit(tree)
-        try:
-            result = interpreter.interpret(tree)
-        except Exception as e:
-            print("Runtime Error", e)
-            continue
+        result: str = transpiler.transform(tree)
 
         print(result)
+
+        exec(result)
 
 
 if __name__ == "__main__":
