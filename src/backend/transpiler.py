@@ -49,6 +49,9 @@ from src.backend.pc_stdlib import *
     def assign_stmt(self, args) -> str:
         return str(args[0])
 
+    def return_stmt(self, args) -> str:
+        return f"return {args[0]}"
+
     def print_stmt(self, args) -> str:
         return f"print({"".join(args)})"
 

@@ -8,3 +8,10 @@ PERMUTE-BY-CYCLE(A, n)
             dest = dest - n
         B[dest] = A[i]
     return B
+
+let A[1:20] be a new array
+for i = 1 to 20
+    A[i] = 10 * i + RANDOM(0, 9)
+print A
+B = PERMUTE-BY-CYCLE(A, 20)
+print B
