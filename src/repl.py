@@ -18,8 +18,8 @@ def main():
             start="single_input",
             postlex=PostLexPipeline([PythonIndenter(), UnicodeFormatter()])
         )
-    # interpreter = PcInterpreter()
     transpiler = Transpiler()
+
     while True:
         statement = input(">> ")
         try :
@@ -28,13 +28,16 @@ def main():
             print("Parse Error", e)
             continue
 
-        print(tree)
         print(tree.pretty())
-        result: str = transpiler.transform(tree)
-
-        print(result)
-
-        exec(result)
+        try:
+            result: str = transpiler.transform(tree)
+            print(result)
+            exec(result)
+        except Exception as e:
+            print("Runtime Error")
+            print(e.with_traceback(None))
+        finally:
+            continue
 
 
 if __name__ == "__main__":
