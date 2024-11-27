@@ -1,4 +1,4 @@
-# Pdeuso-Code Compiler
+# Pseudo-Code Compiler
 pcc is a project that attempts to transpile pseudocode to executable Python.
 The dialect of pseudocode used is that of 'Introduction to Algorithms - 4th Edition' by Thomas H. Cormen, 
 Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein.
