@@ -32,3 +32,6 @@ if __name__ == "__main__":
     transpiler = Transpiler()
     output: str = transpiler.transform(tree)
     print(output)
+    output_path: pathlib.Path = pathlib.Path(__file__).parent.parent.absolute() / "out/out.py"
+    with open(output_path, "w", encoding="utf-8") as out_file:
+        out_file.write(output)
