@@ -4,17 +4,25 @@ from lark import Transformer, Tree, Token
 
 class Transpiler(Transformer):  # pylint: disable=too-many-public-methods
 
-    indent_weight: int = 4
+    __indent_weight: int = 4
+
+    __preamble: str = """
+import pathlib
+import sys
+# add the source directory to sys.path. This is not a permanent solution
+sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
+from src.backend.pc_stdlib import *
+        """ + "\n"
 
     def __default__(self, data, children, meta):
         print(f"Using default callback for {data}")
         return data
 
     def _indent_all_lines(self, lines: str) -> str:
-        return "\n".join(map(lambda l: " " * self.indent_weight + l, lines.split("\n")))
+        return "\n".join(map(lambda l: " " * self.__indent_weight + l, lines.split("\n")))
 
     def file_input(self, args) -> str:
-        return "\n".join(args) + "\n"
+        return self.__preamble + "\n".join(args) + "\n"
 
     def single_input(self, args) -> str:
         return "\n".join(args) + "\n"
