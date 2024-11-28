@@ -1,0 +1,29 @@
+// section 10.1
+ENQUEUE(Q, x)
+    print "Q.tail is" + str(Q.tail)
+    if (Q.head == Q.tail + 1) or (Q.head == 1 and Q.tail == Q.size)
+        error "overflow"
+    Q[Q.tail] = x
+    if Q.tail == Q.size
+        Q.tail = 1
+    else Q.tail = Q.tail + 1
+
+DEQUEUE(Q)
+    if Q.head == Q.tail
+        error "cannot dequeue from an empty queue"
+    x = Q[Q.head]
+    if Q.head == Q.size
+        Q.head = 1
+    else Q.head = Q.head + 1
+    return x
+
+q = NEW-QUEUE(3)
+print q
+ENQUEUE(q, 1)
+print q
+ENQUEUE(q, 2)
+print q
+ENQUEUE(q, 3)
+print q
+ENQUEUE(q, 4)
+print q
