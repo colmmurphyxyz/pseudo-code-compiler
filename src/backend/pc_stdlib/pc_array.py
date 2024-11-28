@@ -24,3 +24,6 @@ class PcArray:
 
     def __len__(self) -> int:
         return self.__end - self.__start + 1
+
+def NEW_ARRAY(start: int, end: int) -> PcArray:
+    return PcArray(start, end)

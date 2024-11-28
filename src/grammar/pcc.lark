@@ -22,7 +22,7 @@ multiple_array_decl: "let" array_init ("and" array_init)+ "be" "new" "arrays"
 ?flow_stmt: return_stmt | print_stmt | error_stmt | exchange_stmt
 return_stmt: "return" test
 print_stmt: "print" test
-error_stmt: "error" test
+error_stmt: "error" string
 exchange_stmt: ("exchange" | "swap") atom_expr "with" atom_expr
 // TODO: implement more statements into compound_stmt (e.g. repeat)
 ?compound_stmt: if_stmt

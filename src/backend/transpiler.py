@@ -12,7 +12,7 @@ import sys
 # add the source directory to sys.path. This is not a permanent solution
 sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
 from src.backend.pc_stdlib import *
-        """ + "\n"
+        """.strip() + "\n"
 
     def __default__(self, data, children, meta):
         print(f"Using default callback for {data}")
@@ -44,7 +44,7 @@ from src.backend.pc_stdlib import *
         Stub Implementation
         :return: sys.exit(1)
         """
-        return "import sys; sys.exit(1)"
+        return f"error({str(args[0])})"
 
     def assign_stmt(self, args) -> str:
         return str(args[0])
