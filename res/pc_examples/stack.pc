@@ -16,3 +16,15 @@ POP(S)
     else
         S.top = S.top - 1
         return S[S.top + 1]
+
+st = NEW-STACK(3)
+print st
+PUSH(st, 1)
+print st
+PUSH(st, 2)
+print st
+PUSH(st, 3)
+print st
+p = POP(st)
+print p
+print st
