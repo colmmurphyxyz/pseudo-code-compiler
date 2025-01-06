@@ -11,7 +11,7 @@ import pathlib
 import sys
 # add the source directory to sys.path. This is not a permanent solution
 sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
-from src.backend.pc_stdlib import *
+from pcc.backend.pc_stdlib import *
         """.strip() + "\n"
 
     def __default__(self, data, children, meta):

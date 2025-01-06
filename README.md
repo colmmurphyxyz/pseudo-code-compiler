@@ -15,7 +15,7 @@ pip install -r requirements.txt
 ```
 From the root directory of the project...
 ```shell
-python3 src/pcc.py res/pc_examples/ch02/insertion_sort.pc
+python3 pcc/pcc.py res/pc_examples/ch02/insertion_sort.pc
 ```
 The transpiled Python program will be printed to the standard output, and also written to `out/out.py`
 
