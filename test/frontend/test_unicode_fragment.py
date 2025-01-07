@@ -21,7 +21,6 @@ class TestUnicodeFragment(unittest.TestCase):
     def test_split_unicode_fragment(self):
         source: str = r"alpha-$\beta$-gamma-$\delta$"
         fragments: list[str | UnicodeFragment] = split_unicode_fragments(source)
-        print(fragments)
         self.assertEqual([
             "alpha-",
             UnicodeFragment("\\beta"),
