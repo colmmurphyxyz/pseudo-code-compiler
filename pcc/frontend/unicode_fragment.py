@@ -17,7 +17,6 @@ class UnicodeFragment:
         return f"UnicodeFragment(\"{self._ascii}\")"
 
     def __eq__(self, other):
-        print(f"compare {str(self)} with {other}")
         if isinstance(other, UnicodeFragment):
             return self._ascii == other._ascii
         elif isinstance(other, str):
