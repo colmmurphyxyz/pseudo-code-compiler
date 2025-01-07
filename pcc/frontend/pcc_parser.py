@@ -13,6 +13,9 @@ class PccParser(Parser):
     def __init__(self, grammar: str):
         super().__init__()
         self._grammar = grammar
+        self._lark = Lark(self._grammar, start="file_input", postlex=PostLexPipeline([
+            PythonIndenter(), UnicodeFormatter(), PrintDetokenization()
+        ]))
 
     @staticmethod
     def from_grammar_file(grammar_file_path: str | Path) -> PccParser:
@@ -24,10 +27,7 @@ class PccParser(Parser):
         return self._grammar
 
     def parse(self, source_code: str) -> Tree:
-        lark = Lark(self._grammar, start="file_input", postlex=PostLexPipeline([
-            PythonIndenter(), UnicodeFormatter(), PrintDetokenization()
-        ]))
         if source_code[-1] != "\n":
             source_code += "\n"
-        return lark.parse(source_code)
+        return self._lark.parse(source_code)
 
