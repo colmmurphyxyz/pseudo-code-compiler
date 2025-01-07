@@ -1,0 +1,6 @@
+LIST-INSERT(x, y)
+    x.next = y.next
+    x.prev = y
+    if y.next != NIL
+        y.next.prev = x
+    y.next = x

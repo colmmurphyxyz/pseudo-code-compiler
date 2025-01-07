@@ -1,0 +1,16 @@
+LIST-SEARCH(L, k)
+    x = L.head
+    while x != NIL and x.key != k
+        x = x.next
+    return x
+
+ll = NEW-LINKED-LIST(NIL, NIL)
+ll.head = NEW-LIST-NODE(1)
+x = ll.head
+x.next = NEW-LIST-NODE(2)
+x = x.next
+x.next = NEW-LIST-NODE(3)
+
+print ll
+
+print LIST-SEARCH(ll, 2)

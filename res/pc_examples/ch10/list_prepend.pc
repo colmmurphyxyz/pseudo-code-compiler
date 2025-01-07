@@ -1,0 +1,7 @@
+// Assumes L is a doubly-linked list that does not use sentinel values
+LIST-PREPEND(L, x)
+    x.next = L.head
+    x.prev = NIL
+    if L.head != NIL
+        L.head.prev = x
+    L.head = x

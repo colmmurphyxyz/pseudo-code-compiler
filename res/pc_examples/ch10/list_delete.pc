@@ -1,0 +1,12 @@
+// Assumes L is a doubly-linked list
+LIST-DELETE(L, x)
+    if x.prev != NIL
+        x.prev.next = x.next
+    else L.head = x.next
+    if x.next != NIL
+        x.next.prev = x.prev
+
+// assumes L is a doubly-linked list with sentinel values at its head and tail
+LIST-DELETE'(L, k)
+    x.prev.next = x.next
+    x.next.prev = x.prev
