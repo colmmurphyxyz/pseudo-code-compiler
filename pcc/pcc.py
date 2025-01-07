@@ -4,10 +4,10 @@ import pathlib
 from lark import Lark, Tree
 from lark.indenter import PythonIndenter
 
-from frontend.unicode_formatter import UnicodeFormatter
-from frontend.print_detokenization import PrintDetokenization
-from frontend.postlex_pipeline import PostLexPipeline
-from backend.transpiler import Transpiler
+from pcc.frontend.unicode_formatter import UnicodeFormatter
+from pcc.frontend.print_detokenization import PrintDetokenization
+from pcc.frontend.postlex_pipeline import PostLexPipeline
+from pcc.backend.transpiler import Transpiler
 
 if __name__ == "__main__":
     parser: Lark
