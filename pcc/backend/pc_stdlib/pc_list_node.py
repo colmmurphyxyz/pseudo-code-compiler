@@ -1,17 +1,17 @@
 from __future__ import annotations
 
 class PcListNode:
-    next: PcListNode
-    prev: PcListNode
+    next: PcListNode | None
+    prev: PcListNode | None
     key: any
 
-    def __init__(self, next: PcListNode, prev: PcListNode, key: any = None):
+    def __init__(self, next: PcListNode | None, prev: PcListNode | None, key: any = None):
         self.prev = prev
         self.next = next
         self.key = key
 
     def __str__(self) -> str:
-        return f"Node({str(self.key)})"
+        return f"ListNode({str(self.key)})"
 
-def NEW_LISTNODE(key: any, next: PcListNode, prev: PcListNode) -> PcListNode:
+def NEW_LIST_NODE(key: any, next: PcListNode | None = None, prev: PcListNode | None = None) -> PcListNode:
     return PcListNode(next, prev, key)
