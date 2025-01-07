@@ -16,6 +16,15 @@ class UnicodeFragment:
     def __str__(self):
         return f"UnicodeFragment(\"{self._ascii}\")"
 
+    def __eq__(self, other):
+        print(f"compare {str(self)} with {other}")
+        if isinstance(other, UnicodeFragment):
+            return self._ascii == other._ascii
+        elif isinstance(other, str):
+            return self._ascii == other
+        else:
+            raise ValueError(f"Incompatible comparison of types UnicodeFragment and {type(other)}")
+
 def split_unicode_fragments(s: str) -> list[str | UnicodeFragment]:
     split: list[str | UnicodeFragment] = []
     curr: str = ""
