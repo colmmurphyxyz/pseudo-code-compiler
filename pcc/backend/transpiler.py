@@ -241,7 +241,7 @@ from pcc.backend.pc_stdlib import *
     def var(self, args) -> str:
         return str(args[0])
 
-    def _normalize_identifier(self, name: str) -> str:
+    def __normalize_identifier(self, name: str) -> str:
         normalized: str = (
             name
             .replace("-", "_")
@@ -256,7 +256,7 @@ from pcc.backend.pc_stdlib import *
         return normalized
 
     def name(self, args: list[Token]) -> str:
-        return self._normalize_identifier(str(args[0].value))
+        return self.__normalize_identifier(str(args[0].value))
 
     def _NEWLINE(self, args) -> str:
         return "\n"
