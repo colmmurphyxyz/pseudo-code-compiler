@@ -1,9 +1,12 @@
-from typing import Protocol
+from typing import Iterator, Protocol
 
-from lark import Tree
+from lark import Tree, Token
 
 class Parser(Protocol):
     def parse(self, source_code: str) -> Tree:
+        ...
+
+    def lex(self, source_code: str, dont_ignore: bool = False) -> Iterator[Token]:
         ...
 
 # if __name__ == "__main__":

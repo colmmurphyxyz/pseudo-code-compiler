@@ -23,6 +23,9 @@ class ReplParser(Parser):
     def parse(self, source_code: str) -> Tree:
         return self._lark.parse(source_code)
 
+    def lex(self, source_code: str, dont_ignore: bool) -> Iterator[Token]:
+        return self._lark.lex(source_code, dont_ignore=dont_ignore)
+
 def main():
     parser: ReplParser
     grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar/pcc.lark"
