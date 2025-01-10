@@ -4,7 +4,7 @@ import sys
 from lark import Token, Tree
 
 from frontend.pcc_parser import PccParser
-from backend.transpiler import Transpiler
+from backend.line_count_transpiler import LineCountTranspiler
 
 usage: str = """
 ussage: python ipcc [options] file
@@ -20,9 +20,11 @@ def main(argv: list[str]):
     parser = PccParser.from_grammar_file(pathlib.Path(__file__).parent.absolute() / "grammar/pcc.lark")
     tokens: list[Token] = list(parser.lex(source_code))
     ast: Tree = parser.parse(source_code)
-    transpiler: Transpiler = Transpiler()
-    output: str = transpiler.transform(ast)
+    transpiler: LineCountTranspiler = LineCountTranspiler()
+    output: str = transpiler.transpile(ast)
 
+    print("### OUTPUT ###")
+    print(output)
 
 if __name__ == '__main__':
     main(sys.argv)

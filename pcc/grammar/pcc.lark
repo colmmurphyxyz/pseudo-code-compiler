@@ -6,7 +6,7 @@ funcdef: name "(" [parameters] ")" _NEWLINE block_stmt
 parameters: name ("," name)*
 
 ?stmt: simple_stmt | compound_stmt
-?simple_stmt: small_stmt (";" small_stmt)* [";"] _NEWLINE
+simple_stmt: small_stmt (";" small_stmt)* [";"] _NEWLINE
 ?small_stmt: (expr_stmt | assign_stmt | flow_stmt | decl_stmt)
 expr_stmt: test
 assign_stmt: assign
@@ -68,12 +68,12 @@ assign_expr: name "=" test
 ?term: factor (_mul_op factor)*
 ?factor: _unary_op factor | power
 
-!_unary_op: "+" | "-" | "~"
+!_unary_op: "+" | "-" | "!"
 !_add_op: "+" | "-"
 !_shift_op: "<<" | ">>"
 !_mul_op: "*" | "/" | "mod" | "\\\\"
 !_comp_op: "<" | ">" | "==" | ">=" | "<=" | "!=" | "in" | "not" "in" | "is" | "is" "not"
-!_power_op: "**"
+!_power_op: "^" | "**"
 
 ?power: atom_expr (_power_op factor)*
 
@@ -94,7 +94,7 @@ assign_expr: name "=" test
 arguments: test ("," test)*
 
 number: DEC_INTEGER | DEC_REAL
-?string: STRING
+string: STRING
 
 // other terminals
 
