@@ -14,6 +14,9 @@ sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
 from pcc.backend.pc_stdlib import *
         """.strip() + "\n"
 
+    def __init__(self, visit_tokens: bool = True):
+        super().__init__(visit_tokens)
+
     def __default__(self, data, children, meta):
         print(f"Using default callback for {data}")
         return data
@@ -35,6 +38,9 @@ from pcc.backend.pc_stdlib import *
 
     def parameters(self, args) -> str:
         return ", ".join(args)
+
+    def simple_stmt(self, args) -> str:
+        return "\n".join(args)
 
     def expr_stmt(self, args) -> str:
         return str(args[0])
@@ -116,7 +122,7 @@ from pcc.backend.pc_stdlib import *
 
     def for_iter(self, args):
         # for_iter: "for" "each" name name "in" name _NEWLINE block_stmt
-        name = args[2]
+        name = args[1]
         iterable = args[2]
         iter_body = args[3]
         return f"for {name} in {iterable}:" + "\n" + iter_body
