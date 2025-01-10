@@ -1,7 +1,8 @@
 from __future__ import annotations
 from pathlib import Path
+from typing import Iterator
 
-from lark import Lark, Tree
+from lark import Lark, Tree, Token
 from lark.indenter import PythonIndenter
 
 from .parser import Parser
@@ -10,10 +11,10 @@ from .unicode_formatter import UnicodeFormatter
 from .print_detokenization import PrintDetokenization
 
 class PccParser(Parser):
-    def __init__(self, grammar: str):
+    def __init__(self, grammar: str | Path):
         super().__init__()
         self._grammar = grammar
-        self._lark = Lark(self._grammar, start="file_input", postlex=PostLexPipeline([
+        self._lark = Lark(self._grammar, propagate_positions=True, start="file_input", postlex=PostLexPipeline([
             PythonIndenter(), UnicodeFormatter(), PrintDetokenization()
         ]))
 
@@ -30,4 +31,7 @@ class PccParser(Parser):
         if source_code[-1] != "\n":
             source_code += "\n"
         return self._lark.parse(source_code)
+
+    def lex(self, source_code: str, dont_ignore: bool = False) -> Iterator[Token]:
+        return self._lark.lex(source_code, dont_ignore)
 
