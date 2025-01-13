@@ -1,12 +1,16 @@
 import pathlib
+from typing import Iterator
 
-from lark import Lark, Tree
+from lark import Lark, Tree, Token
 from lark.indenter import PythonIndenter
 
 from frontend.parser import Parser
 from frontend.unicode_formatter import UnicodeFormatter
 from frontend.postlex_pipeline import PostLexPipeline
 from backend.transpiler import Transpiler
+
+# Import stdlib to execute repl code
+from backend.pc_stdlib import *
 
 
 class ReplParser(Parser):
@@ -23,7 +27,7 @@ class ReplParser(Parser):
     def parse(self, source_code: str) -> Tree:
         return self._lark.parse(source_code)
 
-    def lex(self, source_code: str, dont_ignore: bool) -> Iterator[Token]:
+    def lex(self, source_code: str, dont_ignore: bool = False) -> Iterator[Token]:
         return self._lark.lex(source_code, dont_ignore=dont_ignore)
 
 def main():
