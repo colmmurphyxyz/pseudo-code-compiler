@@ -7,7 +7,7 @@ from frontend.pcc_parser import PccParser
 from backend.line_count_transpiler import LineCountTranspiler
 
 usage: str = """
-ussage: python ipcc [options] file
+usage: python ipcc [options] file
 """.strip()
 
 def main(argv: list[str]):

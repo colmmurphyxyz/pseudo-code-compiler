@@ -31,7 +31,6 @@ from pcc.backend.pc_stdlib import *
         return "\n".join(map(lambda l: " " * self.__indent_weight + l, lines.split("\n")))
 
     def file_input(self, tree: Tree) -> str:
-        print("FILE INPUT, line", tree.meta)
         return "\n".join(self.visit_children(tree)) + "\n"
 
     def funcdef(self, tree: Tree) -> str:
@@ -48,7 +47,7 @@ from pcc.backend.pc_stdlib import *
         stmt = []
         for child in tree.children:
             stmt.append(self.visit(child) + self.__line_marker(child))
-        return "\n".join(stmt) + "\n"
+        return "\n".join(stmt)
 
     def expr_stmt(self, tree: Tree) -> str:
         return str(self.visit(tree.children[0]))
@@ -57,14 +56,14 @@ from pcc.backend.pc_stdlib import *
         return str(self.visit(tree.children[0]))
 
     def array_decl_stmt(self, tree: Tree) -> str:
-        return str(self.visit(tree.children[0]))
+        return self.visit(tree.children[0])
 
     def array_init(self, tree: Tree) -> str:
         name, start, end = self.visit_children(tree)
         return f"{name} = PcArray({start}, {end})"
 
     def single_array_decl(self, tree: Tree) -> str:
-        return str(tree.children[0]) + ";"
+        return self.visit(tree.children[0]) + ";"
 
     def multiple_array_decl(self, tree: Tree) -> str:
         return "; ".join(self.visit_children(tree)) + ";"
@@ -84,8 +83,9 @@ from pcc.backend.pc_stdlib import *
 
     # FIXME: Finish implementation of if/else
     def if_stmt(self, tree: Tree) -> str:
-        condition, body = self.visit_children(tree)[:2]
-        return f"if {condition}:" + f"{self.__line_marker(tree)}\n" + body
+        subtrees: list[str] = self.visit_children(tree)
+        condition, body = subtrees[0], subtrees[1]
+        return f"if {condition}:" + f"{self.__line_marker(tree)}\n" + body + "\n" + "\n".join(subtrees[2:])
 
     def elifs(self, tree: Tree) -> str:
         return "\n".join(self.visit_children(tree))
@@ -101,7 +101,10 @@ from pcc.backend.pc_stdlib import *
         return f"else:" + f"{self.__line_marker(tree)}\n" + self.visit(tree.children[0])
 
     def else_inline(self, tree: Tree) -> str:
-        return f"else: {self.visit(tree.children[0])}"
+        output = f"else: {self.visit(tree.children[0])}"
+        if len(tree.children) > 1:
+            output += f"{self.__line_marker(tree)}\n{self.visit(tree.children[1])}"
+        return output
 
     def while_stmt(self, tree: Tree) -> str:
         condition, body = self.visit_children(tree)
@@ -112,8 +115,18 @@ from pcc.backend.pc_stdlib import *
 
     # FIXME: Finish for loop impl
     def for_loop(self, tree: Tree) -> str:
-        name, start, end, body = self.visit_children(tree)
-        return f"for {name} in range({start}, {end}):" + f"{self.__line_marker(tree)}\n" + body
+        name, start, range_op, end, body = self.visit_children(tree)
+        range_expr: str
+        match range_op:
+            case "to":
+                range_expr = f"range({start}, {end} + 1)"
+            case "until":
+                range_expr = f"range({start}, {end})"
+            case "downto":
+                range_expr = f"range({start}, {end} - 1, -1)"
+            case _:
+                range_expr = f"range({start}, {end})"
+        return f"for {name} in {range_expr}:" + f"{self.__line_marker(tree)}\n" + body
 
     def for_iter(self, tree: Tree) -> str:
         name, iterable, body = self.visit_children(tree)[-3:]
@@ -144,16 +157,6 @@ from pcc.backend.pc_stdlib import *
 
     def expr(self, tree: Tree) -> str:
         return self.visit(tree.children[0])
-
-    """
-    ?or_expr: xor_expr ("or" xor_expr)*
-    ?xor_expr: and_expr ("xor" and_expr)*
-    ?and_expr: shift_expr ("and" shift_expr)*
-    ?shift_expr: arith_expr (_shift_op arith_expr)*
-    ?arith_expr: term (_add_op term)*
-    ?term: factor (_mul_op factor)*
-    ?factor: _unary_op factor | power
-    """
 
     def or_expr(self, tree: Tree) -> str:
         return " or ".join(self.visit_children(tree))
