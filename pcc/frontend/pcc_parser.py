@@ -15,7 +15,7 @@ class PccParser(Parser):
         super().__init__()
         self._grammar = grammar
         self._lark = Lark(self._grammar, propagate_positions=True, start="file_input", postlex=PostLexPipeline([
-            PythonIndenter(), UnicodeFormatter(), PrintDetokenization()
+            PythonIndenter(), UnicodeFormatter()
         ]))
 
     @staticmethod
