@@ -68,7 +68,7 @@ assign_expr: name "=" test
 ?term: factor (_mul_op factor)*
 ?factor: _unary_op factor | power
 
-!_unary_op: "+" | "-" | "!"
+!unary_op: "+" | "-" | "!"
 !_add_op: "+" | "-"
 !_shift_op: "<<" | ">>"
 !_mul_op: "*" | "/" | "mod" | "\\\\"

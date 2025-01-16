@@ -207,7 +207,13 @@ from pcc.backend.pc_stdlib import *
         return " ".join(args)
 
     def _unary_op(self, args) -> str:
-        return str(args[0])
+        match str(args[0]):
+            case "+":
+                return "+"
+            case "-":
+                return "-"
+            case "!":
+                return "not"
 
     def _add_op(self, args) -> str:
         return str(args[0])

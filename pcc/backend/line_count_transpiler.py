@@ -190,8 +190,11 @@ from pcc.backend.pc_stdlib import *
     def power(self, tree: Tree) -> str:
         return " ".join(self.visit_children(tree))
 
-    def _unary_op(self, tree: Tree) -> str:
-        return str(tree.children[0])
+    def unary_op(self, tree: Tree) -> str:
+        match str(tree.children[0]):
+            case "+": return "+"
+            case "-": return "-"
+            case "!": return "not"
 
     def _add_op(self, tree: Tree) -> str:
         return str(tree.children[0])
