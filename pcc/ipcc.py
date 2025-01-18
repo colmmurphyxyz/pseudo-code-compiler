@@ -23,6 +23,9 @@ def main(argv: list[str]):
     transpiler: LineCountTranspiler = LineCountTranspiler()
     output: str = transpiler.transpile(ast)
 
+    with open("output.py", "w") as file:
+        file.write(output)
+
     print("### OUTPUT ###")
     print(output)
 
