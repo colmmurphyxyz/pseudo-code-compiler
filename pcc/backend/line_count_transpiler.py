@@ -10,15 +10,17 @@ class LineCountTranspiler(Interpreter):
 import pathlib
 import sys
 # add the source directory to sys.path. This is not a permanent solution
-sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
+# sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
 from pcc.backend.pc_stdlib import *
+import pcc.web_pdb as web_pdb
+web_pdb.set_trace()
             """.strip() + "\n"
 
     def __init__(self):
         super().__init__()
 
     def transpile(self, tree: Tree) -> str:
-        return self.visit(tree)
+        return self.__preamble + "\n" + self.visit(tree)
 
     def __line_marker(self, tree: Tree) -> str:
         return f" # l:{tree.meta.line} "
