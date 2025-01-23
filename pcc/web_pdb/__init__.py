@@ -37,7 +37,6 @@ from .web_console import WebConsole
 
 __all__ = ['WebPdb', 'set_trace', 'post_mortem', 'catch_post_mortem']
 
-
 class WebPdb(Pdb):
     """
     The main debugger class
@@ -48,7 +47,9 @@ class WebPdb(Pdb):
     active_instance = None
     null = object()
 
-    def __init__(self, host='', port=5555, patch_stdstreams=False):
+    _pc_source_lines: list[str]
+
+    def __init__(self, host='', port=5555, patch_stdstreams=False, pc_source_lines: list[str] = None):
         """
         :param host: web-UI hostname or IP-address
         :type host: str
@@ -59,6 +60,9 @@ class WebPdb(Pdb):
             streams to the web-UI.
         :type patch_stdstreams: bool
         """
+        print("SOURCE")
+        print(pc_source_lines)
+        self._pc_source_lines = pc_source_lines
         if port == -1:
             random.seed()
             port = random.randint(32768, 65536)
@@ -164,11 +168,16 @@ class WebPdb(Pdb):
         """
         filename = self.curframe.f_code.co_filename
         lines, _ = inspect.findsource(self.curframe)
+        lineno: int = self.curframe.f_lineno
+        curr_line = lines[self.curframe.f_lineno - 1]
+        if '# l:' in curr_line.strip():
+            lineno = int(curr_line.split('# l:')[1])
         return {
             'dirname': os.path.dirname(os.path.abspath(filename)) + os.path.sep,
-            'filename': os.path.basename(filename),
-            'file_listing': ''.join(lines),
-            'current_line': self.curframe.f_lineno,
+            # 'filename': os.path.basename(filename),
+            'filename': "SE%RDTCYGVUBH",
+            'file_listing': ''.join(self._pc_source_lines),
+            'current_line': lineno,
             'breakpoints': self.get_file_breaks(filename),
             'globals': self.get_globals(),
             'locals': self.get_locals()
@@ -228,7 +237,7 @@ class WebPdb(Pdb):
             frame = frame.f_back
 
 
-def set_trace(host='', port=5555, patch_stdstreams=False):
+def set_trace(host='', port=5555, patch_stdstreams=False, pc_source_file: str = None):
     """
     Start the debugger
 
@@ -252,8 +261,12 @@ def set_trace(host='', port=5555, patch_stdstreams=False):
     :type patch_stdstreams: bool
     """
     pdb = WebPdb.active_instance
+    pc_source_lines: list[str] | None = None
+    with open(pc_source_file, "r") as file:
+        pc_source_lines = file.readlines()
     if pdb is None:
-        pdb = WebPdb(host, port, patch_stdstreams)
+        print("SRC", pc_source_lines[0])
+        pdb = WebPdb(host, port, patch_stdstreams, pc_source_lines)
     else:
         # If the debugger is still attached reset trace to a new location
         pdb.remove_trace()
