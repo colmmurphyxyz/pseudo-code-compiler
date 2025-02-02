@@ -1,4 +1,6 @@
+import code
 import inspect
+import io
 import os
 from pdb import Pdb
 import sys
@@ -15,21 +17,18 @@ class Pccdb(Pdb):
 
     __pc_source_lines: list[str]
 
-    _pdb_output: TextIO
-
     @property
     def pc_source_lines(self) -> list[str]:
         return self.__pc_source_lines
 
     def __init__(self, pc_source: str):
         Pccdb.active_instance = self
-        self._pdb_output = open("temp.txt", "w", encoding="utf8")
-        super().__init__(stdin=sys.stdin, stdout=sys.stdout, readrc=False)
         self.prompt = "(Pccdb) "
         self.__pc_source_lines = pc_source.splitlines()
+        super().__init__(stdin=sys.stdin, stdout=sys.stdout, readrc=False)
 
     def __del__(self):
-        self._pdb_output.close()
+        # self._pdb_out.close()
         if self is Pccdb.active_instance:
             Pccdb.active_instance = None
 
@@ -55,78 +54,92 @@ class Pccdb(Pdb):
     def _has_line_marker(self, line: str) -> bool:
         return re.match(r"# l:\d+", line) is not None
 
-    def do_step(self, arg):
-        print("stepping")
-        frame = self.curframe
-        current_file = frame.f_code.co_filename
-        current_module = inspect.getmodule(frame)
-        super().do_step(arg)
-        new_frame = self.curframe
-        if new_frame:
-            new_file = new_frame.f_code.co_filename
-            new_module = inspect.getmodule(new_frame)
-            if new_file != current_file or new_module != current_module:
-                self.do_until(None)
+    def _is_internal_frame(self, frame) -> bool:
+        return frame.f_code.co_filename == "/home/colm/PycharmProjects/pcc_fixed/pcc/output.py"
+
+    def user_call(self, frame, argument_list):
+        if not self._is_internal_frame(frame):
+            print("RDYBINJ")
+            self.set_return(frame)
 
     def do_next(self, arg):
-        """Execute the next line, stepping over functions."""
-        print("next")
-        frame = self.curframe
-        if frame:
-            # Get the current line's file and module
-            current_file = frame.f_code.co_filename
-            current_module = inspect.getmodule(frame)
+        print("DO_NEXT")
+        self.set_next(self.curframe)
+        return 1
 
-            # Execute the next line
-            super().do_next(arg)
+    do_n = do_next
 
-            # Check if the new frame is in the same file or module
-            new_frame = self.curframe
-            if new_frame:
-                new_file = new_frame.f_code.co_filename
-                new_module = inspect.getmodule(new_frame)
+    def do_step(self, arg):
+        print("DO_STEP")
+        self.set_step()
+        return 1
 
-                # If the new frame is in an external module, step out of it
-                if new_file != current_file or new_module != current_module:
-                    self.do_until(None)  # Step out of the external function
-
-    def do_list(self, arg):
-        print("FGHJK")
-        self.message("Listing source code")
-        print(type(arg), repr(arg))
-        super().do_list(arg)
-
-    def do_l(self, arg):
-        print("take this L bozo")
-
-    def do_longlist(self, arg):
-        self.do_list(arg)
+    do_s = do_step
 
     def do_z(self, arg):
-        """Custom command to step into internal functions and step over external ones."""
-        # Get the current frame and file
-        frame = self.curframe
-        if frame:
-            self.current_file = frame.f_code.co_filename  # Update the current file
+        """Custom step-into for current file, next for external files."""
+        curframe = self.curframe
+        filename = curframe.f_code.co_filename
 
-        # Execute the next line
-        print("do_next call")
-        self.onecmd("next")
+        # Print debug information for clarity
+        print(f"Current file: {filename}")
 
-        # Check if we're in an external module
-        new_frame = self.curframe
-        new_file = new_frame.f_code.co_filename
-        if new_frame:
-            if new_file != self.current_file:
-                print("external")
-                # If we're in an external module, step out of it
-                self.onecmd("return")
-            else:
-                print("should step in")
-                # If we're in the current file, step into the function
-                self.onecmd("step")
+        if self._is_internal_frame(curframe):
+            # Internal function: act like 'step'
+            print("Stepping into an internal function.")
+            self.set_step()
         else:
-            print("new frame none")
+            # External function: act like 'next'
+            print("Skipping external function call.")
+            self.set_next(curframe)
+        return 1
+
+    # def do_step(self, arg):
+    #     print("stepping")
+    #     frame = self.curframe
+    #     current_file = frame.f_code.co_filename
+    #     current_module = inspect.getmodule(frame)
+    #     super().do_step(arg)
+    #     new_frame = self.curframe
+    #     if new_frame:
+    #         new_file = new_frame.f_code.co_filename
+    #         new_module = inspect.getmodule(new_frame)
+    #         if new_file != current_file or new_module != current_module:
+    #             self.do_until(None)
+
+    # def do_next(self, arg):
+    #     """Execute the next line, stepping over functions."""
+    #     print("next")
+    #     frame = self.curframe
+    #     if frame:
+    #         # Get the current line's file and module
+    #         current_file = frame.f_code.co_filename
+    #         current_module = inspect.getmodule(frame)
+    #
+    #         # Execute the next line
+    #         super().do_next(arg)
+    #
+    #         # Check if the new frame is in the same file or module
+    #         new_frame = self.curframe
+    #         if new_frame:
+    #             new_file = new_frame.f_code.co_filename
+    #             new_module = inspect.getmodule(new_frame)
+    #
+    #             # If the new frame is in an external module, step out of it
+    #             if new_file != current_file or new_module != current_module:
+    #                 self.do_until(None)  # Step out of the external function
+    #
+    # def do_list(self, arg):
+    #     print("FGHJK")
+    #     self.message("Listing source code")
+    #     print(type(arg), repr(arg))
+    #     super().do_list(arg)
+    #
+    # def do_l(self, arg):
+    #     print("take this L bozo")
+    #
+    # def do_longlist(self, arg):
+    #     self.do_list(arg)
 
 
 
