@@ -1,7 +1,6 @@
-import code
-import inspect
 import io
-import os
+
+from pdb_io_facade import Console, CmdFacade
 from pdb import Pdb
 import sys
 from types import FrameType
@@ -23,9 +22,10 @@ class Pccdb(Pdb):
 
     def __init__(self, pc_source: str):
         Pccdb.active_instance = self
-        self.prompt = "(Pccdb) "
         self.__pc_source_lines = pc_source.splitlines()
         super().__init__(stdin=sys.stdin, stdout=sys.stdout, readrc=False)
+        print(self.cmdqueue)
+
 
     def __del__(self):
         # self._pdb_out.close()
@@ -61,6 +61,11 @@ class Pccdb(Pdb):
         if not self._is_internal_frame(frame):
             print("RDYBINJ")
             self.set_return(frame)
+            self.cmdqueue = ["next"] + self.cmdqueue
+
+    def user_line(self, frame):
+        print("User Line")
+        super().user_line(frame)
 
     def do_next(self, arg):
         print("DO_NEXT")
@@ -81,9 +86,6 @@ class Pccdb(Pdb):
         curframe = self.curframe
         filename = curframe.f_code.co_filename
 
-        # Print debug information for clarity
-        print(f"Current file: {filename}")
-
         if self._is_internal_frame(curframe):
             # Internal function: act like 'step'
             print("Stepping into an internal function.")
@@ -93,6 +95,14 @@ class Pccdb(Pdb):
             print("Skipping external function call.")
             self.set_next(curframe)
         return 1
+
+    def precmd(self, line):
+        print("PreCmd", self.curframe.f_lineno)
+        return super().precmd(line)
+
+    def postcmd(self, stop, line):
+        print("Postcmd", self.curframe.f_lineno)
+        return super().postcmd(stop, line)
 
     # def do_step(self, arg):
     #     print("stepping")
