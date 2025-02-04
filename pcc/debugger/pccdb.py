@@ -49,7 +49,7 @@ class Pccdb(Pdb):
         return {k: v for k, v in self.get_globals().items() if k not in hidden_names}
 
     def _has_line_marker(self, line: str) -> bool:
-        return re.match(r"# l:\d+", line) is not None
+        return len(re.findall(r"# l:\d+", line)) > 0
 
     def _is_internal_frame(self, frame) -> bool:
         return frame.f_code.co_filename == "/home/colm/PycharmProjects/pcc_fixed/pcc/output.py"
@@ -63,6 +63,7 @@ class Pccdb(Pdb):
         super().user_call(frame, argument_list)
 
     def user_line(self, frame):
+        # print current line to the console
         super().user_line(frame)
 
     def do_next(self, arg):
@@ -86,7 +87,14 @@ class Pccdb(Pdb):
         return super().precmd(line)
 
     def postcmd(self, stop, line):
-        print("Postcmd", self.curframe.f_lineno)
+        import inspect
+        source, _ = inspect.findsource(self.curframe)
+        py_lineno = self.curframe.f_lineno
+        py_line = source[py_lineno - 1].strip()
+        if self._has_line_marker(py_line):
+            pc_line = int(py_line.split("l:")[-1])
+            print(f"{Style.RED}{py_lineno=} @ {source[py_lineno - 1].strip()}{Style.RESET}")
+            print(f"{Style.BLUE}{pc_line=} @ {self.pc_source_lines[pc_line - 1].strip()}{Style.RESET}")
         return super().postcmd(stop, line)
 
 
