@@ -66,7 +66,7 @@ assign_expr: name "=" test
 ?shift_expr: arith_expr (_shift_op arith_expr)*
 ?arith_expr: term (_add_op term)*
 ?term: factor (_mul_op factor)*
-?factor: _unary_op factor | power
+?factor: unary_op factor | power
 
 !unary_op: "+" | "-" | "!"
 !_add_op: "+" | "-"

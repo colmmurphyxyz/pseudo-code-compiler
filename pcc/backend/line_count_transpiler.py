@@ -10,15 +10,20 @@ class LineCountTranspiler(Interpreter):
 import pathlib
 import sys
 # add the source directory to sys.path. This is not a permanent solution
-sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
+# sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
 from pcc.backend.pc_stdlib import *
-            """.strip() + "\n"
+from pccdb import set_trace
+set_trace(\"input.pc\")
+            """.strip()
 
-    def __init__(self):
+    def __init__(self, source_code: str = None):
         super().__init__()
+        preamble_lines = self.__preamble.splitlines()
+        preamble_lines[-1] = f"set_trace(pc_source_code=\'\'\'{source_code}\'\'\', header='Hello From the constructor')"
+        self.__preamble = "\n".join(preamble_lines) + "\n"
 
     def transpile(self, tree: Tree) -> str:
-        return self.visit(tree)
+        return self.__preamble + "\n" + self.visit(tree)
 
     def __line_marker(self, tree: Tree) -> str:
         return f" # l:{tree.meta.line} "
@@ -132,6 +137,10 @@ from pcc.backend.pc_stdlib import *
         name, iterable, body = self.visit_children(tree)[-3:]
         return f"for {name} in {iterable}:" + f"{self.__line_marker(tree)}\n" + body
 
+    def range_op(self, tree: Tree) -> str:
+        token: Token = tree.children[0]
+        return str(token.value)
+
     def repeat_stmt(self, tree: Tree) -> str:
         body, condition = self.visit_children(tree)
         return f"while not {condition}:" + f"{self.__line_marker(tree)}\n" + body
@@ -189,6 +198,24 @@ from pcc.backend.pc_stdlib import *
 
     def power(self, tree: Tree) -> str:
         return " ".join(self.visit_children(tree))
+
+    def funccall(self, tree: Tree) -> str:
+        func_name, arguments = self.visit_children(tree)
+        # arguments = list(map(lambda c: self.visit(c), tree.children[0].children[1:]))
+        print("ARGUING", arguments)
+        return f"{func_name}({arguments})"
+
+    def getitem(self, tree: Tree) -> str:
+        subject: str = self.visit(tree.children[0])
+        value: str = self.visit(tree.children[1])
+        return f"{subject}[{value}]"
+
+    def getattr(self, tree: Tree) -> str:
+        subject, value = self.children(tree)
+        return f"{subject}.{value}"
+
+    def arguments(self, tree: Tree) -> str:
+        return ", ".join(self.visit_children(tree))
 
     def unary_op(self, tree: Tree) -> str:
         match str(tree.children[0]):
