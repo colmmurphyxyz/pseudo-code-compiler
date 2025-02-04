@@ -1,7 +1,8 @@
-from pcc.debugger.ansi_color_codes import Style
 from pdb import Pdb
 import sys
 import re
+
+from .ansi_color_codes import Style
 
 __all__ = ["Pccdb", "set_trace"]
 
