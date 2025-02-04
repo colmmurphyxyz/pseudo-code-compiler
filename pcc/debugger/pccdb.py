@@ -1,4 +1,4 @@
-from .ansi_color_codes import Style
+from pcc.debugger.ansi_color_codes import Style
 from pdb import Pdb
 import sys
 import re
