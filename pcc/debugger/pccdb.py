@@ -1,6 +1,6 @@
 import io
 
-from pdb_io_facade import Console, CmdFacade
+from ansi_color_codes import Style
 from pdb import Pdb
 import sys
 from types import FrameType
@@ -59,12 +59,13 @@ class Pccdb(Pdb):
 
     def user_call(self, frame, argument_list):
         if not self._is_internal_frame(frame):
-            print("RDYBINJ")
+            # move the return point of the given frame
             self.set_return(frame)
+            # execute final line of the current function on the next iteration of the cmdloop
             self.cmdqueue = ["next"] + self.cmdqueue
 
     def user_line(self, frame):
-        print("User Line")
+        print(Style.GREEN)
         super().user_line(frame)
 
     def do_next(self, arg):
@@ -81,20 +82,22 @@ class Pccdb(Pdb):
 
     do_s = do_step
 
-    def do_z(self, arg):
-        """Custom step-into for current file, next for external files."""
-        curframe = self.curframe
-        filename = curframe.f_code.co_filename
+    # def do_z(self, arg):
+    #     """Custom step-into for current file, next for external files."""
+    #     curframe = self.curframe
+    #     filename = curframe.f_code.co_filename
+    #
+    #     if self._is_internal_frame(curframe):
+    #         # Internal function: act like 'step'
+    #         print("Stepping into an internal function.")
+    #         self.set_step()
+    #     else:
+    #         # External function: act like 'next'
+    #         print("Skipping external function call.")
+    #         self.set_next(curframe)
+    #     return 1
 
-        if self._is_internal_frame(curframe):
-            # Internal function: act like 'step'
-            print("Stepping into an internal function.")
-            self.set_step()
-        else:
-            # External function: act like 'next'
-            print("Skipping external function call.")
-            self.set_next(curframe)
-        return 1
+    do_z = do_step
 
     def precmd(self, line):
         print("PreCmd", self.curframe.f_lineno)

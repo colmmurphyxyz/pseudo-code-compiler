@@ -170,13 +170,14 @@ class WebPdb(Pdb):
         lines, _ = inspect.findsource(self.curframe)
         lineno: int = self.curframe.f_lineno
         curr_line = lines[self.curframe.f_lineno - 1]
-        if '# l:' in curr_line.strip():
-            lineno = int(curr_line.split('# l:')[1])
+        # if '# l:' in curr_line.strip():
+        #     lineno = int(curr_line.split('# l:')[1])
         return {
             'dirname': os.path.dirname(os.path.abspath(filename)) + os.path.sep,
-            # 'filename': os.path.basename(filename),
-            'filename': "SE%RDTCYGVUBH",
-            'file_listing': ''.join(self._pc_source_lines),
+            'filename': os.path.basename(filename),
+            # 'filename': "SE%RDTCYGVUBH",
+            # 'file_listing': ''.join(self._pc_source_lines),
+            'file_listing': "".join(lines),
             'current_line': lineno,
             'breakpoints': self.get_file_breaks(filename),
             'globals': self.get_globals(),
@@ -262,10 +263,10 @@ def set_trace(host='', port=5555, patch_stdstreams=False, pc_source_file: str = 
     """
     pdb = WebPdb.active_instance
     pc_source_lines: list[str] | None = None
-    with open(pc_source_file, "r") as file:
-        pc_source_lines = file.readlines()
+    # with open(pc_source_file, "r") as file:
+    #     pc_source_lines = file.readlines()
     if pdb is None:
-        print("SRC", pc_source_lines[0])
+        # print("SRC", pc_source_lines[0])
         pdb = WebPdb(host, port, patch_stdstreams, pc_source_lines)
     else:
         # If the debugger is still attached reset trace to a new location
