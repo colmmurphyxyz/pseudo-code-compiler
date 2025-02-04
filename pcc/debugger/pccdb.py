@@ -1,14 +1,11 @@
-import io
-
-from ansi_color_codes import Style
+from .ansi_color_codes import Style
 from pdb import Pdb
 import sys
-from types import FrameType
 import re
 
 __all__ = ["Pccdb", "set_trace"]
 
-from typing import TextIO, Any, Mapping
+from typing import Any, Mapping
 
 
 class Pccdb(Pdb):
@@ -63,9 +60,9 @@ class Pccdb(Pdb):
             self.set_return(frame)
             # execute final line of the current function on the next iteration of the cmdloop
             self.cmdqueue = ["next"] + self.cmdqueue
+        super().user_call(frame, argument_list)
 
     def user_line(self, frame):
-        print(Style.GREEN)
         super().user_line(frame)
 
     def do_next(self, arg):
@@ -82,21 +79,6 @@ class Pccdb(Pdb):
 
     do_s = do_step
 
-    # def do_z(self, arg):
-    #     """Custom step-into for current file, next for external files."""
-    #     curframe = self.curframe
-    #     filename = curframe.f_code.co_filename
-    #
-    #     if self._is_internal_frame(curframe):
-    #         # Internal function: act like 'step'
-    #         print("Stepping into an internal function.")
-    #         self.set_step()
-    #     else:
-    #         # External function: act like 'next'
-    #         print("Skipping external function call.")
-    #         self.set_next(curframe)
-    #     return 1
-
     do_z = do_step
 
     def precmd(self, line):
@@ -106,54 +88,6 @@ class Pccdb(Pdb):
     def postcmd(self, stop, line):
         print("Postcmd", self.curframe.f_lineno)
         return super().postcmd(stop, line)
-
-    # def do_step(self, arg):
-    #     print("stepping")
-    #     frame = self.curframe
-    #     current_file = frame.f_code.co_filename
-    #     current_module = inspect.getmodule(frame)
-    #     super().do_step(arg)
-    #     new_frame = self.curframe
-    #     if new_frame:
-    #         new_file = new_frame.f_code.co_filename
-    #         new_module = inspect.getmodule(new_frame)
-    #         if new_file != current_file or new_module != current_module:
-    #             self.do_until(None)
-
-    # def do_next(self, arg):
-    #     """Execute the next line, stepping over functions."""
-    #     print("next")
-    #     frame = self.curframe
-    #     if frame:
-    #         # Get the current line's file and module
-    #         current_file = frame.f_code.co_filename
-    #         current_module = inspect.getmodule(frame)
-    #
-    #         # Execute the next line
-    #         super().do_next(arg)
-    #
-    #         # Check if the new frame is in the same file or module
-    #         new_frame = self.curframe
-    #         if new_frame:
-    #             new_file = new_frame.f_code.co_filename
-    #             new_module = inspect.getmodule(new_frame)
-    #
-    #             # If the new frame is in an external module, step out of it
-    #             if new_file != current_file or new_module != current_module:
-    #                 self.do_until(None)  # Step out of the external function
-    #
-    # def do_list(self, arg):
-    #     print("FGHJK")
-    #     self.message("Listing source code")
-    #     print(type(arg), repr(arg))
-    #     super().do_list(arg)
-    #
-    # def do_l(self, arg):
-    #     print("take this L bozo")
-    #
-    # def do_longlist(self, arg):
-    #     self.do_list(arg)
-
 
 
 def set_trace(pc_source_code: str, *, header=None):
