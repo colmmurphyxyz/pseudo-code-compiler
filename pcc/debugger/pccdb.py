@@ -36,29 +36,29 @@ class Pccdb(Pdb):
         if self is Pccdb.active_instance:
             Pccdb.active_instance = None
 
-    def get_locals(self) -> Mapping[str, Any]:
-        return self.curframe_locals
-
-    def get_locals_sanitised(self) -> dict[str, any]:
-        local_variables = self.get_locals()
-        hidden_names = { "__name__", "__doc__", "__package__", "__loader__", "__spec__", "__annotations__",
-                         "__builtins__", "__file__", "__cached__", "pathlib", "sys", "set_trace",
-                         "__pdb_convenience_variables"}
-        if isinstance(local_variables, str):
-            return {"Not": "Available"}
-        return {k: v for k, v in local_variables.items() if k not in hidden_names}
-
-    def get_globals(self) -> dict[str, Any]:
-        return self.curframe.f_globals
-
-    def get_globals_sanitised(self) -> dict[str, Any]:
-        hidden_names = {"__name__", "__doc__", "__package__", "__loader__", "__spec__", "__annotations__",
-                        "__builtins__", "__file__", "__cached__", "pathlib", "sys", "set_trace",
-                        "__pdb_convenience_variables"}
-        global_vars = self.get_globals()
-        if isinstance(global_vars, str):
-            return {"Not": "Available"}
-        return {k: v for k, v in self.get_globals().items() if k not in hidden_names}
+    # def get_locals(self) -> Mapping[str, Any]:
+    #     return self.curframe_locals
+    #
+    # def get_locals_sanitised(self) -> dict[str, any]:
+    #     local_variables = self.get_locals()
+    #     hidden_names = { "__name__", "__doc__", "__package__", "__loader__", "__spec__", "__annotations__",
+    #                      "__builtins__", "__file__", "__cached__", "pathlib", "sys", "set_trace",
+    #                      "__pdb_convenience_variables"}
+    #     if isinstance(local_variables, str):
+    #         return {"Not": "Available"}
+    #     return {k: v for k, v in local_variables.items() if k not in hidden_names}
+    #
+    # def get_globals(self) -> dict[str, Any]:
+    #     return self.curframe.f_globals
+    #
+    # def get_globals_sanitised(self) -> dict[str, Any]:
+    #     hidden_names = {"__name__", "__doc__", "__package__", "__loader__", "__spec__", "__annotations__",
+    #                     "__builtins__", "__file__", "__cached__", "pathlib", "sys", "set_trace",
+    #                     "__pdb_convenience_variables"}
+    #     global_vars = self.get_globals()
+    #     if isinstance(global_vars, str):
+    #         return {"Not": "Available"}
+    #     return {k: v for k, v in self.get_globals().items() if k not in hidden_names}
 
     def _has_line_marker(self, line: str) -> bool:
         return len(re.findall(r"# l:\d+", line)) > 0
@@ -99,6 +99,7 @@ class Pccdb(Pdb):
         return super().precmd(line)
 
     def postcmd(self, stop, line):
+        print("POSTCMD")
         source, _ = inspect.findsource(self.curframe)
         self.__current_py_lineno = self.curframe.f_lineno
         self.__current_py_line = source[self.__current_py_lineno - 1].strip()
@@ -109,6 +110,8 @@ class Pccdb(Pdb):
 
             print(f"{Style.RED}{self.__current_py_lineno} @ {self.__current_py_line}{Style.RESET}")
             print(f"{Style.BLUE}{self.__current_pc_lineno} @ {self.__current_pc_line}{Style.RESET}")
+        else:
+            print("NO LINE MARKER")
         return super().postcmd(stop, line)
 
     @property

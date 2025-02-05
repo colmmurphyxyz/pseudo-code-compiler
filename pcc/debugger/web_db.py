@@ -137,7 +137,6 @@ class WebDb(Pccdb):
         :raises AttributeError: if the debugger does hold any execution frame.
         :raises IOError: if source code for the current execution frame is not accessible.
         """
-        filename = self.curframe.f_code.co_filename
         lines = self.pc_source_lines
         # lines, _ = inspect.findsource(self.curframe)
         lineno: int = self.current_pc_lineno
@@ -151,9 +150,9 @@ class WebDb(Pccdb):
             "filename": "myfile.txt",
             'file_listing': "\n".join(lines),
             'current_line': lineno,
-            'breakpoints': self.get_file_breaks(filename),
-            'globals': self.get_globals_sanitised(),
-            'locals': self.get_locals_sanitised()
+            'breakpoints': [],
+            'globals': self.get_globals(),
+            'locals': self.get_locals()
         }
 
     def _format_variables(self, raw_vars):
