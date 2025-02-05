@@ -1,12 +1,12 @@
 from pdb import Pdb
 import sys
 import re
+import inspect
+from typing import Any, Mapping
 
 from .ansi_color_codes import Style
 
 __all__ = ["Pccdb", "set_trace"]
-
-from typing import Any, Mapping
 
 
 class Pccdb(Pdb):
@@ -14,14 +14,20 @@ class Pccdb(Pdb):
 
     __pc_source_lines: list[str]
 
+    __current_py_line: str = ""
+    __current_py_lineno: int = 1
+    __current_pc_line: str = ""
+    __current_pc_lineno: int = 0
+
     @property
     def pc_source_lines(self) -> list[str]:
         return self.__pc_source_lines
 
-    def __init__(self, pc_source: str):
+    def __init__(self, pc_source: str, *args, **kwargs):
         Pccdb.active_instance = self
         self.__pc_source_lines = pc_source.splitlines()
-        super().__init__(stdin=sys.stdin, stdout=sys.stdout, readrc=False)
+        # super().__init__(stdin=sys.stdin, stdout=sys.stdout, readrc=False)
+        super().__init__(*args, **kwargs)
         print(self.cmdqueue)
 
 
@@ -38,6 +44,8 @@ class Pccdb(Pdb):
         hidden_names = { "__name__", "__doc__", "__package__", "__loader__", "__spec__", "__annotations__",
                          "__builtins__", "__file__", "__cached__", "pathlib", "sys", "set_trace",
                          "__pdb_convenience_variables"}
+        if isinstance(local_variables, str):
+            return {"Not": "Available"}
         return {k: v for k, v in local_variables.items() if k not in hidden_names}
 
     def get_globals(self) -> dict[str, Any]:
@@ -47,6 +55,9 @@ class Pccdb(Pdb):
         hidden_names = {"__name__", "__doc__", "__package__", "__loader__", "__spec__", "__annotations__",
                         "__builtins__", "__file__", "__cached__", "pathlib", "sys", "set_trace",
                         "__pdb_convenience_variables"}
+        global_vars = self.get_globals()
+        if isinstance(global_vars, str):
+            return {"Not": "Available"}
         return {k: v for k, v in self.get_globals().items() if k not in hidden_names}
 
     def _has_line_marker(self, line: str) -> bool:
@@ -88,15 +99,33 @@ class Pccdb(Pdb):
         return super().precmd(line)
 
     def postcmd(self, stop, line):
-        import inspect
         source, _ = inspect.findsource(self.curframe)
-        py_lineno = self.curframe.f_lineno
-        py_line = source[py_lineno - 1].strip()
-        if self._has_line_marker(py_line):
-            pc_line = int(py_line.split("l:")[-1])
-            print(f"{Style.RED}{py_lineno=} @ {source[py_lineno - 1].strip()}{Style.RESET}")
-            print(f"{Style.BLUE}{pc_line=} @ {self.pc_source_lines[pc_line - 1].strip()}{Style.RESET}")
+        self.__current_py_lineno = self.curframe.f_lineno
+        self.__current_py_line = source[self.__current_py_lineno - 1].strip()
+        if self._has_line_marker(self.__current_py_line):
+            self.__current_pc_lineno = int(self.__current_py_line.split("l:")[-1])
+            self.__current_pc_lineno = int(self.__current_py_line.split("l:")[-1])
+            self.__current_pc_line = self.__pc_source_lines[self.__current_pc_lineno - 1].strip()
+
+            print(f"{Style.RED}{self.__current_py_lineno} @ {self.__current_py_line}{Style.RESET}")
+            print(f"{Style.BLUE}{self.__current_pc_lineno} @ {self.__current_pc_line}{Style.RESET}")
         return super().postcmd(stop, line)
+
+    @property
+    def current_py_line(self) -> str:
+        return self.__current_py_line
+
+    @property
+    def current_pc_line(self) -> str:
+        return self.__current_pc_line
+
+    @property
+    def current_py_lineno(self) -> int:
+        return self.__current_py_lineno
+
+    @property
+    def current_pc_lineno(self) -> int:
+        return self.__current_pc_lineno
 
 
 def set_trace(pc_source_code: str, *, header=None):

@@ -9,10 +9,11 @@ from contextlib import contextmanager
 from pprint import pformat
 
 from .web_console import WebConsole
+from .pccdb import Pccdb
 
 __all__ = ["WebDb", "set_trace", "post_mortem", "catch_post_mortem"]
 
-class WebDb(Pdb):
+class WebDb(Pccdb):
     """
     The main debugger class
 
@@ -22,9 +23,7 @@ class WebDb(Pdb):
     active_instance = None
     null = object()
 
-    _pc_source_lines: list[str]
-
-    def __init__(self, host='', port=5555, patch_stdstreams=False, pc_source_lines: list[str] = None):
+    def __init__(self, pc_source_code: str, host='', port=5555, patch_stdstreams=False):
         """
         :param host: web-UI hostname or IP-address
         :type host: str
@@ -35,14 +34,11 @@ class WebDb(Pdb):
             streams to the web-UI.
         :type patch_stdstreams: bool
         """
-        print("SOURCE")
-        print(pc_source_lines)
-        self._pc_source_lines = pc_source_lines
         if port == -1:
             random.seed()
             port = random.randint(32768, 65536)
         self.console = WebConsole(host, port, self)
-        super().__init__(stdin=self.console, stdout=self.console)
+        super().__init__(pc_source_code, stdin=self.console, stdout=self.console)
         # Borrowed from here: https://github.com/ionelmc/python-remote-pdb
         self._backup = []
         if patch_stdstreams:
@@ -142,21 +138,22 @@ class WebDb(Pdb):
         :raises IOError: if source code for the current execution frame is not accessible.
         """
         filename = self.curframe.f_code.co_filename
-        lines, _ = inspect.findsource(self.curframe)
-        lineno: int = self.curframe.f_lineno
-        curr_line = lines[self.curframe.f_lineno - 1]
-        # if '# l:' in curr_line.strip():
-        #     lineno = int(curr_line.split('# l:')[1])
+        lines = self.pc_source_lines
+        # lines, _ = inspect.findsource(self.curframe)
+        lineno: int = self.current_pc_lineno
+        # lineno: int = self.curframe.f_lineno
+        # curr_line = lines[self.curframe.f_lineno - 1]
+        curr_line = self.current_pc_line
         return {
-            'dirname': os.path.dirname(os.path.abspath(filename)) + os.path.sep,
-            'filename': os.path.basename(filename),
-            # 'filename': "SE%RDTCYGVUBH",
-            # 'file_listing': ''.join(self._pc_source_lines),
-            'file_listing': "".join(lines),
+            # 'dirname': os.path.dirname(os.path.abspath(filename)) + os.path.sep,
+            # 'filename': os.path.basename(filename),
+            "dirname": "myfolder",
+            "filename": "myfile.txt",
+            'file_listing': "\n".join(lines),
             'current_line': lineno,
             'breakpoints': self.get_file_breaks(filename),
-            'globals': self.get_globals(),
-            'locals': self.get_locals()
+            'globals': self.get_globals_sanitised(),
+            'locals': self.get_locals_sanitised()
         }
 
     def _format_variables(self, raw_vars):
@@ -212,7 +209,7 @@ class WebDb(Pdb):
             del frame.f_trace
             frame = frame.f_back
 
-def set_trace(host='', port=5555, patch_stdstreams=False, pc_source_file: str = None):
+def set_trace(pc_source_code: str, host='', port=5555, patch_stdstreams=False):
     """
     Start the debugger
 
@@ -236,12 +233,9 @@ def set_trace(host='', port=5555, patch_stdstreams=False, pc_source_file: str = 
     :type patch_stdstreams: bool
     """
     pdb = WebDb.active_instance
-    pc_source_lines: list[str] | None = None
-    # with open(pc_source_file, "r") as file:
-    #     pc_source_lines = file.readlines()
     if pdb is None:
         # print("SRC", pc_source_lines[0])
-        pdb = WebDb(host, port, patch_stdstreams, pc_source_lines)
+        pdb = WebDb(pc_source_code, host, port, patch_stdstreams)
     else:
         # If the debugger is still attached reset trace to a new location
         pdb.remove_trace()
