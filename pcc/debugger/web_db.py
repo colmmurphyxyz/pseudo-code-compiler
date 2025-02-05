@@ -179,7 +179,7 @@ class WebDb(Pccdb):
         :return: a listing of ``var = value`` pairs sorted alphabetically
         :rtype: unicode
         """
-        return self._format_variables(self.curframe.f_globals)
+        return self._format_variables(super().get_globals_sanitised())
 
     def get_locals(self):
         """
@@ -192,7 +192,7 @@ class WebDb(Pccdb):
         :return: a listing of ``var = value`` pairs sorted alphabetically
         :rtype: unicode
         """
-        return self._format_variables(self.curframe_locals)
+        return self._format_variables(super().get_locals_sanitised())
 
     def remove_trace(self, frame=None):
         """
