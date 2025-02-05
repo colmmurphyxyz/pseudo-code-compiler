@@ -1,0 +1,38 @@
+print "hello"
+x = 1 + 2 + 3
+
+// This is a comment
+y = 1 + 2
+y = 1 - 2
+y = 1 * 2
+y = 1 / 2
+y = 1 \\ 2
+y = 1 ^ 2
+y = 1 << 2
+y = 1 >> 2
+y = 1 == 2
+y = 1 != 2
+y = 1 < 2
+y = 1 <= 2
+y = 1 > 2
+y = 1 >= 2
+y = -2
+y = +2
+y = !2
+
+MULT(x, y)
+    print "multiplicimicating"
+    return x * y
+
+error "Program end"
+
+if 1 > 0
+    x = 123
+    y = 456
+
+let A[1:5] be a new array
+for each number num in A
+    print num * 2
+
+for i = 1 to 10
+    print i
