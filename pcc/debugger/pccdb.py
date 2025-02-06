@@ -81,14 +81,12 @@ class Pccdb(Pdb):
         super().user_line(frame)
 
     def do_next(self, arg):
-        print("DO_NEXT")
         self.set_next(self.curframe)
         return 1
 
     do_n = do_next
 
     def do_step(self, arg):
-        print("DO_STEP")
         self.set_step()
         return 1
 
@@ -97,7 +95,6 @@ class Pccdb(Pdb):
     do_z = do_step
 
     def precmd(self, line):
-        print("PreCmd", self.curframe.f_lineno)
         return super().precmd(line)
 
     def postcmd(self, stop, line):
@@ -107,13 +104,10 @@ class Pccdb(Pdb):
         self.__current_py_line = source[self.__current_py_lineno - 1].strip()
         if self._has_line_marker(self.__current_py_line):
             self.__current_pc_lineno = int(self.__current_py_line.split("l:")[-1])
-            self.__current_pc_lineno = int(self.__current_py_line.split("l:")[-1])
             self.__current_pc_line = self.__pc_source_lines[self.__current_pc_lineno - 1].strip()
 
             print(f"{Style.RED}{self.__current_py_lineno} @ {self.__current_py_line}{Style.RESET}")
             print(f"{Style.BLUE}{self.__current_pc_lineno} @ {self.__current_pc_line}{Style.RESET}")
-        else:
-            print("NO LINE MARKER")
         return super().postcmd(stop, line)
 
     @property

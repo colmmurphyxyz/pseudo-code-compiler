@@ -31,7 +31,7 @@ def INSERTION_SORT(A, n): # l:2
             j = j - 1 # l:9 
         A[j + 1] = key # l:10 
 A = PcArray(1, 5); # l:12
-for i in range(1, 2 + 1): # l:13
+for i in range(1, 5 + 1): # l:13
     A[i] = 6 - i # l:14 
 print(A) # l:15 
 INSERTION_SORT(A, 5) # l:16 
