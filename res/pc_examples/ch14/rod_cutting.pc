@@ -1,0 +1,49 @@
+CUT-ROD(p, n)
+    if n == 0
+        return 0
+    q = float("-inf")
+    for i = 1 to n
+        q = max(q, p[i] + CUT-ROD(p, n - i))
+    return q
+
+MEMOIZED-CUT-ROD(p, n)
+    let r[0:n] be a new array
+    for i = 0 to n
+        r[i] = float("-inf")
+    return MEMOIZED-CUT-ROD-AUX(p, n, r)
+
+MEMOIZED-CUT-ROD-AUX(p, n, r)
+    if r[n] >= 0
+        return r[n]
+    if n == 0
+        q = 0
+    else q = float("-inf")
+        for i = 1 to n
+            q = max(q, p[i] + MEMOIZED-CUT-ROD(p, n - i, r))
+    r[n] = q
+    return q
+
+BOTTOM-UP-CUT-ROD(p, n)
+    let r[0:n] be a new array
+    r[0] = 0
+    for j = 1 to n
+        q = float("-inf")
+        for i = 1 to j
+            q = max(q, p[i] + r[j - i])
+        r[j] = q
+    return r[n]
+
+let prices[1:10] be a new array
+prices[1] = 1
+prices[2] = 5
+prices[3] = 8
+prices[4] = 9
+prices[5] = 12
+prices[6] = 17
+prices[7] = 17
+prices[8] = 20
+prices[9] = 24
+prices[10] = 30
+n = 4
+max-price = CUT-ROD(prices, n)
+print max-price
