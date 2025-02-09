@@ -1,4 +1,3 @@
-from pdb import Pdb
 import random
 import inspect
 import os
@@ -143,19 +142,16 @@ class WebDb(Pccdb):
         :raises IOError: if source code for the current execution frame is not accessible.
         """
         lines = self.pc_source_lines
-        # lines, _ = inspect.findsource(self.curframe)
         lineno: int = self.current_pc_lineno
-        # lineno: int = self.curframe.f_lineno
-        # curr_line = lines[self.curframe.f_lineno - 1]
-        curr_line = self.current_pc_line
+        py_filename = self.curframe.f_code.co_filename
         return {
             # 'dirname': os.path.dirname(os.path.abspath(filename)) + os.path.sep,
             # 'filename': os.path.basename(filename),
-            "dirname": self.pc_source_dirname,
+            "dirname": self.pc_source_dirname + os.path.sep,
             "filename": self.pc_source_filename,
             'file_listing': "\n".join(lines),
             'current_line': lineno,
-            'breakpoints': [],
+            'breakpoints': self.get_file_breaks(py_filename),
             'globals': self.get_globals(),
             'locals': self.get_locals()
         }

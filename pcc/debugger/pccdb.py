@@ -123,6 +123,28 @@ class Pccdb(Pdb):
             print(f"{Style.BLUE}{self.__current_pc_lineno} @ {self.__current_pc_line}{Style.RESET}")
         return super().postcmd(stop, line)
 
+    def do_break(self, arg: str, temporary: bool = ...):
+        print("BREAK", arg)
+        args = arg.split(":")
+        pc_lineno = int(arg.split(":")[-1])
+        filename = ":".join(args[:-1])
+        py_lines, _ = inspect.findsource(self.curframe)
+        # find the Py line whose line marker is equal to pc_lineno
+        py_lineno = None
+        for idx, line in enumerate(py_lines):
+            if self._has_line_marker(line):
+                x = line.split("# l:")
+                if len(x) > 1 and int(x[-1]) == pc_lineno:
+                    py_lineno = idx + 1
+                    break
+        if py_lineno is None:
+            return f"Cannot set breakpoint at line {pc_lineno} of {filename}"
+        print("I think the right line is", py_lineno)
+        new_arg = f"{filename}:{py_lineno}"
+        return super().do_break(new_arg, temporary)
+
+    do_b = do_break
+
     @property
     def current_py_line(self) -> str:
         return self.__current_py_line
