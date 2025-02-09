@@ -23,8 +23,13 @@ class WebDb(Pccdb):
     active_instance = None
     null = object()
 
-    def __init__(self, pc_source_code: str, host='', port=5555, patch_stdstreams=False):
+    def __init__(self, pc_source_code: str, pc_source_path: str, host='', port=5555, patch_stdstreams=False):
         """
+        Initialize the debugger
+        :param pc_source_code: Pseudo-Code source of the file being debugged
+        :type pc_source_code: str
+        :param pc_source_path: Absolute or relative path to the file being debugged
+        :type pc_source_path: str
         :param host: web-UI hostname or IP-address
         :type host: str
         :param port: web-UI port. If ``port=-1``, choose a random port value
@@ -38,7 +43,7 @@ class WebDb(Pccdb):
             random.seed()
             port = random.randint(32768, 65536)
         self.console = WebConsole(host, port, self)
-        super().__init__(pc_source_code, stdin=self.console, stdout=self.console)
+        super().__init__(pc_source_code, pc_source_path, stdin=self.console, stdout=self.console)
         # Borrowed from here: https://github.com/ionelmc/python-remote-pdb
         self._backup = []
         if patch_stdstreams:
@@ -146,8 +151,8 @@ class WebDb(Pccdb):
         return {
             # 'dirname': os.path.dirname(os.path.abspath(filename)) + os.path.sep,
             # 'filename': os.path.basename(filename),
-            "dirname": "myfolder",
-            "filename": "myfile.txt",
+            "dirname": self.pc_source_dirname,
+            "filename": self.pc_source_filename,
             'file_listing': "\n".join(lines),
             'current_line': lineno,
             'breakpoints': [],
@@ -208,7 +213,7 @@ class WebDb(Pccdb):
             del frame.f_trace
             frame = frame.f_back
 
-def set_trace(pc_source_code: str, host='', port=5555, patch_stdstreams=False):
+def set_trace(path: str, pc_source_code: str, host='', port=5555, patch_stdstreams=False):
     """
     Start the debugger
 
@@ -222,6 +227,10 @@ def set_trace(pc_source_code: str, host='', port=5555, patch_stdstreams=False):
 
     Subsequent :func:`set_trace` calls can be used as hardcoded breakpoints.
 
+    :param path: Absolute or relative path to the file being debugged
+    :type path: str
+    :param pc_source_code: Pseudo-Code source of the file being debugged
+    :type pc_source_code: str
     :param host: web-UI hostname or IP-address
     :type host: str
     :param port: web-UI port. If ``port=-1``, choose a random port value
@@ -234,7 +243,7 @@ def set_trace(pc_source_code: str, host='', port=5555, patch_stdstreams=False):
     pdb = WebDb.active_instance
     if pdb is None:
         # print("SRC", pc_source_lines[0])
-        pdb = WebDb(pc_source_code, host, port, patch_stdstreams)
+        pdb = WebDb(pc_source_code, path, host, port, patch_stdstreams)
     else:
         # If the debugger is still attached reset trace to a new location
         pdb.remove_trace()

@@ -15,7 +15,7 @@ set_trace(\"input.pc\")
     def __init__(self, source_code: str = None):
         super().__init__()
         preamble_lines = self.__preamble.splitlines()
-        preamble_lines[-1] = f"set_trace(pc_source_code=\'\'\'{source_code}\'\'\')"
+        preamble_lines[-1] = f"set_trace(path=__file__, pc_source_code=\'\'\'{source_code}\'\'\')"
         self.__preamble = "\n".join(preamble_lines) + "\n"
 
     def transpile(self, tree: Tree) -> str:

@@ -23,8 +23,21 @@ class Pccdb(Pdb):
     def pc_source_lines(self) -> list[str]:
         return self.__pc_source_lines
 
-    def __init__(self, pc_source: str, *args, **kwargs):
+    @property
+    def pc_source_path(self) -> str:
+        return self.__pc_source_path
+
+    @property
+    def pc_source_dirname(self) -> str:
+        return "/".join(self.__pc_source_path.split("/")[:-1])
+
+    @property
+    def pc_source_filename(self) -> str:
+        return self.__pc_source_path.split("/")[-1]
+
+    def __init__(self, pc_source: str, pc_source_path: str, *args, **kwargs):
         Pccdb.active_instance = self
+        self.__pc_source_path = pc_source_path
         self.__pc_source_lines = pc_source.splitlines()
         # super().__init__(stdin=sys.stdin, stdout=sys.stdout, readrc=False)
         self.stdout = kwargs["stdout"]
