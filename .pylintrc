@@ -3,17 +3,13 @@
 # Specify a configuration file.
 #rcfile=
 
-# Python code to execute, usually for sys.path manipulation such as
-# pygtk.require().
-#init-hook=
-
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
 ignore=third_party
 
 # Add files or directories matching the regex patterns to the blacklist. The
 # regex matches against base names, not paths.
-ignore-patterns=object_detection_grpc_client.py,prediction_pb2.py,prediction_pb2_grpc.py
+ignore-patterns=output.py, out, out/
 
 # Pickle collected data for later comparisons.
 persistent=no
@@ -179,14 +175,14 @@ contextmanager-decorators=contextlib.contextmanager
 [FORMAT]
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=120
 
 # Regexp for a line that is allowed to be longer than the limit.
 ignore-long-lines=^\s*(# )?<?https?://\S+>?$
 
 # Allow the body of an if to be on the same line as the test if there is no
 # else.
-single-line-if-stmt=no
+single-line-if-stmt=y
 
 # Maximum number of lines in a module
 max-module-lines=1000
@@ -199,7 +195,7 @@ indent-string='    '
 indent-after-paren=4
 
 # Expected format of line ending, e.g. empty (any line ending), LF or CRLF.
-expected-line-ending-format=
+expected-line-ending-format=LF
 
 
 [MISCELLANEOUS]
@@ -272,11 +268,11 @@ spelling-store-unknown-words=no
 [IMPORTS]
 
 # Deprecated modules which should not be used, separated by a comma
-deprecated-modules=regsub,TERMIOS,Bastion,rexec
+deprecated-modules=
 
 # Create a graph of every (i.e. internal and external) dependencies in the
 # given file (report RP0402 must not be disabled)
-import-graph=
+import-graph=y
 
 # Create a graph of external dependencies in the given file (report RP0402 must
 # not be disabled)
@@ -291,7 +287,7 @@ int-import-graph=
 known-standard-library=
 
 # Force import order to recognize a module as part of a third party library.
-known-third-party=enchant
+known-third-party=
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists
