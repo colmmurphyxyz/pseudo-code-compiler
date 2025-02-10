@@ -1,1 +1,1 @@
-pylint --rcfile .pylintrc $(git ls-files src/**/*.py src/*.py)
+pylint --rcfile .pylintrc $(git ls-files pcc/**/*.py pcc/*.py)
