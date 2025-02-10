@@ -27,7 +27,7 @@ import { send_command } from './utils';
 function bind_key_events() {
   $(document).keydown((event) => {
     if (event.keyCode === 121) {
-      send_command('n');
+      send_command('z');
       return false;
     }
     else if (event.keyCode === 122 && !event.shiftKey) {

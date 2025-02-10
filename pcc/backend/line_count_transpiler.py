@@ -7,19 +7,15 @@ class LineCountTranspiler(Interpreter):
     __indent_weight: int = 4
 
     __preamble: str = """
-import pathlib
-import sys
-# add the source directory to sys.path. This is not a permanent solution
-# sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
-from pcc.backend.pc_stdlib import *
-from pccdb import set_trace
+from backend.pc_stdlib import *
+from debugger.web_db import set_trace
 set_trace(\"input.pc\")
             """.strip()
 
     def __init__(self, source_code: str = None):
         super().__init__()
         preamble_lines = self.__preamble.splitlines()
-        preamble_lines[-1] = f"set_trace(pc_source_code=\'\'\'{source_code}\'\'\', header='Hello From the constructor')"
+        preamble_lines[-1] = f"set_trace(path=__file__, pc_source_code=\'\'\'{source_code}\'\'\')"
         self.__preamble = "\n".join(preamble_lines) + "\n"
 
     def transpile(self, tree: Tree) -> str:

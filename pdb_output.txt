@@ -1,0 +1,3 @@
+> /home/colm/PycharmProjects/pcc_fixed/pcc/output.py(27)<module>()
+-> def INSERTION_SORT(A, n): # l:2
+(Pdb) 

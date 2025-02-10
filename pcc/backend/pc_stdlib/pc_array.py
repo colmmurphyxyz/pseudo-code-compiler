@@ -22,6 +22,8 @@ class PcArray:
     def __str__(self) -> str:
         return "[" + ", ".join(map(str, self.__elems)) + "]"
 
+    __repr__ = __str__
+
     def __len__(self) -> int:
         return self.__end - self.__start + 1
 

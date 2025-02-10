@@ -1,43 +1,18 @@
-# Author: Roman Miroshnychenko aka Roman V.M.
-# E-mail: roman1972@gmail.com
-#
-# Copyright (c) 2016 Roman Miroshnychenko
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-"""
-A web-interface for Python's built-in PDB debugger
-"""
-
+import random
 import inspect
 import os
-import random
 import sys
 import traceback
+
 from contextlib import contextmanager
-from pdb import Pdb
 from pprint import pformat
 
 from .web_console import WebConsole
+from .pccdb import Pccdb
 
-__all__ = ['WebPdb', 'set_trace', 'post_mortem', 'catch_post_mortem']
+__all__ = ["WebDb", "set_trace", "post_mortem", "catch_post_mortem"]
 
-class WebPdb(Pdb):
+class WebDb(Pccdb):
     """
     The main debugger class
 
@@ -47,10 +22,13 @@ class WebPdb(Pdb):
     active_instance = None
     null = object()
 
-    _pc_source_lines: list[str]
-
-    def __init__(self, host='', port=5555, patch_stdstreams=False, pc_source_lines: list[str] = None):
+    def __init__(self, pc_source_code: str, pc_source_path: str, host='', port=5555, patch_stdstreams=False):
         """
+        Initialize the debugger
+        :param pc_source_code: Pseudo-Code source of the file being debugged
+        :type pc_source_code: str
+        :param pc_source_path: Absolute or relative path to the file being debugged
+        :type pc_source_path: str
         :param host: web-UI hostname or IP-address
         :type host: str
         :param port: web-UI port. If ``port=-1``, choose a random port value
@@ -60,14 +38,11 @@ class WebPdb(Pdb):
             streams to the web-UI.
         :type patch_stdstreams: bool
         """
-        print("SOURCE")
-        print(pc_source_lines)
-        self._pc_source_lines = pc_source_lines
         if port == -1:
             random.seed()
             port = random.randint(32768, 65536)
         self.console = WebConsole(host, port, self)
-        super().__init__(stdin=self.console, stdout=self.console)
+        super().__init__(pc_source_code, pc_source_path, stdin=self.console, stdout=self.console)
         # Borrowed from here: https://github.com/ionelmc/python-remote-pdb
         self._backup = []
         if patch_stdstreams:
@@ -81,7 +56,7 @@ class WebPdb(Pdb):
             ):
                 self._backup.append((name, getattr(sys, name)))
                 setattr(sys, name, self.console)
-        WebPdb.active_instance = self
+        WebDb.active_instance = self
 
     def do_quit(self, arg):
         """
@@ -93,7 +68,7 @@ class WebPdb(Pdb):
         self.console.writeline('*** Aborting program ***\n')
         self.console.flush()
         self.console.close()
-        WebPdb.active_instance = None
+        WebDb.active_instance = None
         return super().do_quit(arg)
 
     do_q = do_exit = do_quit
@@ -108,8 +83,8 @@ class WebPdb(Pdb):
         elif arg in self.curframe.f_globals:
             obj = self.curframe.f_globals[arg]
         else:
-            obj = WebPdb.null
-        if obj is not WebPdb.null:
+            obj = WebDb.null
+        if obj is not WebDb.null:
             self.console.writeline(f'{arg} = {type(obj)}:\n')
             for name, value in inspect.getmembers(obj):
                 if not (name.startswith('__') and (name.endswith('__'))):
@@ -154,7 +129,7 @@ class WebPdb(Pdb):
             if not self.console.closed:
                 self.console.flush()
                 self.console.close()
-                WebPdb.active_instance = None
+                WebDb.active_instance = None
         return ret
 
     def get_current_frame_data(self):
@@ -166,20 +141,17 @@ class WebPdb(Pdb):
         :raises AttributeError: if the debugger does hold any execution frame.
         :raises IOError: if source code for the current execution frame is not accessible.
         """
-        filename = self.curframe.f_code.co_filename
-        lines, _ = inspect.findsource(self.curframe)
-        lineno: int = self.curframe.f_lineno
-        curr_line = lines[self.curframe.f_lineno - 1]
-        # if '# l:' in curr_line.strip():
-        #     lineno = int(curr_line.split('# l:')[1])
+        lines = self.pc_source_lines
+        lineno: int = self.current_pc_lineno
+        py_filename = self.curframe.f_code.co_filename
         return {
-            'dirname': os.path.dirname(os.path.abspath(filename)) + os.path.sep,
-            'filename': os.path.basename(filename),
-            # 'filename': "SE%RDTCYGVUBH",
-            # 'file_listing': ''.join(self._pc_source_lines),
-            'file_listing': "".join(lines),
+            # 'dirname': os.path.dirname(os.path.abspath(filename)) + os.path.sep,
+            # 'filename': os.path.basename(filename),
+            "dirname": self.pc_source_dirname + os.path.sep,
+            "filename": self.pc_source_filename,
+            'file_listing': "\n".join(lines),
             'current_line': lineno,
-            'breakpoints': self.get_file_breaks(filename),
+            'breakpoints': self.get_breakpoint_pc_lines(py_filename),
             'globals': self.get_globals(),
             'locals': self.get_locals()
         }
@@ -188,8 +160,8 @@ class WebPdb(Pdb):
         """
         :param raw_vars: a `dict` of `var_name: var_object` pairs
         :type raw_vars: dict
-        :return: sorted list of variables as a unicode string
-        :rtype: unicode
+        :return: sorted list of variables as a Unicode string
+        :rtype: Unicode
         """
         f_vars = []
         for var, value in raw_vars.items():
@@ -202,26 +174,26 @@ class WebPdb(Pdb):
         """
         Get the listing of global variables in the current scope
 
-        .. note:: special variables that start and end with
+        . note:: special variables that start and end with
             double underscores ``__`` are not included.
 
         :return: a listing of ``var = value`` pairs sorted alphabetically
-        :rtype: unicode
+        :rtype: Unicode
         """
-        return self._format_variables(self.curframe.f_globals)
+        return self._format_variables(super().get_globals_sanitised())
 
     def get_locals(self):
         """
         Get the listing of local variables in the current scope
 
-        .. note:: special variables that start and end with
+        . note:: special variables that start and end with
             double underscores ``__`` are not included.
             For module scope globals and locals listings are the same.
 
         :return: a listing of ``var = value`` pairs sorted alphabetically
-        :rtype: unicode
+        :rtype: Unicode
         """
-        return self._format_variables(self.curframe_locals)
+        return self._format_variables(super().get_locals_sanitised())
 
     def remove_trace(self, frame=None):
         """
@@ -237,8 +209,7 @@ class WebPdb(Pdb):
             del frame.f_trace
             frame = frame.f_back
 
-
-def set_trace(host='', port=5555, patch_stdstreams=False, pc_source_file: str = None):
+def set_trace(path: str, pc_source_code: str, host='', port=5555, patch_stdstreams=False):
     """
     Start the debugger
 
@@ -248,10 +219,14 @@ def set_trace(host='', port=5555, patch_stdstreams=False, pc_source_file: str = 
 
     Example::
 
-        import web_pdb;web_pdb.set_trace()
+        import debugger;debugger.set_trace()
 
     Subsequent :func:`set_trace` calls can be used as hardcoded breakpoints.
 
+    :param path: Absolute or relative path to the file being debugged
+    :type path: str
+    :param pc_source_code: Pseudo-Code source of the file being debugged
+    :type pc_source_code: str
     :param host: web-UI hostname or IP-address
     :type host: str
     :param port: web-UI port. If ``port=-1``, choose a random port value
@@ -261,18 +236,14 @@ def set_trace(host='', port=5555, patch_stdstreams=False, pc_source_file: str = 
         streams to the web-UI.
     :type patch_stdstreams: bool
     """
-    pdb = WebPdb.active_instance
-    pc_source_lines: list[str] | None = None
-    # with open(pc_source_file, "r") as file:
-    #     pc_source_lines = file.readlines()
+    pdb = WebDb.active_instance
     if pdb is None:
         # print("SRC", pc_source_lines[0])
-        pdb = WebPdb(host, port, patch_stdstreams, pc_source_lines)
+        pdb = WebDb(pc_source_code, path, host, port, patch_stdstreams)
     else:
         # If the debugger is still attached reset trace to a new location
         pdb.remove_trace()
     pdb.set_trace(sys._getframe().f_back)  # pylint: disable=protected-access
-
 
 def post_mortem(tb=None, host='', port=5555, patch_stdstreams=False):
     """
@@ -287,7 +258,7 @@ def post_mortem(tb=None, host='', port=5555, patch_stdstreams=False):
             # Some error-prone code
             assert ham == spam
         except:
-            web_pdb.post_mortem()
+            debugger.post_mortem()
 
     :param tb: traceback for post-mortem debugging
     :type tb: types.TracebackType
@@ -313,9 +284,9 @@ def post_mortem(tb=None, host='', port=5555, patch_stdstreams=False):
     if tb is None:
         raise ValueError('A valid traceback must be passed if no '
                          'exception is being handled')
-    pdb = WebPdb.active_instance
+    pdb = WebDb.active_instance
     if pdb is None:
-        pdb = WebPdb(host, port, patch_stdstreams)
+        pdb = WebDb(host, port, patch_stdstreams)
     else:
         pdb.remove_trace()
     pdb.console.writeline('*** Web-PDB post-mortem ***\n')
@@ -334,7 +305,7 @@ def catch_post_mortem(host='', port=5555, patch_stdstreams=False):
 
     Example::
 
-        with web_pdb.catch_post_mortem()
+        with debugger.catch_post_mortem()
             # Some error-prone code
             assert ham == spam
 

@@ -26,7 +26,7 @@ import { save_command_in_history, send_command } from './utils';
 
 function bind_button_events() {
   $('#next_btn').click(() => {
-    send_command('n');
+    send_command('z');
   });
 
   $('#step_btn').click(() => {

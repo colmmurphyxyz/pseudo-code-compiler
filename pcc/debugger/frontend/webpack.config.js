@@ -3,7 +3,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const SRC = path.resolve(__dirname, 'src');
-const BUILD = path.resolve(path.dirname(__dirname), 'web_pdb', 'static');
+const BUILD = path.resolve(path.dirname(__dirname), 'static');
 
 const config = {
   entry: SRC + '/index.js',
