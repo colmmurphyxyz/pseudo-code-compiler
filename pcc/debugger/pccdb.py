@@ -145,6 +145,20 @@ class Pccdb(Pdb):
 
     do_b = do_break
 
+    def get_breakpoint_pc_lines(self, filename: str) -> list[int]:
+        py_lines: list[int] = self.get_file_breaks(filename)
+        print("PYLINES", py_lines)
+        return list(map(self._get_pc_line_for, py_lines))
+
+    def _get_pc_line_for(self, py_lineno: int) -> int:
+        py_lines, _ = inspect.findsource(self.curframe)
+        py_line: str = py_lines[py_lineno - 1]
+        if self._has_line_marker(py_line):
+            pc_line = py_line.split("# l:")
+            if len(pc_line) > 1:
+                return int(pc_line[-1])
+
+
     @property
     def current_py_line(self) -> str:
         return self.__current_py_line

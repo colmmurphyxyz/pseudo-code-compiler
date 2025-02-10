@@ -151,7 +151,7 @@ class WebDb(Pccdb):
             "filename": self.pc_source_filename,
             'file_listing': "\n".join(lines),
             'current_line': lineno,
-            'breakpoints': self.get_file_breaks(py_filename),
+            'breakpoints': self.get_breakpoint_pc_lines(py_filename),
             'globals': self.get_globals(),
             'locals': self.get_locals()
         }
@@ -160,8 +160,8 @@ class WebDb(Pccdb):
         """
         :param raw_vars: a `dict` of `var_name: var_object` pairs
         :type raw_vars: dict
-        :return: sorted list of variables as a unicode string
-        :rtype: unicode
+        :return: sorted list of variables as a Unicode string
+        :rtype: Unicode
         """
         f_vars = []
         for var, value in raw_vars.items():
@@ -174,11 +174,11 @@ class WebDb(Pccdb):
         """
         Get the listing of global variables in the current scope
 
-        .. note:: special variables that start and end with
+        . note:: special variables that start and end with
             double underscores ``__`` are not included.
 
         :return: a listing of ``var = value`` pairs sorted alphabetically
-        :rtype: unicode
+        :rtype: Unicode
         """
         return self._format_variables(super().get_globals_sanitised())
 
@@ -186,12 +186,12 @@ class WebDb(Pccdb):
         """
         Get the listing of local variables in the current scope
 
-        .. note:: special variables that start and end with
+        . note:: special variables that start and end with
             double underscores ``__`` are not included.
             For module scope globals and locals listings are the same.
 
         :return: a listing of ``var = value`` pairs sorted alphabetically
-        :rtype: unicode
+        :rtype: Unicode
         """
         return self._format_variables(super().get_locals_sanitised())
 
