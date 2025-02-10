@@ -8,7 +8,6 @@ from lark.indenter import PythonIndenter
 from .parser import Parser
 from .postlex_pipeline import PostLexPipeline
 from .unicode_formatter import UnicodeFormatter
-from .print_detokenization import PrintDetokenization
 
 class PccParser(Parser):
     def __init__(self, grammar: str | Path):
@@ -20,7 +19,7 @@ class PccParser(Parser):
 
     @staticmethod
     def from_grammar_file(grammar_file_path: str | Path) -> PccParser:
-        with open(grammar_file_path) as grammar_file:
+        with open(grammar_file_path, encoding="utf-8") as grammar_file:
             return PccParser(grammar_file.read())
 
     @property
@@ -34,4 +33,3 @@ class PccParser(Parser):
 
     def lex(self, source_code: str, dont_ignore: bool = False) -> Iterator[Token]:
         return self._lark.lex(source_code, dont_ignore)
-

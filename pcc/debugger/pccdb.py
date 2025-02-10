@@ -89,10 +89,6 @@ class Pccdb(Pdb):
             self.cmdqueue = ["next"] + self.cmdqueue
         super().user_call(frame, argument_list)
 
-    def user_line(self, frame):
-        # print current line to the console
-        super().user_line(frame)
-
     def do_next(self, arg):
         self.set_next(self.curframe)
         return 1
@@ -106,9 +102,6 @@ class Pccdb(Pdb):
     do_s = do_step
 
     do_z = do_step
-
-    def precmd(self, line):
-        return super().precmd(line)
 
     def postcmd(self, stop, line):
         print("POSTCMD")
@@ -150,13 +143,14 @@ class Pccdb(Pdb):
         print("PYLINES", py_lines)
         return list(map(self._get_pc_line_for, py_lines))
 
-    def _get_pc_line_for(self, py_lineno: int) -> int:
+    def _get_pc_line_for(self, py_lineno: int) -> int | None:
         py_lines, _ = inspect.findsource(self.curframe)
         py_line: str = py_lines[py_lineno - 1]
         if self._has_line_marker(py_line):
             pc_line = py_line.split("# l:")
             if len(pc_line) > 1:
                 return int(pc_line[-1])
+        return None
 
 
     @property
@@ -180,4 +174,4 @@ def set_trace(pc_source_code: str, *, header=None):
     pdb = Pccdb(pc_source_code)
     if header is not None:
         pdb.message(header)
-    pdb.set_trace(sys._getframe().f_back)
+    pdb.set_trace(sys._getframe().f_back) # pylint: disable=protected-access

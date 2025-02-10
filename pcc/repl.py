@@ -10,7 +10,7 @@ from frontend.postlex_pipeline import PostLexPipeline
 from backend.transpiler import Transpiler
 
 # Import stdlib to execute repl code
-from backend.pc_stdlib import *
+from backend.pc_stdlib import * # pylint: disable=wildcard-import
 
 
 class ReplParser(Parser):
@@ -42,7 +42,7 @@ def main():
         statement = input(">> ")
         try :
             tree = parser.parse(statement + "\n")
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-exception-caught
             print("Parse Error", e)
             continue
 
@@ -50,8 +50,8 @@ def main():
         try:
             result: str = transpiler.transform(tree)
             print(result)
-            exec(result)
-        except Exception as e:
+            exec(result) # pylint: disable=exec-used
+        except Exception as e: # pylint: disable=broad-exception-caught
             print("Runtime Error")
             print(e.with_traceback(None))
         finally:

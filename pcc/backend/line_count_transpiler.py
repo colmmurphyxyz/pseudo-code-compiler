@@ -1,7 +1,7 @@
 from lark import Tree, Token
 from lark.visitors import Interpreter
 
-
+# pylint: disable=too-many-public-methods
 class LineCountTranspiler(Interpreter):
 
     __indent_weight: int = 4
@@ -99,7 +99,7 @@ set_trace(\"input.pc\")
         return self.visit(tree.children[0])
 
     def else_block(self, tree: Tree) -> str:
-        return f"else:" + f"{self.__line_marker(tree)}\n" + self.visit(tree.children[0])
+        return "else:" + f"{self.__line_marker(tree)}\n" + self.visit(tree.children[0])
 
     def else_inline(self, tree: Tree) -> str:
         output = f"else: {self.visit(tree.children[0])}"
@@ -153,11 +153,11 @@ set_trace(\"input.pc\")
 
     def comparison(self, tree: Tree) -> str:
         output: str = ""
-        for i in range(len(tree.children)):
+        for i, child in tree.children:
             if i % 2 == 0: # operand
-                output += self.visit(tree.children[i])
+                output += self.visit(child)
             else: # operator (Token)
-                output += f" {tree.children[i].value} "
+                output += f" {child.value} "
         return output
 
     def expr(self, tree: Tree) -> str:
@@ -262,4 +262,3 @@ set_trace(\"input.pc\")
     def name(self, tree: Tree) -> str:
         token: Token = tree.children[0]
         return self.__normalize_identifier(token.value)
-

@@ -1,7 +1,7 @@
 import pathlib
 import sys
 
-from lark import Token, Tree
+from lark import Tree
 
 from frontend.pcc_parser import PccParser
 from backend.line_count_transpiler import LineCountTranspiler
@@ -26,7 +26,7 @@ def main(argv: list[str]):
     transpiler: LineCountTranspiler = LineCountTranspiler(source_code=source_code)
     output: str = transpiler.transpile(ast)
     output_file: pathlib.Path = pathlib.Path(str(__file__)).parent.absolute() / "output.py"
-    with open(output_file, "w") as file:
+    with open(output_file, "w", encoding="utf-8") as file:
         file.write(output)
 
     print("### OUTPUT ###")

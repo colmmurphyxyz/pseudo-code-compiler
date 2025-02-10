@@ -14,9 +14,6 @@ sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
 from pcc.backend.pc_stdlib import *
         """.strip() + "\n"
 
-    def __init__(self, visit_tokens: bool = True):
-        super().__init__(visit_tokens)
-
     def __default__(self, data, children, meta):
         print(f"Using default callback for {data}")
         return data
