@@ -153,7 +153,7 @@ set_trace(\"input.pc\")
 
     def comparison(self, tree: Tree) -> str:
         output: str = ""
-        for i, child in tree.children:
+        for i, child in enumerate(tree.children):
             if i % 2 == 0: # operand
                 output += self.visit(child)
             else: # operator (Token)
