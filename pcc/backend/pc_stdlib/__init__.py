@@ -6,6 +6,7 @@ from .pc_list_node import PcListNode, NEW_LIST_NODE
 from .pc_random import RANDOM
 from .pc_math import floor, ceil
 from .error import error
+from .constants import infinity, infty, inf
 
 __all__ = [
     "PcArray",
@@ -22,4 +23,7 @@ __all__ = [
     "NEW_LINKED_LIST",
     "PcListNode",
     "NEW_LIST_NODE",
+    "infinity",
+    "infty",
+    "inf",
 ]
