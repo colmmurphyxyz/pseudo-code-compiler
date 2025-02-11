@@ -281,7 +281,7 @@ from pcc.backend.pc_stdlib import *
         return str(args[0])
 
     def string(self, args) -> str:
-        return f"\"{args[0]}\""
+        return args[0]
 
     def const_true(self, args) -> str:
         return "True"
