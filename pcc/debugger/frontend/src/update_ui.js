@@ -22,7 +22,7 @@ SOFTWARE.
 
 import $ from 'jquery';
 import Prism from 'prismjs';
-import 'prismjs/components/prism-python.js';
+import 'prismjs/components/prism-pseudocode.js';
 import 'prismjs/plugins/line-highlight/prism-line-highlight.js';
 import './prism-line-numbers.js';
 
