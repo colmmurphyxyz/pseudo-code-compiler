@@ -38,6 +38,11 @@ nav {
   max-height: 10vh;
 }
 
+.host > span {
+  font-weight: normal;
+  font-size: 0.8rem;
+}
+
 .codewindow {
   height: 80vh;
 }

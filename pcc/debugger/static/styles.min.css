@@ -282,10 +282,49 @@ html, body {
 
 .container {
   padding: 5px;
+  width: 100%;
 }
 
-.info {
-  height: 300px;
+body {
+  max-height: 100vh;
+  /* padding-left: 5rem; */
+}
+
+nav {
+  max-height: 10vh;
+}
+
+.host > span {
+  font-weight: normal;
+  font-size: 0.8rem;
+}
+
+.codewindow {
+  height: 80vh;
+}
+
+.codewindow pre {
+  height: 100%;
+  overflow: scroll;
+}
+
+.localswindow, .globalswindow {
+  height: 40vh;
+  overflow: scroll
+}
+
+.localswindow > pre, .globalswindow > pre {
+  height: 100%;
+}
+
+.pdboutput {
+  height: 40vh;
+  overflow: scroll;
+}
+
+.pdbinput {
+  max-height: 10vh;
+  padding-bottom: 4px;
 }
 
 .line-numbers-rows > span:before {

@@ -35,8 +35,8 @@ $(() => {
   bind_button_events();
   bind_key_events();
   $(window).resize(resize_console);
-  $('title').text(`Web-PDB Console on ${window.location.host}`);
-  $('#host').html(`Web-PDB Console on <em>${window.location.host}</em>`);
+  $('title').text(`Web-DB Console on ${window.location.host}`);
+  $('#host').html(`Web-DB Console on <em>${window.location.host}</em>. <span>Forked from <a href="https://github.com/romanvm/python-web-pdb">romanvm/python-web-pdb</a></span>`);
   resize_console();
   update_ui();
 });
