@@ -26,10 +26,26 @@ html, body {
 
 .container {
   padding: 5px;
+  width: 100%;
 }
 
-.info {
-  height: 300px;
+body {
+  max-height: 100vh;
+  /* padding-left: 5rem; */
+}
+
+.codewindow {
+  height: 90vh;
+  overflow: scroll;
+}
+
+/* .info {
+  max-height: 50vh;
+} */
+
+.pdbinput {
+  height: 10vh;
+  padding-bottom: 4px;
 }
 
 .line-numbers-rows > span:before {
