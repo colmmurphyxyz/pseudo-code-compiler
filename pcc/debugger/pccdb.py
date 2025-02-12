@@ -2,7 +2,9 @@ from pdb import Pdb
 import sys
 import re
 import inspect
+from types import FrameType
 from typing import Any, Mapping
+from copy import copy
 
 from .ansi_color_codes import Style
 
@@ -18,6 +20,9 @@ class Pccdb(Pdb):
     __current_py_lineno: int = 1
     __current_pc_line: str = ""
     __current_pc_lineno: int = 0
+
+    _external_locals: set[str] | None
+    _external_globals: set[str] | None
 
     @property
     def pc_source_lines(self) -> list[str]:
@@ -35,6 +40,22 @@ class Pccdb(Pdb):
     def pc_source_filename(self) -> str:
         return self.__pc_source_path.split("/")[-1]
 
+    @property
+    def external_locals(self) -> set[str] | None:
+        return self._external_locals
+
+    @external_locals.setter
+    def external_locals(self, value: set[str]):
+        self._external_locals = value
+
+    @property
+    def external_globals(self) -> set[str] | None:
+        return self._external_globals
+
+    @external_globals.setter
+    def external_globals(self, value: set[str]):
+        self._external_globals = value
+
     def __init__(self, pc_source: str, pc_source_path: str, *args, **kwargs):
         Pccdb.active_instance = self
         self.__pc_source_path = pc_source_path
@@ -43,8 +64,6 @@ class Pccdb(Pdb):
         self.stdout = kwargs["stdout"]
         self.stdin = kwargs["stdin"]
         super().__init__(*args, **kwargs)
-        print(self.cmdqueue)
-
 
     def __del__(self):
         # self._pdb_out.close()
@@ -61,19 +80,20 @@ class Pccdb(Pdb):
                          "__pdb_convenience_variables"}
         if isinstance(local_variables, str):
             return {"Not": "Available"}
-        return {k: v for k, v in local_variables.items() if k not in hidden_names}
+        return {k: v for k, v in local_variables.items() if k not in self._external_locals}
 
     def get_globals(self) -> dict[str, Any]:
         return self.curframe.f_globals
 
     def get_globals_sanitised(self) -> dict[str, Any]:
+        print("GETTING GLOBALS")
         hidden_names = {"__name__", "__doc__", "__package__", "__loader__", "__spec__", "__annotations__",
                         "__builtins__", "__file__", "__cached__", "pathlib", "sys", "set_trace",
                         "__pdb_convenience_variables"}
         global_vars = self.curframe.f_globals
         if isinstance(global_vars, str):
             return {"Not": "Available"}
-        return {k: v for k, v in global_vars.items() if k not in hidden_names}
+        return {k: v for k, v in global_vars.items() if k not in self._external_globals}
 
     def _has_line_marker(self, line: str) -> bool:
         return len(re.findall(r"# l:\d+", line)) > 0
@@ -174,4 +194,7 @@ def set_trace(pc_source_code: str, *, header=None):
     pdb = Pccdb(pc_source_code)
     if header is not None:
         pdb.message(header)
-    pdb.set_trace(sys._getframe().f_back) # pylint: disable=protected-access
+    prev_frame: FrameType = sys._getframe().f_back # pylint: disable=protected-access
+    pdb.external_globals = set(copy(prev_frame.f_globals.keys()))
+    pdb.external_locals = set(copy(prev_frame.f_locals.keys()))
+    pdb.set_trace(prev_frame)

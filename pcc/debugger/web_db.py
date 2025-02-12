@@ -5,7 +5,9 @@ import sys
 import traceback
 
 from contextlib import contextmanager
+from copy import copy
 from pprint import pformat
+from types import FrameType
 
 from .web_console import WebConsole
 from .pccdb import Pccdb
@@ -243,7 +245,10 @@ def set_trace(path: str, pc_source_code: str, host='', port=5555, patch_stdstrea
     else:
         # If the debugger is still attached reset trace to a new location
         pdb.remove_trace()
-    pdb.set_trace(sys._getframe().f_back)  # pylint: disable=protected-access
+    prev_frame: FrameType = sys._getframe().f_back  # pylint: disable=protected-access
+    pdb.external_globals = set(copy(prev_frame.f_globals).keys()).union({"__pdb_convenience_variables"})
+    pdb.external_locals = set(copy(prev_frame.f_locals).keys()).union({"__pdb_convenience_variables"})
+    pdb.set_trace(prev_frame)
 
 def post_mortem(tb=None, host='', port=5555, patch_stdstreams=False):
     """
