@@ -43,6 +43,10 @@ nav {
   font-size: 0.8rem;
 }
 
+.btn-group {
+  padding-left: 1em;
+}
+
 .codewindow {
   height: 80vh;
 }
@@ -54,21 +58,30 @@ nav {
 
 .localswindow, .globalswindow {
   height: 40vh;
-  overflow: scroll
 }
 
 .localswindow > pre, .globalswindow > pre {
   height: 100%;
+  overflow: scroll;
 }
 
 .pdboutput {
-  height: 40vh;
+  height: 41vh;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.pdboutput > pre {
+  /* height: 100%; */
   overflow: scroll;
 }
 
 .pdbinput {
   max-height: 10vh;
-  padding-bottom: 4px;
+}
+
+.pdbinput > div {
+  padding-top: 1em;
 }
 
 .line-numbers-rows > span:before {
