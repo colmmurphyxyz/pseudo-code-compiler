@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from copy import copy
 from pathlib import Path
 from typing import Iterator
 
@@ -7,14 +9,16 @@ from lark.indenter import PythonIndenter
 
 from .parser import Parser
 from .postlex_pipeline import PostLexPipeline
+from .renderer import Renderer
 from .unicode_formatter import UnicodeFormatter
 
 class PccParser(Parser):
     def __init__(self, grammar: str | Path):
         super().__init__()
         self._grammar = grammar
+        self._renderer = Renderer()
         self._lark = Lark(self._grammar, propagate_positions=True, start="file_input", postlex=PostLexPipeline([
-            PythonIndenter(), UnicodeFormatter()
+            PythonIndenter(), self._renderer, UnicodeFormatter()
         ]))
 
     @staticmethod
@@ -29,7 +33,15 @@ class PccParser(Parser):
     def parse(self, source_code: str) -> Tree:
         if source_code[-1] != "\n":
             source_code += "\n"
-        return self._lark.parse(source_code)
+        ast = self._lark.parse(source_code)
+        identifiers: set[tuple[str, str]] = self._renderer.identifiers
+        rendered_source = copy(source_code)
+        for orig, rendered in identifiers:
+            print(f"replace '{orig}' with {rendered}'")
+            rendered_source = rendered_source.replace(orig, rendered)
+        with open("out/rendered.pc", "w", encoding="utf-8") as file:
+            file.write(rendered_source)
+        return ast
 
     def lex(self, source_code: str, dont_ignore: bool = False) -> Iterator[Token]:
         return self._lark.lex(source_code, dont_ignore)
