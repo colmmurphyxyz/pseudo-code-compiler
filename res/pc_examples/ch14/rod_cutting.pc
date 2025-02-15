@@ -1,7 +1,7 @@
 CUT-ROD(p, n)
     if n == 0
         return 0
-    q = float("-inf")
+    q = -$\infty$
     for i = 1 to n
         q = max(q, p[i] + CUT-ROD(p, n - i))
     return q
@@ -9,7 +9,7 @@ CUT-ROD(p, n)
 MEMOIZED-CUT-ROD(p, n)
     let r[0:n] be a new array
     for i = 0 to n
-        r[i] = float("-inf")
+        r[i] = -$\infty$
     return MEMOIZED-CUT-ROD-AUX(p, n, r)
 
 MEMOIZED-CUT-ROD-AUX(p, n, r)
@@ -17,7 +17,7 @@ MEMOIZED-CUT-ROD-AUX(p, n, r)
         return r[n]
     if n == 0
         q = 0
-    else q = float("-inf")
+    else q = -$\infty$
         for i = 1 to n
             q = max(q, p[i] + MEMOIZED-CUT-ROD(p, n - i, r))
     r[n] = q
@@ -27,7 +27,7 @@ BOTTOM-UP-CUT-ROD(p, n)
     let r[0:n] be a new array
     r[0] = 0
     for j = 1 to n
-        q = float("-inf")
+        q = -$\infty$
         for i = 1 to j
             q = max(q, p[i] + r[j - i])
         r[j] = q

@@ -1,4 +1,5 @@
 from typing import Iterator
+import unicodedata
 
 from lark import Token
 from lark.lark import PostLex
@@ -6,8 +7,12 @@ from lark.lark import PostLex
 from .unicode_fragment import UnicodeFragment, split_unicode_fragments
 
 
-class UnicodeFormatter(PostLex):
+def _get_symbol_name(symbol: str) -> str:
+    name = unicodedata.name(symbol)
+    return name.split(" ")[-1].lower()
 
+
+class UnicodeFormatter(PostLex):
     def process(self, stream: Iterator[Token]) -> Iterator[Token]:
         for token in stream:
             if token.type != "NAME":
@@ -15,7 +20,7 @@ class UnicodeFormatter(PostLex):
                 continue
             fragments = split_unicode_fragments(token.value)
             transformed: list[str] = list(map(
-                lambda x: x.transformed if isinstance(x, UnicodeFragment) else x, fragments
+                lambda x: _get_symbol_name(x.transformed) if isinstance(x, UnicodeFragment) else x, fragments
             ))
             formatted = "".join(transformed)
             token.value = formatted

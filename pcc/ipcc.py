@@ -23,7 +23,8 @@ def main(argv: list[str]):
     parser = PccParser.from_grammar_file(pathlib.Path(__file__).parent.absolute() / "grammar/pcc.lark")
     # tokens: list[Token] = list(parser.lex(source_code))
     ast: Tree = parser.parse(source_code)
-    transpiler: LineCountTranspiler = LineCountTranspiler(source_code=source_code)
+    rendered_source: str = parser.rendered_source
+    transpiler: LineCountTranspiler = LineCountTranspiler(source_code=rendered_source)
     output: str = transpiler.transpile(ast)
     output_file: pathlib.Path = pathlib.Path(str(__file__)).parent.absolute() / "output.py"
     with open(output_file, "w", encoding="utf-8") as file:

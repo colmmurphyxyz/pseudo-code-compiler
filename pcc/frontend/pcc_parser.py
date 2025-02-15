@@ -13,6 +13,9 @@ from .renderer import Renderer
 from .unicode_formatter import UnicodeFormatter
 
 class PccParser(Parser):
+
+    _rendered_source: str = None
+
     def __init__(self, grammar: str | Path):
         super().__init__()
         self._grammar = grammar
@@ -20,6 +23,10 @@ class PccParser(Parser):
         self._lark = Lark(self._grammar, propagate_positions=True, start="file_input", postlex=PostLexPipeline([
             PythonIndenter(), self._renderer, UnicodeFormatter()
         ]))
+
+    @property
+    def rendered_source(self) -> str | None:
+        return self._rendered_source
 
     @staticmethod
     def from_grammar_file(grammar_file_path: str | Path) -> PccParser:
@@ -35,12 +42,12 @@ class PccParser(Parser):
             source_code += "\n"
         ast = self._lark.parse(source_code)
         identifiers: set[tuple[str, str]] = self._renderer.identifiers
-        rendered_source = copy(source_code)
+        self._rendered_source = copy(source_code)
         for orig, rendered in identifiers:
             print(f"replace '{orig}' with {rendered}'")
-            rendered_source = rendered_source.replace(orig, rendered)
+            self._rendered_source = self._rendered_source.replace(orig, rendered)
         with open("out/rendered.pc", "w", encoding="utf-8") as file:
-            file.write(rendered_source)
+            file.write(self._rendered_source)
         return ast
 
     def lex(self, source_code: str, dont_ignore: bool = False) -> Iterator[Token]:
