@@ -99,12 +99,16 @@ set_trace(\"input.pc\")
         return self.visit(tree.children[0])
 
     def else_block(self, tree: Tree) -> str:
-        return "else:" + f"{self.__line_marker(tree)}\n" + self.visit(tree.children[0])
+        output = f"else: {self.__line_marker(tree)}\n" + self.visit(tree.children[0])
+        if len(tree.children) > 1:
+            block = self.visit(tree.children[1])
+            output += f"{self.__line_marker(tree)}\n" + block
 
     def else_inline(self, tree: Tree) -> str:
-        output = f"else: {self.visit(tree.children[0])}"
+        output = "else:\n"
+        output += self._indent_all_lines(self.visit(tree.children[0])) + "\n"
         if len(tree.children) > 1:
-            output += f"{self.__line_marker(tree)}\n{self.visit(tree.children[1])}"
+            output += f"{self.visit(tree.children[1])}"
         return output
 
     def while_stmt(self, tree: Tree) -> str:
