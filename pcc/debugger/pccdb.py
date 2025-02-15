@@ -136,8 +136,7 @@ class Pccdb(Pdb):
             print(f"{Style.BLUE}{self.__current_pc_lineno} @ {self.__current_pc_line}{Style.RESET}")
         return super().postcmd(stop, line)
 
-    def do_break(self, arg: str, temporary: bool = ...):
-        print("BREAK", arg)
+    def do_break(self, arg: str, temporary: bool = False):
         args = arg.split(":")
         pc_lineno = int(arg.split(":")[-1])
         filename = ":".join(args[:-1])
@@ -152,7 +151,6 @@ class Pccdb(Pdb):
                     break
         if py_lineno is None:
             return f"Cannot set breakpoint at line {pc_lineno} of {filename}"
-        print("I think the right line is", py_lineno)
         new_arg = f"{filename}:{py_lineno}"
         return super().do_break(new_arg, temporary)
 
@@ -160,7 +158,6 @@ class Pccdb(Pdb):
 
     def get_breakpoint_pc_lines(self, filename: str) -> list[int]:
         py_lines: list[int] = self.get_file_breaks(filename)
-        print("PYLINES", py_lines)
         return list(map(self._get_pc_line_for, py_lines))
 
     def _get_pc_line_for(self, py_lineno: int) -> int | None:
