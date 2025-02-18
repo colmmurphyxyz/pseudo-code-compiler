@@ -1,7 +1,8 @@
-import click
+# pylint: disable=redefined-builtin
 import sys
 import pathlib
 
+import click
 from lark import Lark, Tree
 
 from frontend.pcc_parser import PccParser
@@ -66,4 +67,5 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
         out_file.write(output_code)
 
 if __name__ == "__main__":
+    # pylint: disable=no-value-for-parameter
     main()

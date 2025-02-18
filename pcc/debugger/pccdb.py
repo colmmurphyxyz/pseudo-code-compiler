@@ -75,9 +75,6 @@ class Pccdb(Pdb):
 
     def get_locals_sanitised(self) -> dict[str, any]:
         local_variables = self.curframe_locals
-        hidden_names = { "__name__", "__doc__", "__package__", "__loader__", "__spec__", "__annotations__",
-                         "__builtins__", "__file__", "__cached__", "pathlib", "sys", "set_trace",
-                         "__pdb_convenience_variables"}
         if isinstance(local_variables, str):
             return {"Not": "Available"}
         return {k: v for k, v in local_variables.items() if k not in self._external_locals}
@@ -86,10 +83,6 @@ class Pccdb(Pdb):
         return self.curframe.f_globals
 
     def get_globals_sanitised(self) -> dict[str, Any]:
-        print("GETTING GLOBALS")
-        hidden_names = {"__name__", "__doc__", "__package__", "__loader__", "__spec__", "__annotations__",
-                        "__builtins__", "__file__", "__cached__", "pathlib", "sys", "set_trace",
-                        "__pdb_convenience_variables"}
         global_vars = self.curframe.f_globals
         if isinstance(global_vars, str):
             return {"Not": "Available"}
