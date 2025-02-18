@@ -14,6 +14,9 @@ sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
 from pcc.backend.pc_stdlib import *
         """.strip() + "\n"
 
+    def transpile(self, tree: Tree) -> str:
+        return self.transform(tree)
+
     def __default__(self, data, children, meta):
         print(f"Using default callback for {data}")
         return data
