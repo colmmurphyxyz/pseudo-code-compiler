@@ -1,7 +1,6 @@
 lark>=1.2.2
 lark[interegular]
 unicodeitplus>=0.3.1
-pydot
-mypy
-pylint
+mypy>=1.13.0
+pylint>=3.3.1
 click>=8.1.8
