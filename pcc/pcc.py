@@ -6,6 +6,8 @@ from lark import Lark, Tree
 
 from frontend.pcc_parser import PccParser
 from backend.transpiler import Transpiler
+from backend.line_count_transpiler import LineCountTranspiler
+
 
 def usage() -> str:
     return """
@@ -52,10 +54,13 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
         if source[-1] != "\n":
             source += "\n"
     tree = parser.parse(source)
+    rendered_source: str = parser.rendered_source
+    with open(output_dir / "rendered_source.pc", "w", encoding="utf-8") as out_file:
+        out_file.write(rendered_source)
 
     print("~~~ Transpiler ~~~")
-    transpiler = Transpiler()
-    output_code: str = transpiler.transform(tree)
+    transpiler: Transpiler = LineCountTranspiler() if debug else Transpiler()
+    output_code: str = transpiler.transpile(tree)
     output_path: pathlib.Path = output_dir / "out.py"
     with open(output_path, "w", encoding="utf-8") as out_file:
         out_file.write(output_code)
