@@ -44,7 +44,6 @@ class PccParser(Parser):
         identifiers: set[tuple[str, str]] = self._renderer.identifiers
         self._rendered_source = copy(source_code)
         for orig, rendered in identifiers:
-            print(f"replace '{orig}' with {rendered}'")
             self._rendered_source = self._rendered_source.replace(orig, rendered)
         return ast
 

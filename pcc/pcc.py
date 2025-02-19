@@ -49,7 +49,6 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
     parser: Lark
     tree: Tree
     grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar/pcc.lark"
-    print("opening", grammar_file_path)
     parser: PccParser = PccParser.from_grammar_file(grammar_file_path)
 
     with open(source_file_path, "r", encoding="utf-8") as in_file:
@@ -64,7 +63,6 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
         with open(output_dir / "rendered_source.pc", "w", encoding="utf-8") as out_file:
             out_file.write(rendered_source)
 
-    print("~~~ Transpiler ~~~")
     transpiler: Transpiler = LineCountTranspiler() if debug else Transpiler()
     output_code: str = transpiler.transpile(tree)
     with open(output_path, "w", encoding="utf-8") as out_file:

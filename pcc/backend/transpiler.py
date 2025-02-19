@@ -18,7 +18,6 @@ from pcc.backend.pc_stdlib import *
         return self.transform(tree)
 
     def __default__(self, data, children, meta):
-        print(f"Using default callback for {data}")
         return data
 
     def _indent_all_lines(self, lines: str) -> str:
@@ -75,7 +74,6 @@ from pcc.backend.pc_stdlib import *
 
     # FIXME: 'else' branches are not transpiled correctly
     def if_stmt(self, args) -> str:
-        print("IF STMT", "\n".join([ str(a) for a in args ]) )
         if_condition = args[0]
         if_body = args[1]
         # return f"if {self.transform(if_condition)}:" + "\n" + if_body + "\n" + "\n".join(args[2:])
@@ -149,9 +147,6 @@ from pcc.backend.pc_stdlib import *
 
     def array_init(self, args) -> str:
         name, start, end = args
-        print(f"{type(name)=} {type(start)=} {type(end)=}")
-        print("Array init")
-        print(" # ".join(args))
         return f"{name} = PcArray({start}, {end})"
 
     def single_array_decl(self, args) -> str:
@@ -206,7 +201,7 @@ from pcc.backend.pc_stdlib import *
     def power(self, args) -> str:
         return " ".join(args)
 
-    def _unary_op(self, args) -> str:
+    def unary_op(self, args) -> str:
         match str(args[0]):
             case "+":
                 return "+"
