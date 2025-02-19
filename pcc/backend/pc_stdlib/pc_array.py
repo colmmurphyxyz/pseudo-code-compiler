@@ -1,31 +1,36 @@
 class PcArray:
-    __elems: list
-    __start: int
-    __end: int
+    _elems: list
+    _start: int
+    _end: int
 
     def __init__(self, start: int, end: int):
-        self.__start = start
-        self.__end = end
+        self._start = start
+        self._end = end
         # allocate array
-        self.__elems = [0] * (end - start + 1)
+        self._elems = [0] * (end - start + 1)
 
     def __getitem__(self, idx: int):
-        if idx < self.__start or idx > self.__end:
-            raise IndexError(f"Index {idx} out of range for array of indexable range [{self.__start}, {self.__end}]")
-        return self.__elems[idx - self.__start]
+        if idx < self._start or idx > self._end:
+            raise IndexError(f"Index {idx} out of range for array of indexable range [{self._start}, {self._end}]")
+        return self._elems[idx - self._start]
 
     def __setitem__(self, idx: int, val: int):
-        if idx < self.__start or idx > self.__end:
-            raise IndexError(f"Index {idx} out of range for array of indexable range [{self.__start}, {self.__end}]")
-        self.__elems[idx - self.__start] = val
+        if idx < self._start or idx > self._end:
+            raise IndexError(f"Index {idx} out of range for array of indexable range [{self._start}, {self._end}]")
+        self._elems[idx - self._start] = val
 
     def __str__(self) -> str:
-        return "[" + ", ".join(map(str, self.__elems)) + "]"
+        return "[" + ", ".join(map(str, self._elems)) + "]"
 
     __repr__ = __str__
 
     def __len__(self) -> int:
-        return self.__end - self.__start + 1
+        return self._end - self._start + 1
 
 def NEW_ARRAY(start: int, end: int) -> PcArray:
     return PcArray(start, end)
+
+if __name__ == "__main__":
+    a = PcArray(1, 5)
+    print(a)
+    print(a._elems)
