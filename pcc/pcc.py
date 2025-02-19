@@ -18,6 +18,7 @@ def usage() -> str:
       -h, --help: Print this help message
       -d --debug: compile file in debug mode
       -o --output: specify output directory, defaults to ./out/output.py
+      -r --output-rendered-source: Output PseudoCode source with non-ascii characters rendered as unicode. True by default
       """
 
 @click.command(help=usage())
@@ -25,8 +26,9 @@ def usage() -> str:
 @click.option("-h", "--help", type=click.BOOL, default=False, is_flag=True)
 @click.option("-d", "--debug", type=click.BOOL, default=False, is_flag=True)
 @click.option("-o", "--output", type=click.STRING, default="./out/output.py")
+@click.option("-r", "--output-rendered-source", type=click.BOOL, default=True)
 @click.argument("source_file_path", type=click.STRING, default="")
-def main(version: bool, help: bool, debug: bool, output: str, source_file_path: str):
+def main(version: bool, help: bool, debug: bool, output: str, source_file_path: str, output_rendered_source: bool):
     if help:
         print("Usage: pcc [options] file")
         print("Options:")
@@ -56,9 +58,11 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
         if source[-1] != "\n":
             source += "\n"
     tree = parser.parse(source)
-    rendered_source: str = parser.rendered_source
-    with open(output_dir / "rendered_source.pc", "w", encoding="utf-8") as out_file:
-        out_file.write(rendered_source)
+
+    if output_rendered_source:
+        rendered_source: str = parser.rendered_source
+        with open(output_dir / "rendered_source.pc", "w", encoding="utf-8") as out_file:
+            out_file.write(rendered_source)
 
     print("~~~ Transpiler ~~~")
     transpiler: Transpiler = LineCountTranspiler() if debug else Transpiler()
