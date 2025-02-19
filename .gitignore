@@ -2,9 +2,11 @@ venv
 .idea
 __pycache__
 pcc/__pycache__
+res/transpiled_pc_examples
 
 out
 
+.mypy_cache
 # pydot outputs
 *.png
 
