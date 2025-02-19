@@ -6,12 +6,11 @@ from random import randint
 # add the parent directory (repository root) to sys.path.n
 sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
 
-from pcc.backend.pc_stdlib import *
 from res.transpiled_pc_examples.ch02.insertion_sort import INSERTION_SORT as pc_insertion_sort
 from res.python_examples.ch02.insertion_sort import insertion_sort as py_insertion_sort
 
 from fuzz_test_runner import FuzzTestRunner
-from utils import random_list, compare_lists
+from utils import random_list
 
 
 def _input_generator():
