@@ -17,14 +17,14 @@ def usage() -> str:
       -v, --version: Print version information
       -h, --help: Print this help message
       -d --debug: compile file in debug mode
-      -o --output: specify output directory, defaults to ./out
+      -o --output: specify output directory, defaults to ./out/output.py
       """
 
 @click.command(help=usage())
 @click.option("-v", "--version", type=click.BOOL, default=False, is_flag=True)
 @click.option("-h", "--help", type=click.BOOL, default=False, is_flag=True)
 @click.option("-d", "--debug", type=click.BOOL, default=False, is_flag=True)
-@click.option("-o", "--output", type=click.STRING, default="./out")
+@click.option("-o", "--output", type=click.STRING, default="./out/output.py")
 @click.argument("source_file_path", type=click.STRING, default="")
 def main(version: bool, help: bool, debug: bool, output: str, source_file_path: str):
     if help:
@@ -39,9 +39,10 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
         print("Pseudo-Code Compiler, version x.y.z")
         sys.exit(0)
     # if output directory does not exist, create it
-    output_dir = pathlib.Path(output)
-    if not output_dir.exists():
-        output_dir.mkdir()
+    output_path: pathlib.Path = pathlib.Path(output)
+    output_dir: pathlib.Path = output_path.parent
+    if not output_path.parent.exists():
+        output_path.parent.mkdir()
 
     parser: Lark
     tree: Tree
@@ -62,7 +63,6 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
     print("~~~ Transpiler ~~~")
     transpiler: Transpiler = LineCountTranspiler() if debug else Transpiler()
     output_code: str = transpiler.transpile(tree)
-    output_path: pathlib.Path = output_dir / "out.py"
     with open(output_path, "w", encoding="utf-8") as out_file:
         out_file.write(output_code)
 

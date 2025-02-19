@@ -46,8 +46,6 @@ class PccParser(Parser):
         for orig, rendered in identifiers:
             print(f"replace '{orig}' with {rendered}'")
             self._rendered_source = self._rendered_source.replace(orig, rendered)
-        with open("out/rendered.pc", "w", encoding="utf-8") as file:
-            file.write(self._rendered_source)
         return ast
 
     def lex(self, source_code: str, dont_ignore: bool = False) -> Iterator[Token]:
