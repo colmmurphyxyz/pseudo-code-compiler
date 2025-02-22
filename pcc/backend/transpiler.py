@@ -257,6 +257,7 @@ from pcc.backend.pc_stdlib import *
             .replace("}", "")
             .replace("^", "")
             .replace("\\", "")
+            .replace("'", "_prime")
         )
         if normalized[0].isdigit():
             return "_" + normalized

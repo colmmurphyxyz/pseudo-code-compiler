@@ -258,6 +258,7 @@ set_trace(\"input.pc\")
             .replace("}", "")
             .replace("^", "")
             .replace("\\", "")
+            .replace("'", "_prime")
         )
         if normalized[0].isdigit():
             return "_" + normalized

@@ -4,13 +4,11 @@ LIST-SEARCH(L, k)
         x = x.next
     return x
 
-ll = NEW-LINKED-LIST(NIL, NIL)
-ll.head = NEW-LIST-NODE(1)
-x = ll.head
-x.next = NEW-LIST-NODE(2)
-x = x.next
-x.next = NEW-LIST-NODE(3)
-
-print ll
-
-print LIST-SEARCH(ll, 2)
+LIST-SEARCH'(L, k)
+    L.nil.key = k
+    x = L.nil.next
+    while x.key != k
+        x = x.next
+    if x == L.nil
+        return NIL
+    else return x
