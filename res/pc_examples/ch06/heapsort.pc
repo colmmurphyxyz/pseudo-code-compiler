@@ -1,3 +1,26 @@
+LEFT(i)
+    return 2 * i
+
+RIGHT(i)
+    return 2 * i + 1
+
+MAX-HEAPIFY(A, i)
+    l = LEFT(i)
+    r = RIGHT(i)
+    if l <= A.heap-size and A[l] > A[i]
+        largest = l
+    else largest = i
+    if r <= A.heap-size and A[r] > A[largest]
+        largest = r
+    if largest != i
+        exchange A[i] with A[largest]
+        MAX-HEAPIFY(A, largest)
+
+BUILD-MAX-HEAP(A, n)
+    A.heap-size = n
+    for i = floor(n / 2) downto 1
+        MAX-HEAPIFY(A, i)
+
 // section 6.4
 HEAPSORT(A, n)
     BUILD-MAX-HEAP(A, n)
