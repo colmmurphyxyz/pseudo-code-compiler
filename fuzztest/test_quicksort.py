@@ -1,0 +1,35 @@
+import sys
+import pathlib
+import unittest
+
+from pcc.backend.pc_stdlib import PcArray
+
+# add the parent directory (repository root) to sys.path
+sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
+
+from res.transpiled_pc_examples.ch07.quicksort import QUICKSORT
+
+class TestQuickSort(unittest.TestCase):
+    def test_quick_sort(self):
+        n = 5
+        a = PcArray.from_py_list([4, 2, 1, 5, 3], 1)
+        QUICKSORT(a, 1, n)
+        self.assertEqual(a._elems, [1, 2, 3, 4, 5])
+
+    def test_sort_empty_list(self):
+        n = 0
+        a = PcArray.from_py_list([], 1)
+        QUICKSORT(a, 1, n)
+        self.assertEqual(a._elems, [])
+
+    def test_sort_descending_list(self):
+        n = 5
+        a = PcArray.from_py_list([5, 4, 3, 2, 1], 1)
+        QUICKSORT(a, 1, n)
+        self.assertEqual(a._elems, [1, 2, 3, 4, 5])
+
+    def test_sort_ascending_list(self):
+        n = 5
+        a = PcArray.from_py_list([1, 2, 3, 4, 5], 1)
+        QUICKSORT(a, 1, n)
+        self.assertEqual(a._elems, [1, 2, 3, 4, 5])
