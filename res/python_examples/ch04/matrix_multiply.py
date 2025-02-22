@@ -135,12 +135,17 @@ def strassen_aux(A, B, C, n, A_row, A_col, B_row, B_col, C_row, C_col):
     C[C_row + half: C_row + 2 * half, C_col: C_col + half] = C[C_row + half: C_row + 2 * half, C_col: C_col + half] + P3 + P4
     C[C_row + half: C_row + 2 * half, C_col + half: C_col + 2 * half] = C[C_row + half: C_row + 2 * half, C_col + half: C_col + 2 * half] + P5 + P1 - P3 - P7
 
-
+def almost_equal(A, B, n):
+    """Determine whether two n x n matrices are equal to within 1e-13 in each position."""
+    for i in range(n):
+        for j in range(n):
+            if abs(A[i, j] - B[i, j]) > 1e-13:
+                return False  # too far apart in row i, column n
+    return True  # close enough in all positions
 # Testing
 if __name__ == "__main__":
 
     import numpy as np
-    from matrix_inverse import almost_equal
 
     # Test non-recursive matrix multiplication.
     n = 8
