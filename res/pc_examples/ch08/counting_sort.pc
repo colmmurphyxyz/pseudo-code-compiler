@@ -1,0 +1,17 @@
+// section 8.2
+
+COUNTING-SORT(A, n, k)
+    let B[1:n] and C[0:k] be new arrays
+    for i = 0 to k
+        C[i] = 0
+    for j = 1 to n
+        C[A[j]] = C[A[j]] + 1
+    // C[i] now contains the number of elements equal to i
+    for i = 1 to k
+        C[i] = C[i] + C[i - 1]
+    // C[i] now contains the number of elements less than or equal to i
+    // Copy A to B, starting from the enf od A
+    for j = n downto 1
+        B[C[A[j]]] = A[j]
+        C[A[j]] = C[A[j]] - 1 // to handle duplicate values
+    return B
