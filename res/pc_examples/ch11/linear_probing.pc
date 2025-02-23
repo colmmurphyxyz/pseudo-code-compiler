@@ -1,0 +1,14 @@
+// section 11.5
+
+LINEAR-PROBING-HASH-DELETE(T, q)
+    while TRUE
+        T[q] = NIL
+        q' = q
+        repeat
+            q' = (q' + 1) mod m
+            k' = T[q']
+            if k' == NIL
+                return
+        until g(k', q) < g(k', q')
+        T[q] = k'
+        q = q'

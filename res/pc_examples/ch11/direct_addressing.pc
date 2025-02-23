@@ -1,0 +1,10 @@
+// section 11.2
+
+DIRECT-ADDRESS-SEARCH(T, k)
+    return T[k]
+
+DIRECT-ADDRESS-INSERT(T, x)
+    T[x.key] = x
+
+DIRECT-ACCESS-DELETE(T, x)
+    T[x.key] = NIL

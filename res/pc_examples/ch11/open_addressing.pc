@@ -1,0 +1,25 @@
+// section 11.4
+
+h(x)
+    return x
+
+HASH-INSERT(T, k)
+    i = 0
+    repeat
+        q = h(k, i)
+        if T[q] == NIL
+            T[q] = k
+            return q
+        else i = i + 1
+    until i == m
+    return "hash table overflow"
+
+HASH-SEARCH(T, k)
+    i = 0
+    repeat
+        q = h(k, i)
+        if T[q] == k
+            return q
+        else i = i + 1
+    until T[q] == NIL or i == m
+    return NIL

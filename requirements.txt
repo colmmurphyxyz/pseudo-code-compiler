@@ -4,3 +4,4 @@ unicodeitplus>=0.3.1
 mypy>=1.13.0
 pylint>=3.3.1
 click>=8.1.8
+numpy

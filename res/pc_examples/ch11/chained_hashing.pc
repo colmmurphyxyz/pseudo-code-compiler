@@ -1,0 +1,13 @@
+// section 11.2
+// dummy hash function impl.
+h(x)
+    return x
+
+CHAINED-HASH-INSERT(T, x)
+    LIST-PREPEND(T[h(x.key)], x)
+
+CHAINED-HASH-SEARCH(T, k)
+    return LIST-SEARCH(T[h(k)], k)
+
+CHAINED-HASH-DELETE(T, x)
+    LIST-DELETE(T[h(x.key)], x)
