@@ -1,6 +1,8 @@
 from lark import Tree, Token
 from lark.visitors import Interpreter
 
+from .parser_error import ParserError
+
 # pylint: disable=too-many-public-methods
 class LineCountTranspiler(Interpreter):
 
@@ -23,6 +25,30 @@ set_trace(\"input.pc\")
 
     def __line_marker(self, tree: Tree) -> str:
         return f" # l:{tree.meta.line} "
+
+    def _get_class_name_for_struct(self, name: str) -> str:
+        match name.lower():
+            case "array" | "arrays":
+                return "PcArray"
+            case "stack" | "stacks":
+                return "PcStack"
+            case "queue" | "queues":
+                return "PcQueue"
+            case "table" | "tables":
+                return "PcTable"
+            case "heap" | "heaps":
+                return "PcMinHeap"
+            case "maxheap" | "maxheaps":
+                return "PcMaxHeap"
+            case "minheap" | "minheaps":
+                return "PcMinHeap"
+            case "priorityqueue" | "priorityqueues":
+                return "PcPriorityQueue"
+            case "tree" | "trees":
+                return "PcTree"
+            case "graph" | "graphs":
+                return "PcGraph"
+        raise ParserError(f"Unknown Structure declaration {name}")
 
     def __default__(self, tree: Tree):
         print(f"Using default callback for {tree}")
@@ -56,18 +82,52 @@ set_trace(\"input.pc\")
     def assign_stmt(self, tree: Tree) -> str:
         return str(self.visit(tree.children[0]))
 
-    def array_decl_stmt(self, tree: Tree) -> str:
-        return self.visit(tree.children[0])
+    def struct_init_arguments(self, tree: Tree) -> str:
+        return ", ".join(self.visit_children(tree))
 
-    def array_init(self, tree: Tree) -> str:
-        name, start, end = self.visit_children(tree)
-        return f"{name} = PcArray({start}, {end})"
+    def struct_decl_stmt(self, tree: Tree) -> str:
+        stmt = self.visit(tree.children[0])
+        return stmt + ";"
 
-    def single_array_decl(self, tree: Tree) -> str:
-        return self.visit(tree.children[0]) + ";"
+    def struct_init(self, tree: Tree) -> list[str]:
+        name = self.visit(tree.children[0])
+        if len(tree.children) == 1:
+            return [name]
+        ret = [name]
+        for child in tree.children[1:]:
+            ret.append(self.visit(child))
+        return ret
 
-    def multiple_array_decl(self, tree: Tree) -> str:
-        return "; ".join(self.visit_children(tree)) + ";"
+    def single_struct_decl(self, tree: Tree) -> str:
+        lhs = self.visit(tree.children[0])
+        var_name = lhs[0]
+        struct_args = lhs[1:] if len(lhs) > 1 else []
+        class_name = self._get_class_name_for_struct(self.visit(tree.children[-1]))
+        return f"{var_name} = {class_name}({', '.join(struct_args)})"
+
+    def multiple_struct_decl(self, tree: Tree) -> str:
+        class_name: str = self._get_class_name_for_struct(self.visit(tree.children[-1]))
+        inits = list(map(self.visit, tree.children[:-1]))
+        outputs = []
+        for init in inits:
+            var_name = init[0]
+            var_args = init[1:] if len(init) > 1 else []
+            outputs.append(f"{var_name} = {class_name}({', '.join(var_args)})")
+        return "; ".join(outputs)
+
+
+    # def array_decl_stmt(self, tree: Tree) -> str:
+    #     return self.visit(tree.children[0])
+    #
+    # def array_init(self, tree: Tree) -> str:
+    #     name, start, end = self.visit_children(tree)
+    #     return f"{name} = PcArray({start}, {end})"
+    #
+    # def single_array_decl(self, tree: Tree) -> str:
+    #     return self.visit(tree.children[0]) + ";"
+    #
+    # def multiple_array_decl(self, tree: Tree) -> str:
+    #     return "; ".join(self.visit_children(tree)) + ";"
 
     def return_stmt(self, tree: Tree) -> str:
         return f"return {self.visit(tree.children[0])}"

@@ -186,7 +186,7 @@ from pcc.backend.pc_stdlib import *
         outputs = []
         for init in inits:
             var_name = init[0]
-            var_args = init[1:]
+            var_args = init[1:] if len(init) > 1 else []
             outputs.append(f"{var_name} = {class_name}({', '.join([ str(arg) for arg in var_args])})")
         return "; ".join(outputs)
 
