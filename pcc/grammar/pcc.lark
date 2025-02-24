@@ -11,27 +11,29 @@ simple_stmt: small_stmt (";" small_stmt)* [";"] _NEWLINE
 expr_stmt: test
 assign_stmt: assign
 
-?decl_stmt: array_decl_stmt
+?decl_stmt: struct_decl_stmt
 
-array_decl_stmt: single_array_decl
-    | multiple_array_decl
-array_init: name "[" arith_expr ":" arith_expr "]"
-single_array_decl: "let" array_init "be" "a" "new" "array"
-multiple_array_decl: "let" array_init ("and" array_init)+ "be" "new" "arrays"
+struct_init_arguments: arith_expr ("," arith_expr)*
+    | arith_expr (":" arith_expr)
+
+struct_decl_stmt: single_struct_decl
+    | multiple_struct_decl
+struct_init: name "[" struct_init_arguments? "]"
+single_struct_decl: "let" struct_init "be" "a" "new" name
+multiple_struct_decl: "let" struct_init ("and" struct_init)+ "be" "new" name
 
 ?flow_stmt: return_stmt | print_stmt | error_stmt | exchange_stmt
 return_stmt: "return" test
 print_stmt: "print" test
 error_stmt: "error" string
 exchange_stmt: ("exchange" | "swap") atom_expr "with" atom_expr
-// TODO: implement more statements into compound_stmt (e.g. repeat)
+
 ?compound_stmt: if_stmt
     | while_stmt
     | for_stmt
     | repeat_stmt
     | funcdef
-// FIXME: It is not clear/easy to determine if an if_stmt contains an else branch
-// the 'else' grammar should be extracted to its own rule
+
 if_stmt: "if" test _NEWLINE block_stmt elifs else_?
 elifs: elif_*
 elif_: "else" "if" test _NEWLINE block_stmt

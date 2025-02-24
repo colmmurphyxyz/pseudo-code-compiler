@@ -1,5 +1,8 @@
 # pylint: disable=unused-argument
+from click import argument
 from lark import Transformer, Tree, Token
+
+from .parser_error import ParserError
 
 
 class Transpiler(Transformer):  # pylint: disable=too-many-public-methods
@@ -142,19 +145,74 @@ from pcc.backend.pc_stdlib import *
         lhs, rhs = args
         return f"{lhs} = {rhs}"
 
-    def array_decl_stmt(self, args) -> str:
-        return str(args[0])
+    def struct_init_arguments(self, args) -> list[int]:
+        return [ int(arg) for arg in args ]
 
-    def array_init(self, args) -> str:
-        name, start, end = args
-        return f"{name} = PcArray({start}, {end})"
+    def struct_decl_stmt(self, args) -> str:
+        return str(args[0]) + ";"
 
-    def single_array_decl(self, args) -> str:
-        array_init: str = args[0]
-        return array_init + ";"
+    def struct_init(self, args):
+        name = args[0]
+        if len(args) == 1:
+            return [name]
+        arguments = args[1]
+        ret = [name]
+        for a in arguments:
+            ret.append(a)
+        return ret
 
-    def multiple_array_decl(self, args) -> str:
-        return "; ".join(args) + ";"
+    def single_struct_decl(self, args) -> str:
+        struct_name = args[0][0]
+        struct_args = args[0][1:]
+        struct_type = args[1]
+        class_name = "UNDEFINED"
+        match struct_type:
+            case "array": class_name = "PcArray"
+            case "stack": class_name = "PcStack"
+            case "queue": class_name = "PcQueue"
+            case "table": class_name = "PcTable"
+            case "heap": class_name = "PcMinHeap"
+            case "maxheap": class_name = "PcMaxHeap"
+            case "minheap": class_name = "PcMinHeap"
+            case "priorityqueue": class_name = "PcPriorityQueue"
+            case "tree": class_name = "PcTree"
+            case "graph": class_name = "PcGraph"
+        return f"{struct_name} = {class_name}({', '.join([ str(arg) for arg in struct_args])})"
+
+    def multiple_struct_decl(self, args) -> str:
+        struct_type = args[-1]
+        class_name = self._get_class_name_for_struct(struct_type)
+        inits = args[:-1]
+        outputs = []
+        for init in inits:
+            var_name = init[0]
+            var_args = init[1:]
+            outputs.append(f"{var_name} = {class_name}({', '.join([ str(arg) for arg in var_args])})")
+        return "; ".join(outputs)
+
+    def _get_class_name_for_struct(self, name: str) -> str:
+        match name.lower():
+            case "array" | "arrays":
+                return "PcArray"
+            case "stack" | "stacks":
+                return "PcStack"
+            case "queue" | "queues":
+                return "PcQueue"
+            case "table" | "tables":
+                return "PcTable"
+            case "heap" | "heaps":
+                return "PcMinHeap"
+            case "maxheap" | "maxheaps":
+                return "PcMaxHeap"
+            case "minheap" | "minheaps":
+                return "PcMinHeap"
+            case "priorityqueue" | "priorityqueues":
+                return "PcPriorityQueue"
+            case "tree" | "trees":
+                return "PcTree"
+            case "graph" | "graphs":
+                return "PcGraph"
+        raise ParserError(f"Unknown Structure declaration {name}")
 
     def test(self, args) -> str:
         return str(args[0])
