@@ -35,6 +35,8 @@ from pcc.backend.pc_stdlib import *
     def funcdef(self, args) -> str:
         func_name: str = args[0]
         parameters = args[1]
+        if parameters is None:
+            parameters = ""
         body: str = args[2]
         return f"def {func_name}({parameters}):" + "\n" + body + "\n"
 
@@ -289,6 +291,8 @@ from pcc.backend.pc_stdlib import *
     def funccall(self, args) -> str:
         func_name = args[0]
         func_arguments = args[1]
+        if func_arguments is None:
+            func_arguments = ""
         return f"{func_name}({func_arguments})"
 
     def getitem(self, args) -> str:

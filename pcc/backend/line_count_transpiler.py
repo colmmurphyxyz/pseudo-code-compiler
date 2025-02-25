@@ -62,9 +62,8 @@ set_trace(\"input.pc\")
 
     def funcdef(self, tree: Tree) -> str:
         func_name, parameters, body = self.visit_children(tree)
-        # func_name: str = tree.children[0]
-        # parameters = tree.children[1]
-        # body: str = tree.children[2]
+        if parameters is None:
+            parameters = ""
         return f"def {func_name}({parameters}):" + f"{self.__line_marker(tree)}\n" + body + "\n"
 
     def parameters(self, tree: Tree) -> str:
@@ -261,8 +260,8 @@ set_trace(\"input.pc\")
 
     def funccall(self, tree: Tree) -> str:
         func_name, arguments = self.visit_children(tree)
-        # arguments = list(map(lambda c: self.visit(c), tree.children[0].children[1:]))
-        print("ARGUING", arguments)
+        if arguments is None:
+            arguments = ""
         return f"{func_name}({arguments})"
 
     def getitem(self, tree: Tree) -> str:
