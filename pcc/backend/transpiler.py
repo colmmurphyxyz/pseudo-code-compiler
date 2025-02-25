@@ -82,7 +82,7 @@ from pcc.backend.pc_stdlib import *
         if_condition = args[0]
         if_body = args[1]
         # return f"if {self.transform(if_condition)}:" + "\n" + if_body + "\n" + "\n".join(args[2:])
-        return f"if {if_condition}:" + "\n" + if_body + "\n".join(args[2:])
+        return f"if {if_condition}:" + "\n" + if_body + "\n" + "\n".join(args[2:])
 
 
     def elifs(self, args):
