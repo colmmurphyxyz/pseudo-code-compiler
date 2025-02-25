@@ -162,6 +162,7 @@ set_trace(\"input.pc\")
         if len(tree.children) > 1:
             block = self.visit(tree.children[1])
             output += f"{self.__line_marker(tree)}\n" + block
+        return output
 
     def else_inline(self, tree: Tree) -> str:
         output = "else:\n"
