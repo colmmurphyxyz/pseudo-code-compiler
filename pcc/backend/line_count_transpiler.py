@@ -9,8 +9,11 @@ class LineCountTranspiler(Interpreter):
     __indent_weight: int = 4
 
     __preamble: str = """
-from backend.pc_stdlib import *
-from debugger.web_db import set_trace
+import sys
+import pathlib
+sys.path.append(str(pathlib.Path(__file__).parent.parent.absolute()))
+from pcc.backend.pc_stdlib import *
+from pcc.debugger.web_db import set_trace
 set_trace(\"input.pc\")
             """.strip()
 

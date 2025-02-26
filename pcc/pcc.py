@@ -58,12 +58,14 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
             source += "\n"
     tree = parser.parse(source)
 
+    rendered_source: str = parser.rendered_source
+
     if output_rendered_source:
-        rendered_source: str = parser.rendered_source
         with open(output_dir / "rendered_source.pc", "w", encoding="utf-8") as out_file:
             out_file.write(rendered_source)
+        source = rendered_source
 
-    transpiler: Transpiler = LineCountTranspiler() if debug else Transpiler()
+    transpiler: Transpiler = LineCountTranspiler(rendered_source) if debug else Transpiler()
     output_code: str = transpiler.transpile(tree)
     with open(output_path, "w", encoding="utf-8") as out_file:
         out_file.write(output_code)
