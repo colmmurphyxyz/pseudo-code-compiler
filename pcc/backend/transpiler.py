@@ -148,7 +148,7 @@ from pcc.backend.pc_stdlib import *
         return f"{lhs} = {rhs}"
 
     def struct_init_arguments(self, args) -> list[int]:
-        return [ int(arg) for arg in args ]
+        return [ arg for arg in args ]
 
     def struct_decl_stmt(self, args) -> str:
         return str(args[0]) + ";"
@@ -167,18 +167,7 @@ from pcc.backend.pc_stdlib import *
         struct_name = args[0][0]
         struct_args = args[0][1:]
         struct_type = args[1]
-        class_name = "UNDEFINED"
-        match struct_type:
-            case "array": class_name = "PcArray"
-            case "stack": class_name = "PcStack"
-            case "queue": class_name = "PcQueue"
-            case "table": class_name = "PcTable"
-            case "heap": class_name = "PcMinHeap"
-            case "maxheap": class_name = "PcMaxHeap"
-            case "minheap": class_name = "PcMinHeap"
-            case "priorityqueue": class_name = "PcPriorityQueue"
-            case "tree": class_name = "PcTree"
-            case "graph": class_name = "PcGraph"
+        class_name = self._get_class_name_for_struct(struct_type)
         return f"{struct_name} = {class_name}({', '.join([ str(arg) for arg in struct_args])})"
 
     def multiple_struct_decl(self, args) -> str:
@@ -200,6 +189,10 @@ from pcc.backend.pc_stdlib import *
                 return "PcStack"
             case "queue" | "queues":
                 return "PcQueue"
+            case "linkedlist" | "linkedlists":
+                return "PcLinkedList"
+            case "listnode" | "listnodes":
+                return "PcListNode"
             case "table" | "tables":
                 return "PcTable"
             case "heap" | "heaps":

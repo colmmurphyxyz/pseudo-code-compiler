@@ -1,13 +1,40 @@
 // section 11.2
+
+// linked list algorithms
+LIST-PREPEND(L, x)
+    x.next = L.head
+    x.prev = NIL
+    if L.head != NIL
+        L.head.prev = x
+    L.head = x
+
+LIST-SEARCH(L, k)
+    x = L.head
+    while x != NIL and x.key != k
+        x = x.next
+    return x
+
+LIST-DELETE(L, x)
+    if x.prev != NIL
+        x.prev.next = x.next
+    else L.head = x.next
+    if x.next != NIL
+        x.next.prev = x.prev
+
 // dummy hash function impl.
 h(x)
     return x
 
-CHAINED-HASH-INSERT(T, x)
-    LIST-PREPEND(T[h(x.key)], x)
+CHAINED-HASH-INSERT(T, k, x)
+    let N[NIL,NIL,k,x] be a new listnode
+    LIST-PREPEND(T[h(N.key)], N)
 
 CHAINED-HASH-SEARCH(T, k)
-    return LIST-SEARCH(T[h(k)], k)
+    found = LIST-SEARCH(T[h(k)], k)
+    if found != NIL
+        return found.value
+    else return NIL
 
-CHAINED-HASH-DELETE(T, x)
-    LIST-DELETE(T[h(x.key)], x)
+CHAINED-HASH-DELETE(T, k)
+    subject = LIST-SEARCH(T[h(k)], k)
+    LIST-DELETE(T[h(k)], subject)
