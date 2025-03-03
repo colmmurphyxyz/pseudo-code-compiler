@@ -8,6 +8,10 @@ class PcArray:
     _start: int
     _end: int
 
+    @property
+    def elems(self) -> list:
+        return self._elems
+
     def __init__(self, start: int, end: int):
         self._start = start
         self._end = end

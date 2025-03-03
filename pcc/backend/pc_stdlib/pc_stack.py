@@ -9,6 +9,19 @@ class PcStack:
         # Over-allocate elems to account for 1-based indexing
         self.__elems = [None] * (size + 1)
 
+    def push(self, elem):
+        if self.top == self.size:
+            raise IndexError("Stack overflow")
+        self.top += 1
+        self.__elems[self.top] = elem
+
+    def pop(self):
+        if self.top == 0:
+            raise IndexError("Stack underflow")
+        elem = self.__elems[self.top]
+        self.top -= 1
+        return elem
+
     def __getitem__(self, idx: int):
         return self.__elems[idx]
 
