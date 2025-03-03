@@ -8,3 +8,33 @@ LEFT(i)
 
 RIGHT(i)
     return 2 * i + 1
+
+MIN-HEAPIFY(A, i)
+    l = LEFT(i)
+    r = RIGHT(i)
+    if l <= A.heap-size and A[l] < A[i]
+        smallest = l
+    else
+        smallest = i
+    if r <= A.heap-size and A[r] < A[smallest]
+        smallest = r
+    if smallest != i
+        exchange A[i] with A[smallest]
+        MIN-HEAPIFY(A, smallest)
+
+MIN-HEAP-MINIMUM(A)
+    if A.heap-size < 1
+        error "heap underflow"
+    return A[1]
+
+BUILD-MIN-HEAP(A, n)
+    A.heap-size = n
+    for i = PARENT(n) downto 1
+        MIN-HEAPIFY(A, i)
+
+EXTRACT-MIN(A)
+    min = A[1]
+    A[1] = A[A.heap-size]
+    A.heap-size = A.heap-size - 1
+    MIN-HEAPIFY(A, 1)
+    return min
