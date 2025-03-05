@@ -4,6 +4,7 @@ from .pc_queue import PcQueue, NEW_QUEUE
 from .pc_linked_list import PcLinkedList, NEW_LINKED_LIST
 from .pc_list_node import PcListNode, NEW_LIST_NODE
 from .pc_min_heap import PcMinHeap, NEW_MINHEAP
+from .pc_binary_tree import PcBinaryTree, NEW_BINARY_TREE
 from .pc_random import RANDOM
 from .pc_math import floor, ceil
 from .error import error
@@ -26,6 +27,8 @@ __all__ = [
     "NEW_LIST_NODE",
     "PcMinHeap",
     "NEW_MINHEAP",
+    "PcBinaryTree",
+    "NEW_BINARY_TREE",
     "infinity",
     "infty",
     "inf",
