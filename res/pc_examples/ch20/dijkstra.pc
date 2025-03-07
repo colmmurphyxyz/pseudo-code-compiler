@@ -1,0 +1,103 @@
+// Priority Queues
+LEFT(i)
+    return 2 * i
+
+RIGHT(i)
+    return 2 * i + 1
+
+PARENT(i)
+    return i / 2
+
+INSERT(Q, u)
+    Q.heap-size = Q.heap-size + 1
+    Q[Q.heap-size] = u
+    DECREASE-KEY(Q, u, u.d)
+
+MIN-HEAPIFY(Q, i)
+    l = LEFT(i)
+    r = RIGHT(i)
+    if l <= Q.heap-size and Q[l].d < Q[i].d
+        smallest = l
+    else
+        smallest = i
+    if r <= Q.heap-size and Q[r].d < Q[smallest].d
+        smallest = r
+    if smallest != i
+        exchange Q[i] with Q[smallest]
+        MIN-HEAPIFY(Q, smallest)
+
+EXTRACT-MIN(Q)
+    min = Q[1]
+    Q[1] = Q[Q.heap-size]
+    Q.heap-size = Q.heap-size - 1
+    MIN-HEAPIFY(Q, 1)
+    return min
+
+DECREASE-KEY(Q, v, k)
+    for i = 1 to Q.heap-size
+        // key will have already been adjusted by RELAX
+        if Q[i].key == v.key
+            Q[i].d = k
+            exchange Q[i] with Q[1]
+            MIN-HEAPIFY(Q, 1)
+
+INITIALIZE-SINGLE-SOURCE(G, s)
+    for each vertex v in G.V
+        v.d = $\infty$
+        v.$\pi$ = NIL
+    s.d = 0
+
+RELAX(u, v, w)
+    if v.d > u.d + w(u, v)
+        v.d = u.d + w(u, v)
+        v.$\pi$ = u
+        return TRUE
+    return FALSE
+
+SET-UNION(s, v)
+    return s + v
+
+DIJKSTRA(G, w, s)
+    INITIALIZE-SINGLE-SOURCE(G, s);
+    let S be a new set
+    let Q[len(G.V)] be a new priorityqueue
+    for each vertex v in G.V
+        INSERT(Q, v)
+    while Q
+        u = EXTRACT-MIN(Q)
+        S = SET-UNION(S, PcSet([u]))
+        for each vertex v in G.Adj(u)
+            did-decrease = RELAX(u, v, w)
+            if did-decrease
+                DECREASE-KEY(Q, v, v.d)
+
+
+DIJKSTRA-EXAMPLE()
+    let adj-mat[1:5] be a new array
+    for i = 1 to 5
+        let row[1:5] be a new array
+        adj-mat[i] = row
+        for j = 1 to 5
+            adj-mat[i][j] = 0
+
+    adj-mat[1][2] = 10
+    adj-mat[1][4] = 5
+    adj-mat[2][3] = 1
+    adj-mat[2][4] = 2
+    adj-mat[3][5] = 4
+    adj-mat[4][2] = 3
+    adj-mat[4][3] = 9
+    adj-mat[4][5] = 2
+    adj-mat[5][3] = 6
+
+    w(u, v)
+        return adj-mat[u.key][v.key]
+
+    let G[adj-mat] be a new graph
+    DIJKSTRA(G, w, G.V[1])
+    print "done"
+
+    for each u in G.V
+        print u
+
+DIJKSTRA-EXAMPLE()

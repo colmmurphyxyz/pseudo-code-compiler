@@ -1,0 +1,57 @@
+// Queue operations
+ENQUEUE(Q, x)
+    Q[Q.tail] = x
+    if Q.tail == Q.size
+        Q.tail = 1
+    else Q.tail = Q.tail + 1
+    if Q.tail == Q.head
+        error "overflow"
+
+DEQUEUE(Q)
+    x = Q[Q.head]
+    if Q.head == Q.size
+        Q.head = 1
+    else Q.head = Q.head + 1
+    return x
+
+BFS(G, s)
+    // for each vertex u in G.V - {s}
+    for each vertex u in G.V
+        if u == s
+            continue
+        u.color = WHITE
+        u.d = $\infty$
+        u.$\pi$ = NIL
+    s.color = GRAY
+    s.d = 0
+    s.$\pi$ = NIL
+    let Q[len(G.V) + 1] be a new queue
+    ENQUEUE(Q, s)
+    while len(Q) > 0
+        u = DEQUEUE(Q)
+        for each vertex v in G.Adj(u)
+            if v.color == WHITE
+                v.color = GRAY
+                v.d = u.d + 1
+                v.$\pi$ = u
+                ENQUEUE(Q, v)
+        u.color = BLACK
+
+BFS-EXAMPLE()
+    let adj-mat[1:5] be a new array
+    for i = 1 to 5
+        let row[1:5] be a new array
+        adj-mat[i] = row
+        for j = 1 to 5
+            adj-mat[i][j] = 0
+
+    adj-mat[1][2] = 1
+    adj-mat[1][3] = 1
+    adj-mat[2][4] = 1
+    adj-mat[3][5] = 1
+    adj-mat[4][5] = 1
+
+    let G[adj-mat] be a new graph
+    BFS(G, G.V[1])
+    for each u in G.V
+        print u
