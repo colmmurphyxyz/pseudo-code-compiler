@@ -60,6 +60,8 @@ from pcc.backend.pc_stdlib import *
         return str(args[0])
 
     def return_stmt(self, args) -> str:
+        if len(args) == 0:
+            return "return"
         return f"return {args[0]}"
 
     def print_stmt(self, args) -> str:

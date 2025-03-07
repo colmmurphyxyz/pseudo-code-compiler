@@ -23,7 +23,7 @@ single_struct_decl: "let" struct_init "be" "a" "new" name
 multiple_struct_decl: "let" struct_init ("and" struct_init)+ "be" "new" name
 
 ?flow_stmt: return_stmt | print_stmt | error_stmt | exchange_stmt
-return_stmt: "return" test
+return_stmt: "return" test?
 print_stmt: "print" test
 error_stmt: "error" string
 exchange_stmt: ("exchange" | "swap") atom_expr "with" atom_expr

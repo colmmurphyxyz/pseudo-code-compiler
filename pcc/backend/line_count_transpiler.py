@@ -136,6 +136,8 @@ set_trace(\"input.pc\")
     #     return "; ".join(self.visit_children(tree)) + ";"
 
     def return_stmt(self, tree: Tree) -> str:
+        if len(tree.children) == 0:
+            return "return"
         return f"return {self.visit(tree.children[0])}"
 
     def print_stmt(self, tree: Tree) -> str:
