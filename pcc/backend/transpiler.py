@@ -124,10 +124,11 @@ from pcc.backend.pc_stdlib import *
         return f"for {name} in {range_expr}:" + "\n" + loop_body
 
     def for_iter(self, args):
-        # for_iter: "for" "each" name name "in" name _NEWLINE block_stmt
-        name = args[1]
-        iterable = args[2]
-        iter_body = args[3]
+        # for_iter: "for" "each" name~1..2 "in" name _NEWLINE block_stmt
+        if len(args) == 4:
+            _, name, iterable, iter_body = args
+        else:
+            name, iterable, iter_body = args
         return f"for {name} in {iterable}:" + "\n" + iter_body
 
     def repeat_stmt(self, args):
@@ -202,7 +203,9 @@ from pcc.backend.pc_stdlib import *
             case "minheap" | "minheaps":
                 return "PcMinHeap"
             case "priorityqueue" | "priorityqueues":
-                return "PcPriorityQueue"
+                return "PcHeap"
+            case "set" | "sets":
+                return "PcSet"
             case "tree" | "trees":
                 return "PcTree"
             case "graph" | "graphs":
@@ -293,6 +296,12 @@ from pcc.backend.pc_stdlib import *
 
     def getattr(self, args) -> str:
         return f"{args[0]}.{args[1]}"
+
+    def array_literal(self, args) -> str:
+        return f"PcArray.of({', '.join(args)})"
+
+    def set_literal(self, args) -> str:
+        return f"PcSet.of({', '.join(args)})"
 
     def grouping(self, args) -> str:
         return f"({"".join(args)})"

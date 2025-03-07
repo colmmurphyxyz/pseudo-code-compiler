@@ -46,9 +46,13 @@ set_trace(\"input.pc\")
             case "minheap" | "minheaps":
                 return "PcMinHeap"
             case "priorityqueue" | "priorityqueues":
-                return "PcPriorityQueue"
+                return "PcHeap"
+            case "set" | "sets":
+                return "PcSet"
             case "tree" | "trees":
                 return "PcTree"
+            case "vertex" | "vertices":
+                return "PcVertex"
             case "graph" | "graphs":
                 return "PcGraph"
         raise ParserError(f"Unknown Structure declaration {name}")
@@ -274,7 +278,7 @@ set_trace(\"input.pc\")
         return f"{subject}[{value}]"
 
     def getattr(self, tree: Tree) -> str:
-        subject, value = self.children(tree)
+        subject, value = self.visit_children(tree)
         return f"{subject}.{value}"
 
     def arguments(self, tree: Tree) -> str:
@@ -312,6 +316,12 @@ set_trace(\"input.pc\")
         token: Token = tree.children[0]
         return token.value
 
+    def array_literal(self, tree: Tree) -> str:
+        return f"PcArray.of({', '.join(self.visit_children(tree))})"
+
+    def set_literal(self, tree: Tree) -> str:
+        return f"PcSet.of({', '.join(self.visit_children(tree))})"
+
     def __normalize_identifier(self, name: str) -> str:
         normalized: str = (
             name
@@ -330,3 +340,12 @@ set_trace(\"input.pc\")
     def name(self, tree: Tree) -> str:
         token: Token = tree.children[0]
         return self.__normalize_identifier(token.value)
+
+    def const_nil(self, tree: Tree) -> str:
+        return "None"
+
+    def const_true(self, tree: Tree) -> str:
+        return "True"
+
+    def const_false(self, tree: Tree) -> str:
+        return "False"
