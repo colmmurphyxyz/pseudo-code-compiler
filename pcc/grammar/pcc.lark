@@ -18,7 +18,7 @@ struct_init_arguments: arith_expr ("," arith_expr)*
 
 struct_decl_stmt: single_struct_decl
     | multiple_struct_decl
-struct_init: name "[" struct_init_arguments? "]"
+struct_init: name ["[" struct_init_arguments+ "]"]
 single_struct_decl: "let" struct_init "be" "a" "new" name
 multiple_struct_decl: "let" struct_init ("and" struct_init)+ "be" "new" name
 
@@ -44,7 +44,7 @@ while_stmt: "while" test _NEWLINE block_stmt
 for_stmt: for_loop
         | for_iter
 for_loop: "for" name "=" test range_op test _NEWLINE block_stmt
-for_iter: "for" "each" name name "in" name _NEWLINE block_stmt // first 'name' token should be discarded
+for_iter: "for" "each" name~1..2 "in" expr _NEWLINE block_stmt // first 'name' token should be discarded
 !range_op: "to"
     | "downto"
 repeat_stmt: "repeat" _NEWLINE block_stmt "until" test _NEWLINE
@@ -87,6 +87,8 @@ assign_expr: name "=" test
 ?atom: name         -> var
     | number
     | string
+    | "{" [test ("," test)*] "}" -> set_literal
+    | "[" test ("," test)* "]" -> array_literal
     | "(" test ")"  -> grouping
     | "NIL"         -> const_nil
     | "TRUE"        -> const_true
