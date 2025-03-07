@@ -92,7 +92,10 @@ class Pccdb(Pdb):
         return len(re.findall(r"# l:\d+", line)) > 0
 
     def _is_internal_frame(self, frame) -> bool:
-        return frame.f_code.co_filename == "/home/colm/PycharmProjects/pcc_fixed/pcc/output.py"
+        # TODO: This will have to change in the future
+        path: str = frame.f_code.co_filename
+        filename: str = path.split("/")[-1]
+        return filename == "output.py"
 
     def user_call(self, frame, argument_list):
         if not self._is_internal_frame(frame):
@@ -117,7 +120,7 @@ class Pccdb(Pdb):
     do_z = do_step
 
     def postcmd(self, stop, line):
-        print("POSTCMD")
+        print("POSTCMD", stop, line, type(line))
         source, _ = inspect.findsource(self.curframe)
         self.__current_py_lineno = self.curframe.f_lineno
         self.__current_py_line = source[self.__current_py_lineno - 1].strip()
@@ -127,6 +130,8 @@ class Pccdb(Pdb):
 
             print(f"{Style.RED}{self.__current_py_lineno} @ {self.__current_py_line}{Style.RESET}")
             print(f"{Style.BLUE}{self.__current_pc_lineno} @ {self.__current_pc_line}{Style.RESET}")
+        else:
+            print(f"{Style.GREEN}Line {self.__current_py_lineno}:{self.current_py_line} has no line marker{Style.RESET}")
         return super().postcmd(stop, line)
 
     def do_break(self, arg: str, temporary: bool = False):
