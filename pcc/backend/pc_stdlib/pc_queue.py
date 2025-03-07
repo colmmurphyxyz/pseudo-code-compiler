@@ -13,7 +13,15 @@ class PcQueue:
         self.__elems[idx] = value
 
     def __str__(self) -> str:
-        return f"Queue{', '.join( [ str(e) for e in self.__elems ] )}"
+        return f"Queue{', '.join( [ str(e) for e in self.__elems[1:] ] )}"
+
+    __repr__ = __str__
+
+    def __len__(self) -> int:
+        if self.tail >= self.head:
+            return self.tail - self.head
+        else:
+            return self.size + self.tail - self.head
 
 def NEW_QUEUE(size: int) -> PcQueue:
     return PcQueue(size)

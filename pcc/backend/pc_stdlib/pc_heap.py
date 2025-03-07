@@ -13,18 +13,18 @@ class PcHeap:
         self._heap_size = value
 
     def __init__(self, size: int):
-        self._heap_size = size
+        self._heap_size = 0
         self._size: int = size
         self.array = PcArray(1, size)
 
     def __getitem__(self, idx: int) -> Any:
         if idx < 1 or idx > self._size:
-            raise IndexError(f"Index {idx} out of range for heap of size {self._size}")
+            raise IndexError(f"Index {idx} out of range for heap of size {self._heap_size}")
         return self.array[idx]
 
     def __setitem__(self, idx: int, val: Any):
         if idx < 1 or idx > self._size:
-            raise IndexError(f"Index {idx} out of range for heap of size {self._size}")
+            raise IndexError(f"Index {idx} out of range for heap of size {self._heap_size}")
         self.array[idx] = val
 
     def __str__(self) -> str:
@@ -33,7 +33,7 @@ class PcHeap:
     __repr__ = __str__
 
     def __len__(self) -> int:
-        return self._size
+        return self._heap_size
 
 
 def NEW_HEAP(size: int) -> PcHeap:

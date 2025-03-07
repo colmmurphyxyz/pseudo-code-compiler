@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from typing_extensions import Any
+from typing_extensions import Any, Iterable
 
 
-class PcArray:
+class PcArray(Iterable):
+    def __iter__(self):
+        return self._elems.__iter__()
+
     _elems: list
     _start: int
     _end: int
@@ -11,6 +14,10 @@ class PcArray:
     @property
     def elems(self) -> list:
         return self._elems
+
+    @staticmethod
+    def of(*args) -> PcArray:
+        return PcArray.from_py_list(list(args), 1)
 
     def __init__(self, start: int, end: int):
         self._start = start
