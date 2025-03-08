@@ -71,9 +71,9 @@ assign_expr: name "=" test
 ?factor: unary_op factor | power
 
 !unary_op: "+" | "-" | "!"
-!_add_op: "+" | "-"
+!_add_op: "+" | "-" | "|"
 !_shift_op: "<<" | ">>"
-!_mul_op: "*" | "/" | "mod" | "\\\\"
+!_mul_op: "*" | "/" | "mod" | "\\\\" | "&"
 !_comp_op: "<" | ">" | "==" | ">=" | "<=" | "!=" | "in" | "not" "in" | "is" | "is" "not"
 !_power_op: "^" | "**"
 
