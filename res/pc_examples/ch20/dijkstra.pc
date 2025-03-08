@@ -65,7 +65,7 @@ DIJKSTRA(G, w, s)
         INSERT(Q, v)
     while Q
         u = EXTRACT-MIN(Q)
-        S = SET-UNION(S, PcSet([u]))
+        S = S | {u}
         for each vertex v in G.Adj(u)
             did-decrease = RELAX(u, v, w)
             if did-decrease
