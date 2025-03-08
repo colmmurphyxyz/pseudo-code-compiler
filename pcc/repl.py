@@ -32,7 +32,7 @@ class ReplParser(Parser):
 
 def main():
     parser: ReplParser
-    grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar/pcc.lark"
+    grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar" / "pcc.lark"
     with open(grammar_file_path, "r", encoding="utf-8") as in_file:
         grammar: str = in_file.read()
     parser = ReplParser(grammar)

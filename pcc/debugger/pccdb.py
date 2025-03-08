@@ -94,8 +94,7 @@ class Pccdb(Pdb):
     def _is_internal_frame(self, frame) -> bool:
         # TODO: This will have to change in the future
         path: str = frame.f_code.co_filename
-        filename: str = path.split("/")[-1]
-        return filename == "output.py"
+        return "output.py" in path
 
     def user_call(self, frame, argument_list):
         if not self._is_internal_frame(frame):

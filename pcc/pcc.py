@@ -1,6 +1,7 @@
 # pylint: disable=redefined-builtin
 import sys
 import pathlib
+from os import PathLike
 
 import click
 from lark import Lark, Tree
@@ -48,7 +49,7 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
 
     parser: Lark
     tree: Tree
-    grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar/pcc.lark"
+    grammar_file_path = pathlib.Path(__file__).parent.absolute() / "grammar" / "pcc.lark"
     parser: PccParser = PccParser.from_grammar_file(grammar_file_path)
 
     with open(source_file_path, "r", encoding="utf-8") as in_file:
@@ -63,12 +64,13 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
     if output_rendered_source:
         with open(output_dir / "rendered_source.pc", "w", encoding="utf-8") as out_file:
             out_file.write(rendered_source)
-        source = rendered_source
 
     transpiler: Transpiler = LineCountTranspiler(rendered_source) if debug else Transpiler()
     output_code: str = transpiler.transpile(tree)
     with open(output_path, "w", encoding="utf-8") as out_file:
         out_file.write(output_code)
+
+    print(f"Compilation successful. Output written to {output_path.absolute()}. Please do not move it to another folder")
 
 if __name__ == "__main__":
     # pylint: disable=no-value-for-parameter
