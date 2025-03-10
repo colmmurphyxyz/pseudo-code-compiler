@@ -134,10 +134,16 @@ class Pccdb(Pdb):
         return super().postcmd(stop, line)
 
     def do_break(self, arg: str, temporary: bool = False):
+        print("DOING BRAKE", arg)
         args = arg.split(":")
         pc_lineno = int(arg.split(":")[-1])
-        filename = ":".join(args[:-1])
+        filename: str = ":".join(args[:-1])
+        # on windows, WebPdb will provide absolute paths with a leading \
+        # Pdb does not like this
+        if filename[0] == "\\":
+            filename = filename[1:]
         py_lines, _ = inspect.findsource(self.curframe)
+        print("GOT PC LINE", pc_lineno)
         # find the Py line whose line marker is equal to pc_lineno
         py_lineno = None
         for idx, line in enumerate(py_lines):
@@ -149,6 +155,7 @@ class Pccdb(Pdb):
         if py_lineno is None:
             return f"Cannot set breakpoint at line {pc_lineno} of {filename}"
         new_arg = f"{filename}:{py_lineno}"
+        print("NUSTYLE ARG", new_arg)
         return super().do_break(new_arg, temporary)
 
     do_b = do_break
