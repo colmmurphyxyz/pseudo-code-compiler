@@ -18,9 +18,9 @@ def usage() -> str:
       -v, --version: Print version information
       -h, --help: Print this help message
       -d --debug: compile file in debug mode
-      -o --output: specify output directory, defaults to ./out/output.py
-      -r --output-rendered-source: Output PseudoCode source with non-ascii characters rendered as unicode. True by default
-      """
+      -o --output: specify output directory, defaults to ./out/output.py. This should not be changed unless you know what you are doing
+      -r --output-rendered-source: Output Pseudocode source with non-ascii characters rendered as unicode. True by default
+      """.strip()
 
 @click.command(help=usage())
 @click.option("-v", "--version", type=click.BOOL, default=False, is_flag=True)
@@ -31,16 +31,16 @@ def usage() -> str:
 @click.argument("source_file_path", type=click.STRING, default="")
 def main(version: bool, help: bool, debug: bool, output: str, source_file_path: str, output_rendered_source: bool):
     if help:
-        print("Usage: pcc [options] file")
-        print("Options:")
-        print("  -v, --version: Print version information")
-        print("  -h, --help: Print this help message")
-        print("  -d --debug: compile file in debug mode")
-        print("  -o --output: specify output directory, defaults to ./out")
+        print(usage())
         sys.exit(0)
     if version:
         print("Pseudo-Code Compiler, version x.y.z")
         sys.exit(0)
+    # if source file not given, print usage
+    if not source_file_path:
+        print("Error: No source file provided")
+        print(usage())
+        sys.exit(1)
     # if output directory does not exist, create it
     output_path: pathlib.Path = pathlib.Path(output)
     output_dir: pathlib.Path = output_path.parent
