@@ -9,9 +9,7 @@ INSERTION-SORT(A, n)
             j = j - 1
         A[j + 1] = key
 
-let A[1:5] be a new array
-for i = 1 to 5
-    A[i] = 6 - i
+A = [5, 4, 3, 2, 1]
 print A
 INSERTION-SORT(A, 5)
 print A
