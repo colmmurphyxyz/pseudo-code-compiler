@@ -1,8 +1,7 @@
 #!/bin/sh
 
 if [ -z $VIRTUAL_ENV ]; then
-    echo "This script should be executed from a Python virtual environment.";
-    exit 1;
+    echo "This script is executed from a Python virtual environment.";
 fi
 
 if [ -d transpiled_pc_examples ]; then
