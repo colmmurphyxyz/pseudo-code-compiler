@@ -160,6 +160,16 @@ class Pccdb(Pdb):
 
     do_b = do_break
 
+    def do_clear(self, args: list[str | int]):
+        if len(args) == 0:
+            # clear all breakpoints
+            pass
+        else:
+            # clear only breakpoints listed in args
+            pass
+
+    do_cl = do_clear
+
     def get_breakpoint_pc_lines(self, filename: str) -> list[int]:
         py_lines: list[int] = self.get_file_breaks(filename)
         return list(map(self._get_pc_line_for, py_lines))
