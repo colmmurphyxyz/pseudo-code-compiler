@@ -134,7 +134,6 @@ class Pccdb(Pdb):
         return super().postcmd(stop, line)
 
     def do_break(self, arg: str, temporary: bool = False):
-        print("DOING BRAKE", arg)
         args = arg.split(":")
         pc_lineno = int(arg.split(":")[-1])
         filename: str = ":".join(args[:-1])
@@ -143,7 +142,6 @@ class Pccdb(Pdb):
         if filename[0] == "\\":
             filename = filename[1:]
         py_lines, _ = inspect.findsource(self.curframe)
-        print("GOT PC LINE", pc_lineno)
         # find the Py line whose line marker is equal to pc_lineno
         py_lineno = None
         for idx, line in enumerate(py_lines):
@@ -155,18 +153,36 @@ class Pccdb(Pdb):
         if py_lineno is None:
             return f"Cannot set breakpoint at line {pc_lineno} of {filename}"
         new_arg = f"{filename}:{py_lineno}"
-        print("NUSTYLE ARG", new_arg)
         return super().do_break(new_arg, temporary)
 
     do_b = do_break
 
-    def do_clear(self, args: list[str | int]):
-        if len(args) == 0:
+    def do_clear(self, arg: str):
+        print("DO CLEER", arg)
+        if len(arg) == 0:
             # clear all breakpoints
-            pass
-        else:
-            # clear only breakpoints listed in args
-            pass
+            return super().do_clear(arg)
+        args: list[str] = arg.split(":")
+        pc_lineno = int(arg.split(":")[-1])
+        filename: str = ":".join(args[:-1])
+        # on windows, WebPdb will provide absolute paths with a leading \
+        # Pdb does not like this
+        if filename[0] == "\\":
+            filename = filename[1:]
+        py_lines, _ = inspect.findsource(self.curframe)
+        # find the Py line whose line marker is equal to pc_lineno
+        py_lineno = None
+        for idx, line in enumerate(py_lines):
+            if self._has_line_marker(line):
+                x = line.split("# l:")
+                if len(x) > 1 and int(x[-1]) == pc_lineno:
+                    py_lineno = idx + 1
+                    break
+        if py_lineno is None:
+            return f"Cannot set breakpoint at line {pc_lineno} of {filename}"
+        new_arg = f"{filename}:{py_lineno}"
+        return super().do_clear(new_arg)
+
 
     do_cl = do_clear
 
