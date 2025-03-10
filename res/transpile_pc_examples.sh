@@ -18,7 +18,7 @@ for file in pc_examples/**/*.pc; do
     mkdir -p "$output_dir"
     output_file="$(basename $file | cut -d '.' -f1).py"
     echo "Transpiling $file to $output_file";
-    python /home/colm/PycharmProjects/pcc_fixed/pcc/pcc.py --output-rendered-source 0 -o "$output_dir/$output_file" "$file"
+    python ../pcc/pcc.py --output-rendered-source 0 -o "$output_dir/$output_file" "$file"
 done
 
 
