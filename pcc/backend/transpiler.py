@@ -65,7 +65,7 @@ from pcc.backend.pc_stdlib import *
         return f"return {args[0]}"
 
     def print_stmt(self, args) -> str:
-        return f"print({"".join(args)})"
+        return f"print({''.join(args)})"
 
     def while_stmt(self, args) -> str:
         while_condition: Tree = args[0]
@@ -306,7 +306,7 @@ from pcc.backend.pc_stdlib import *
         return f"PcSet.of({', '.join(args)})"
 
     def grouping(self, args) -> str:
-        return f"({"".join(args)})"
+        return f"({''.join(args)})"
 
     def arguments(self, args) -> str:
         return ", ".join(args)
