@@ -75,6 +75,8 @@ from pcc.backend.pc_stdlib import *
     def block_stmt(self, args) -> str:
         return self._indent_all_lines("\n".join(args))
 
+    function_body = block_stmt
+
     def exchange_stmt(self, args) -> str:
         lhs, rhs = args[0], args[1]
         return f"{lhs}, {rhs} = {rhs}, {lhs}"

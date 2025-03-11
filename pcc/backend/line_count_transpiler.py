@@ -217,6 +217,8 @@ set_trace(\"input.pc\")
     def block_stmt(self, tree: Tree) -> str:
         return self._indent_all_lines("\n".join(self.visit_children(tree)))
 
+    function_body = block_stmt
+
     def assign(self, tree: Tree) -> str:
         lhs, rhs = self.visit_children(tree)
         return f"{lhs} = {rhs}"

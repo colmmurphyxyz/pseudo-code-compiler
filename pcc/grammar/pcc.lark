@@ -1,7 +1,7 @@
 single_input: _NEWLINE | simple_stmt | compound_stmt _NEWLINE
 file_input: (_NEWLINE | stmt)*
 
-funcdef: name "(" [parameters] ")" _NEWLINE block_stmt
+funcdef: name "(" [parameters] ")" _NEWLINE function_body
 
 parameters: name ("," name)*
 
@@ -50,6 +50,9 @@ for_iter: "for" "each" name~1..2 "in" expr _NEWLINE block_stmt // first 'name' t
 repeat_stmt: "repeat" _NEWLINE block_stmt "until" test _NEWLINE
 
 block_stmt: simple_stmt | _INDENT stmt+ _DEDENT
+
+// alias for block_stmt
+function_body: _INDENT stmt+ _DEDENT
 
 assign: test "=" test
 
