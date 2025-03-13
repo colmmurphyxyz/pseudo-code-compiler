@@ -7,8 +7,11 @@ Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein.
 The project has only been tested with Python 3.12.7, though any Python later than ~3.10 should work.
 
 ## Usage
+### Via installation Script
+**Windows**: [pcc_init.ps1](https://colmmurphy.xyz/pcc_init.ps1)
+**Mac/Linux**: [pcc_init.sh](https://colmmurphy.xyz/pcc_init.sh)
 ```shell
-git clone git@github.com:colmmurphyxyz/pcc.git
+git clone [git@github.com:colmmurphyxyz/pcc.git](https://github.com/colmmurphyxyz/pseudo-code-compiler.git)
 python3 -m venv ./venv
 source venv/bin/activate
 pip install -r requirements.txt
