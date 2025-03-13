@@ -10,12 +10,14 @@ The project has only been tested with Python 3.12.7, though any Python later tha
 ### Via installation Script
 **Windows**: [pcc_init.ps1](https://colmmurphy.xyz/pcc_init.ps1)
 **Mac/Linux**: [pcc_init.sh](https://colmmurphy.xyz/pcc_init.sh)
+### Manual Installation
 ```shell
 git clone [git@github.com:colmmurphyxyz/pcc.git](https://github.com/colmmurphyxyz/pseudo-code-compiler.git)
 python3 -m venv ./venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+### Usage Example
 From the root directory of the project...
 ```shell
 python3 pcc/pcc.py res/pc_examples/ch02/insertion_sort.pc
