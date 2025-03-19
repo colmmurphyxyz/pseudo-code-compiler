@@ -8,21 +8,13 @@
     "watch": "webpack watch --mode=development",
     "lint": "eslint --ext .js src"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/romanvm/python-web-pdb.git"
-  },
   "keywords": [
     "python",
     "remote",
     "debugger"
   ],
   "author": "Roman Miroshnychenko",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/romanvm/python-web-pdb/issues"
-  },
-  "homepage": "https://github.com/romanvm/python-web-pdb#readme",
+  "license": "LGPL-3.0-only",
   "dependencies": {
     "@babel/core": "^7.24.0",
     "@babel/preset-env": "^7.24.0",

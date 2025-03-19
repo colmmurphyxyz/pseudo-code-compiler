@@ -1,3 +1,6 @@
+# Copyright: (c) 2025, Colm Murphy <colmmurphy016@gmail.com>
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 class PcQueue:
     def __init__(self, size: int):
         self.size: int = size
