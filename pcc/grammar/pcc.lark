@@ -22,8 +22,8 @@ struct_init_arguments: arith_expr ("," arith_expr)*
 struct_decl_stmt: single_struct_decl
     | multiple_struct_decl
 struct_init: name ["[" struct_init_arguments+ "]"]
-single_struct_decl: "let" struct_init "be" "a" "new" name
-multiple_struct_decl: "let" struct_init ("and" struct_init)+ "be" "new" name
+single_struct_decl: "let" struct_init name+ name
+multiple_struct_decl: "let" struct_init ("and" struct_init)+ name+ name
 
 ?flow_stmt: return_stmt | print_stmt | error_stmt | exchange_stmt
 return_stmt: "return" test?
