@@ -40,6 +40,10 @@ set_trace(\"input.pc\")
                 return "PcStack"
             case "queue" | "queues":
                 return "PcQueue"
+            case "linkedlist" | "linkedlists":
+                return "PcLinkedList"
+            case "listnode" | "listnodes":
+                return "PcListNode"
             case "table" | "tables":
                 return "PcTable"
             case "heap" | "heaps":
@@ -54,8 +58,6 @@ set_trace(\"input.pc\")
                 return "PcSet"
             case "tree" | "trees":
                 return "PcTree"
-            case "vertex" | "vertices":
-                return "PcVertex"
             case "graph" | "graphs":
                 return "PcGraph"
         raise ParserError(f"Unknown Structure declaration {name}")
@@ -324,10 +326,13 @@ set_trace(\"input.pc\")
         return token.value
 
     def array_literal(self, tree: Tree) -> str:
-        return f"PcArray.of({', '.join(self.visit_children(tree))})"
+        return f"PcArray.of({', '.join(self.visit_children(tree) or [])})"
 
     def set_literal(self, tree: Tree) -> str:
-        return f"PcSet.of({', '.join(self.visit_children(tree))})"
+        return f"PcSet.of({', '.join(self.visit_children(tree) or [])})"
+
+    def grouping(self, tree: Tree) -> str:
+        return f"({''.join(self.visit_children(tree) or [])})"
 
     def __normalize_identifier(self, name: str) -> str:
         normalized: str = (

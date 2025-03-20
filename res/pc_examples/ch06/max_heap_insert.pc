@@ -4,7 +4,7 @@ MAX-HEAP-INCREASE-KEY(A, x, k)
         error "new key is smaller than current key"
     x.key = k
     // find the index i in array where object x occurs
-    i = FIND-INDEX!()
+    i = FIND-INDEX()
     while i > 1 and A[PARENT(i)].key < A[i].key
         exchange A[i] with A[Parent(i)]
         i = PARENT(i)

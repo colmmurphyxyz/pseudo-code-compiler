@@ -174,7 +174,7 @@ from pcc.backend.pc_stdlib import *
     def single_struct_decl(self, args) -> str:
         struct_name = args[0][0]
         struct_args = args[0][1:]
-        struct_type = args[1]
+        struct_type = args[-1]
         class_name = self._get_class_name_for_struct(struct_type)
         return f"{struct_name} = {class_name}({', '.join([ str(arg) for arg in struct_args])})"
 
@@ -305,16 +305,16 @@ from pcc.backend.pc_stdlib import *
         return f"{args[0]}.{args[1]}"
 
     def array_literal(self, args) -> str:
-        return f"PcArray.of({', '.join(args)})"
+        return f"PcArray.of({', '.join(args or [])})"
 
     def set_literal(self, args) -> str:
-        return f"PcSet.of({', '.join(args)})"
+        return f"PcSet.of({', '.join(args or [])})"
 
     def grouping(self, args) -> str:
-        return f"({''.join(args)})"
+        return f"({''.join(args or [])})"
 
     def arguments(self, args) -> str:
-        return ", ".join(args)
+        return ", ".join(args or [])
 
     def var(self, args) -> str:
         return str(args[0])

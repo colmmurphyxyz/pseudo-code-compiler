@@ -6,6 +6,6 @@ RANDOM-SAMPLE(m, n)
         i = RANDOM(1, k)
         // textbook uses set membership operator instead of `in` keyword
         if i in S
-            A = S union {k}
-        else S = S union {i}
+            A = S | {k}
+        else S = S | {i}
     return S
