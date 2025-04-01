@@ -14,6 +14,7 @@ from backend.transpiler import Transpiler
 
 # Import stdlib to execute repl code
 from backend.pc_stdlib import * # pylint: disable=wildcard-import
+from frontend.keyword_normalizer import KeywordNormalizer
 
 
 class ReplParser(Parser):
@@ -24,7 +25,8 @@ class ReplParser(Parser):
             start="single_input",
             postlex=PostLexPipeline([
                 PythonIndenter(),
-                UnicodeFormatter()
+                UnicodeFormatter(),
+                KeywordNormalizer(),
             ]))
 
     def parse(self, source_code: str) -> Tree:

@@ -10,6 +10,7 @@ from typing import Iterator
 from lark import Lark, Tree, Token
 from lark.indenter import PythonIndenter
 
+from .keyword_normalizer import KeywordNormalizer
 from .parser import Parser
 from .postlex_pipeline import PostLexPipeline
 from .renderer import Renderer
@@ -24,7 +25,7 @@ class PccParser(Parser):
         self._grammar = grammar
         self._renderer = Renderer()
         self._lark = Lark(self._grammar, propagate_positions=True, start="file_input", postlex=PostLexPipeline([
-            PythonIndenter(), self._renderer, UnicodeFormatter()
+            PythonIndenter(), self._renderer, UnicodeFormatter(), KeywordNormalizer()
         ]))
 
     @property
