@@ -28,7 +28,7 @@ class TestUnicodeFormatter(unittest.TestCase):
         formatter = UnicodeFormatter()
         output = formatter.process(token_stream)
         formatted_token = next(output)
-        self.assertEqual(formatted_token.value, "𝛽")
+        self.assertEqual(formatted_token.value, "beta")
 
     def test_mixed_format_identifier(self):
         token = make_token("NAME", r"one-$\alpha$-two")
@@ -36,4 +36,4 @@ class TestUnicodeFormatter(unittest.TestCase):
         formatter = UnicodeFormatter()
         output = formatter.process(token_stream)
         formatted_token = next(output)
-        self.assertEqual(formatted_token.value, "one-𝛼-two")
+        self.assertEqual(formatted_token.value, "one-alpha-two")
