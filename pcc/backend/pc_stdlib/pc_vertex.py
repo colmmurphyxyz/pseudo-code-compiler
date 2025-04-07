@@ -40,4 +40,7 @@ class PcVertex:
     def __str__(self) -> str:
         return f"Vertex({self.key}, {('pi=' + str(self._pi.key)) if self._pi is not None else ''}, {self._color=}, {self._d=})"
 
+    def __hash__(self):
+        return hash(self.key)
+
     __repr__ = __str__
