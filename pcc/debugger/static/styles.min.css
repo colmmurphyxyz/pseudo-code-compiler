@@ -310,6 +310,7 @@ nav {
   height: 41vh;
   margin-top: 4px;
   overflow: hidden;
+  display: none;
 }
 
 .pdboutput > pre {
