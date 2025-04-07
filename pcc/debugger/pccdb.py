@@ -122,7 +122,7 @@ class Pccdb(Pdb):
     do_z = do_step
 
     def postcmd(self, stop, line):
-        print("POSTCMD", stop, line, type(line))
+        # print("POSTCMD", stop, line, type(line))
         source, _ = inspect.findsource(self.curframe)
         self.__current_py_lineno = self.curframe.f_lineno
         self.__current_py_line = source[self.__current_py_lineno - 1].strip()
@@ -130,10 +130,11 @@ class Pccdb(Pdb):
             self.__current_pc_lineno = int(self.__current_py_line.split("l:")[-1])
             self.__current_pc_line = self.__pc_source_lines[self.__current_pc_lineno - 1].strip()
 
-            print(f"{Style.RED}{self.__current_py_lineno} @ {self.__current_py_line}{Style.RESET}")
-            print(f"{Style.BLUE}{self.__current_pc_lineno} @ {self.__current_pc_line}{Style.RESET}")
+            # print(f"{Style.RED}{self.__current_py_lineno} @ {self.__current_py_line}{Style.RESET}")
+            # print(f"{Style.BLUE}{self.__current_pc_lineno} @ {self.__current_pc_line}{Style.RESET}")
         else:
-            print(f"{Style.GREEN}Line {self.__current_py_lineno}:{self.current_py_line} has no line marker{Style.RESET}")
+            pass
+            # print(f"{Style.GREEN}Line {self.__current_py_lineno}:{self.current_py_line} has no line marker{Style.RESET}")
         return super().postcmd(stop, line)
 
     def do_break(self, arg: str, temporary: bool = False):
@@ -161,7 +162,7 @@ class Pccdb(Pdb):
     do_b = do_break
 
     def do_clear(self, arg: str):
-        print("DO CLEER", arg)
+        # print("DO CLEER", arg)
         if len(arg) == 0:
             # clear all breakpoints
             return super().do_clear(arg)
