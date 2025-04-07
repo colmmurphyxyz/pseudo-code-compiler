@@ -13,7 +13,7 @@ from .pc_vertex import PcVertex
 from .pc_graph import PcGraph
 from .pc_set import PcSet
 from .pc_random import RANDOM
-from .pc_math import floor, ceil
+from .pc_math import floor, ceil, min, max, abs
 from .colors import *
 from .error import error
 from .constants import infinity, infty, inf
@@ -25,6 +25,9 @@ __all__ = [
     "RANDOM",
     "floor",
     "ceil",
+    "min",
+    "max",
+    "abs",
     "error",
     "PcStack",
     "NEW_STACK",

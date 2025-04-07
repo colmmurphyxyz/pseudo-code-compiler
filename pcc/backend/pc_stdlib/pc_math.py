@@ -9,3 +9,40 @@ def floor(a) -> int:
 
 def ceil(a) -> int:
     return math.ceil(a)
+
+def min(a, b):
+    if a < b:
+        return a
+    return b
+
+def min(*args):
+    if len(args) == 0:
+        raise ValueError("min() requires at least one argument")
+    if len(args) == 1:
+        return args[0]
+    min_value = args[0]
+    for arg in args[1:]:
+        if arg < min_value:
+            min_value = arg
+    return min_value
+
+def max(a, b):
+    if a > b:
+        return a
+    return b
+
+def max(*args):
+    if len(args) == 0:
+        raise ValueError("max() requires at least one argument")
+    if len(args) == 1:
+        return args[0]
+    max_value = args[0]
+    for arg in args[1:]:
+        if arg > max_value:
+            max_value = arg
+    return max_value
+
+def abs(a):
+    if a < 0:
+        return -a
+    return a
