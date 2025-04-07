@@ -37,3 +37,13 @@ class TestUnicodeFormatter(unittest.TestCase):
         output = formatter.process(token_stream)
         formatted_token = next(output)
         self.assertEqual(formatted_token.value, "one-alpha-two")
+
+    def test_format_non_name_token(self):
+        tok: Token = Token("DEC_INTEGER", 123)
+        token_stream: Iterator[Token] = iter([tok])
+        formatter = UnicodeFormatter()
+        output = formatter.process(token_stream)
+        formatted_token = next(output)
+        self.assertEqual(formatted_token, tok)
+        self.assertEqual(tok.type, "DEC_INTEGER")
+        self.assertEqual(tok.value, 123)

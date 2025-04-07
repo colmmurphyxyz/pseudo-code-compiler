@@ -30,3 +30,12 @@ class TestUnicodeFragment(unittest.TestCase):
             "-gamma-",
             UnicodeFragment("\\delta"),
         ], fragments)
+
+    def test_equality(self):
+        lhs = UnicodeFragment("\\alpha")
+        rhs = UnicodeFragment("\\alpha")
+        self.assertEqual(lhs, rhs)
+        rhs = "\\alpha"
+        self.assertEqual(lhs, rhs)
+        rhs = 123
+        self.assertRaises(ValueError, lambda: lhs == rhs)
