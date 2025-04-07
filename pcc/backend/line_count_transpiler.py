@@ -312,7 +312,7 @@ set_trace(\"input.pc\")
         return str(tree.children[0])
 
     def _power_op(self, tree: Tree) -> str:
-        return str(tree.children[0])
+        return "**"
 
     def var(self, tree: Tree) -> str:
         return self.visit(tree.children[0])

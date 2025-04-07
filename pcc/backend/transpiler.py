@@ -262,6 +262,9 @@ from pcc.backend.pc_stdlib import *
         return " ".join(args)
 
     def power(self, args) -> str:
+        for i in range(len(args)):
+            if isinstance(args[i], Token):
+                args[i] = Token("_power_op", "**")
         return " ".join(args)
 
     def unary_op(self, args) -> str:
@@ -286,7 +289,7 @@ from pcc.backend.pc_stdlib import *
         return str(args[0])
 
     def _power_op(self, args) -> str:
-        return str(args[0])
+        return "**"
 
     def atom_expr(self, args) -> str:
         return str(args[0])
