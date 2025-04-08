@@ -4,14 +4,13 @@
 # pylint: disable=redefined-builtin
 import sys
 import pathlib
-from os import PathLike
 
 import click
 from lark import Lark, Tree
 
-from frontend.pcc_parser import PccParser
-from backend.transpiler import Transpiler
-from backend.line_count_transpiler import LineCountTranspiler
+from .frontend.pcc_parser import PccParser
+from .backend.transpiler import Transpiler
+from .backend.line_count_transpiler import LineCountTranspiler
 
 
 def usage() -> str:
@@ -37,7 +36,7 @@ def main(version: bool, help: bool, debug: bool, output: str, source_file_path: 
         print(usage())
         sys.exit(0)
     if version:
-        print("Pseudo-Code Compiler, version x.y.z")
+        print("Pseudo-Code Compiler, version 1.0.0")
         sys.exit(0)
     # if source file not given, print usage
     if not source_file_path:
