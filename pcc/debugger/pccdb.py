@@ -94,6 +94,9 @@ class Pccdb(Pdb):
     def _has_line_marker(self, line: str) -> bool:
         return len(re.findall(r"# l:\d+", line)) > 0
 
+    def _get_line_marker(self, line: str) -> int:
+        return int(line.split("# l:")[-1])
+
     def _is_internal_frame(self, frame) -> bool:
         # TODO: This will have to change in the future
         path: str = frame.f_code.co_filename
@@ -122,19 +125,12 @@ class Pccdb(Pdb):
     do_z = do_step
 
     def postcmd(self, stop, line):
-        # print("POSTCMD", stop, line, type(line))
         source, _ = inspect.findsource(self.curframe)
         self.__current_py_lineno = self.curframe.f_lineno
         self.__current_py_line = source[self.__current_py_lineno - 1].strip()
         if self._has_line_marker(self.__current_py_line):
-            self.__current_pc_lineno = int(self.__current_py_line.split("l:")[-1])
+            self.__current_pc_lineno = self._get_line_marker(self.__current_py_line)
             self.__current_pc_line = self.__pc_source_lines[self.__current_pc_lineno - 1].strip()
-
-            # print(f"{Style.RED}{self.__current_py_lineno} @ {self.__current_py_line}{Style.RESET}")
-            # print(f"{Style.BLUE}{self.__current_pc_lineno} @ {self.__current_pc_line}{Style.RESET}")
-        else:
-            pass
-            # print(f"{Style.GREEN}Line {self.__current_py_lineno}:{self.current_py_line} has no line marker{Style.RESET}")
         return super().postcmd(stop, line)
 
     def do_break(self, arg: str, temporary: bool = False):
