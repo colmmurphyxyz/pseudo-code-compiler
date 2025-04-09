@@ -20,7 +20,7 @@ class PccParser(Parser):
 
     _rendered_source: str = None
 
-    def __init__(self, grammar: str | Path):
+    def __init__(self, grammar: str):
         super().__init__()
         self._grammar = grammar
         self._renderer = Renderer()
@@ -42,13 +42,21 @@ class PccParser(Parser):
         return self._grammar
 
     def parse(self, source_code: str) -> Tree:
+        tokens = self.lex(source_code)
+        print(list(tokens))
+
+        # append trailing newline if not present
         if source_code[-1] != "\n":
             source_code += "\n"
         ast = self._lark.parse(source_code)
+
+        # replace latex expressions with unicode to use in debugger GUI and other presentations
+        # `ast` has already transformed latex expressions to ascii
         identifiers: set[tuple[str, str]] = self._renderer.identifiers
         self._rendered_source = copy(source_code)
         for orig, rendered in identifiers:
             self._rendered_source = self._rendered_source.replace(orig, rendered)
+
         return ast
 
     def lex(self, source_code: str, dont_ignore: bool = False) -> Iterator[Token]:
