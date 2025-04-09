@@ -2,7 +2,7 @@
 // GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 single_input: _NEWLINE | simple_stmt | compound_stmt _NEWLINE
-file_input: (_NEWLINE | stmt)*
+file_input: (_NEWLINE | stmt)+
 
 funcdef: name "(" [parameters] ")" _NEWLINE function_body
 
@@ -37,8 +37,8 @@ exchange_stmt: ("exchange" | "swap") atom_expr "with" atom_expr
     | repeat_stmt
     | funcdef
 
-if_stmt: "if" test _NEWLINE block_stmt elifs else_?
-elifs: elif_*
+if_stmt: "if" test _NEWLINE block_stmt elifs? else_?
+elifs: elif_+
 elif_: "else" "if" test _NEWLINE block_stmt
 else_: else_block | else_inline
 else_block: "else" _NEWLINE block_stmt
