@@ -42,9 +42,6 @@ class PccParser(Parser):
         return self._grammar
 
     def parse(self, source_code: str) -> Tree:
-        tokens = self.lex(source_code)
-        print(list(tokens))
-
         # append trailing newline if not present
         if source_code[-1] != "\n":
             source_code += "\n"
