@@ -12,7 +12,7 @@ fi
 git clone --depth=1 https://github.com/colmmurphyxyz/pseudo-code-compiler.git
 cd pseudo-code-compiler || exit 1;
 
-read -r "Do you want to create a virtual environment? [y/N]: " create_venv
+echo "Do you want to create a virtual environment? [y/N]: "; read create_venv
 if [ "$create_venv" = "y" ]; then
     python3 -m venv ./venv
     echo "Virtual environment created."
@@ -30,7 +30,7 @@ chmod +x transpile_pc_examples.sh;
 
 cd .. || exit 1;
 
-read -r "Do you want to install the VScode extension for CLRS pseudocode? [Y/n]: " install_ext
+echo "Do you want to install the VScode extension for CLRS pseudocode? [Y/n]: "; read install_ext
 if [ "$install_ext" = "n" ]; then
     echo "fine...";
 else
