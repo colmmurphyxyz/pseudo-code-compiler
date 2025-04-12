@@ -10,9 +10,9 @@ else
 fi
 
 git clone --depth=1 https://github.com/colmmurphyxyz/pseudo-code-compiler.git
-cd pseudo-code-compiler;
+cd pseudo-code-compiler || exit 1;
 
-read -p "Do you want to create a virtual environment? [y/N]: " create_venv
+read -r "Do you want to create a virtual environment? [y/N]: " create_venv
 if [ "$create_venv" = "y" ]; then
     python3 -m venv ./venv
     echo "Virtual environment created."
@@ -24,13 +24,13 @@ fi
 
 pip install -r requirements.txt;
 
-cd res
+cd res || exit 1;
 chmod +x transpile_pc_examples.sh;
 ./transpile_pc_examples.sh;
 
-cd ..;
+cd .. || exit 1;
 
-read -p "Do you want to install the VScode extension for CLRS pseudocode? [Y/n]: " install_ext
+read -r "Do you want to install the VScode extension for CLRS pseudocode? [Y/n]: " install_ext
 if [ "$install_ext" = "n" ]; then
     echo "fine...";
 else
@@ -41,6 +41,6 @@ fi
 
 echo "Finished";
 echo "The glorious Pseudocode Compiler is installed";
-echo "Transpile your first pseudocode program with 'python pcc/pcc.py \path\to\program.pc'";
+echo "Transpile your first pseudocode program with 'python pcc/pcc.py /path/to/program.pc'";
 
 exit 0
