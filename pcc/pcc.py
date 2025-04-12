@@ -8,9 +8,9 @@ import pathlib
 import click
 from lark import Lark, Tree
 
-from .frontend.pcc_parser import PccParser
-from .backend.transpiler import Transpiler
-from .backend.line_count_transpiler import LineCountTranspiler
+from frontend.pcc_parser import PccParser
+from backend.transpiler import Transpiler
+from backend.line_count_transpiler import LineCountTranspiler
 
 
 def usage() -> str:
