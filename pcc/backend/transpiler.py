@@ -6,13 +6,14 @@ from click import argument
 from lark import Transformer, Tree, Token
 
 from .parser_error import ParserError
+from .pc_transpiler import PccTranspiler
 
 
-class Transpiler(Transformer):  # pylint: disable=too-many-public-methods
+class Transpiler(Transformer, PccTranspiler):  # pylint: disable=too-many-public-methods
 
     __indent_weight: int = 4
 
-    __preamble: str = """
+    preamble: str = """
 import pathlib
 import sys
 # add the source directory to sys.path. This is not a permanent solution
@@ -30,7 +31,7 @@ from pcc.backend.pc_stdlib import *
         return "\n".join(map(lambda l: " " * self.__indent_weight + l, lines.split("\n")))
 
     def file_input(self, args) -> str:
-        return self.__preamble + "\n".join(args) + "\n"
+        return self.preamble + "\n".join(args) + "\n"
 
     def single_input(self, args) -> str:
         return "\n".join(args) + "\n"
@@ -311,6 +312,8 @@ from pcc.backend.pc_stdlib import *
         return f"PcArray.of({', '.join(args or [])})"
 
     def set_literal(self, args) -> str:
+        if len(args) == 0 or args == [None]:
+            return "PcSet.of()"
         return f"PcSet.of({', '.join(args or [])})"
 
     def grouping(self, args) -> str:

@@ -5,9 +5,11 @@ from lark import Tree, Token
 from lark.visitors import Interpreter
 
 from .parser_error import ParserError
+from .pc_transpiler import PccTranspiler
+
 
 # pylint: disable=too-many-public-methods
-class LineCountTranspiler(Interpreter):
+class LineCountTranspiler(Interpreter, PccTranspiler):
 
     __indent_weight: int = 4
 
