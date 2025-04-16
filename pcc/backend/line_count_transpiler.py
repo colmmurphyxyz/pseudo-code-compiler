@@ -1,5 +1,7 @@
 # Copyright: (c) 2025, Colm Murphy <colmmurphy016@gmail.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+from curses.ascii import isalnum
+from pydoc import replace
 
 from lark import Tree, Token
 from lark.visitors import Interpreter
@@ -337,16 +339,10 @@ set_trace(\"input.pc\")
         return f"({''.join(self.visit_children(tree) or [])})"
 
     def __normalize_identifier(self, name: str) -> str:
-        normalized: str = (
-            name
-            .replace("-", "_")
-            .replace("$", "")
-            .replace("{", "")
-            .replace("}", "")
-            .replace("^", "")
-            .replace("\\", "")
-            .replace("'", "_prime")
-        )
+        normalized: str = (name
+                           .replace("'", "_prime")
+                           .replace("-", "_"))
+        normalized = "".join(list(filter(lambda c: c.isalnum() or c == "_", normalized)))
         if normalized[0].isdigit():
             return "_" + normalized
         return normalized

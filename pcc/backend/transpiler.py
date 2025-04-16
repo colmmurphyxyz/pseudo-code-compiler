@@ -326,16 +326,10 @@ from pcc.backend.pc_stdlib import *
         return str(args[0])
 
     def __normalize_identifier(self, name: str) -> str:
-        normalized: str = (
-            name
-            .replace("-", "_")
-            .replace("$", "")
-            .replace("{", "")
-            .replace("}", "")
-            .replace("^", "")
-            .replace("\\", "")
-            .replace("'", "_prime")
-        )
+        normalized: str = (name
+                           .replace("'", "_prime")
+                           .replace("-", "_"))
+        normalized = "".join(list(filter(lambda c: c.isalnum() or c == "_", normalized)))
         if normalized[0].isdigit():
             return "_" + normalized
         return normalized
