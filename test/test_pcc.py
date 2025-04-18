@@ -7,6 +7,11 @@ from pcc.backend.transpiler import Transpiler
 from pcc.frontend.pcc_parser import PccParser
 from test.frontend.test_unicode_fragment import TestUnicodeFragment
 from test.frontend.test_unicode_formatter import TestUnicodeFormatter
+from test.frontend.test_renderer import TestRenderer
+from test.frontend.test_keyword_normalizer import TestKeywordNormalizer
+from test.frontend.test_postlex_pipeline import TestPostLexPipeline
+from test.backend.test_transpiler import TestTranspiler
+from test.backend.test_parser_error import TestParserError
 
 class TestPcc(unittest.TestCase):
     def test_my_test(self):
@@ -28,6 +33,12 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(TestUnicodeFragment("test_unicode_fragment"))
     suite.addTest(TestUnicodeFormatter("test_unicode_formatter"))
+    suite.addTest(TestRenderer("test_renderer"))
+    suite.addTest(TestKeywordNormalizer("test_keyword_normalizer"))
+    suite.addTest(TestPostLexPipeline("test_postlex_pipeline"))
+    suite.addTest(TestTranspiler("test_transpiler"))
+    suite.addTest(TestParserError("test_parser_error"))
+    suite.addTest(TestPcc("test_my_test"))
     return suite
 
 if __name__ == '__main__':

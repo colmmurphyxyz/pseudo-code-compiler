@@ -18,5 +18,5 @@ class PcListNode:
     def __str__(self) -> str:
         return f"ListNode({str(self.key)})"
 
-def NEW_LIST_NODE(key: any, value: any, next: PcListNode | None = None, prev: PcListNode | None = None) -> PcListNode:
+def NEW_LIST_NODE(key: any, value: any = None, next: PcListNode | None = None, prev: PcListNode | None = None) -> PcListNode:
     return PcListNode(next, prev, key, value)

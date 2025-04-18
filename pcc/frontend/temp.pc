@@ -1,0 +1,7 @@
+COUNT()
+    for i = 1 to 10
+        $\pi$ = 3
+        myvar$\alpha^2$ = 123
+        print i
+
+COUNT()

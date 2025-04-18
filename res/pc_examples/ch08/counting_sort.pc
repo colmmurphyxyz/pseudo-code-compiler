@@ -1,7 +1,9 @@
 // section 8.2
 
 COUNTING-SORT(A, n, k)
-    let B[1:n] and C[0:k] be new arrays
+    let B[1:n] be a new array
+    let C[0:k] be a new array
+    // let B[1:n] and C[0:k] be new arrays
     for i = 0 to k
         C[i] = 0
     for j = 1 to n

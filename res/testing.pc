@@ -1,8 +1,0 @@
-print "hello"
-foo = 123
-let Q[10] and R[12] be new heaps
-print Q
-x = 10
-y = 6
-c = x - y
-print "goodbye"
